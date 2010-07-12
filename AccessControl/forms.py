@@ -14,7 +14,6 @@ class RegisterMachineForm(forms.Form):
 	#	return message
 
 class EditRegisteredMachineForm(forms.Form):
-	rmID = forms.IntegerField()
 	mcID = forms.CharField(max_length=12, min_length=5, label = 'MAC Address')
 	ipID = forms.IPAddressField(label = 'IP Address')
 	pcID = forms.CharField(max_length=15, label = 'PC Name')

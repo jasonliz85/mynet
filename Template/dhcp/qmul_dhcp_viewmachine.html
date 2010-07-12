@@ -3,6 +3,9 @@
 {% block title %}MyNET DHCP | Machine ID {{machine.id}}{% endblock %}
 
 {% block content %}
+	<script language="JavaScript">
+	confirm("Put your warning text here!")
+	</script>
 
 	<h2><a name="status">Registered Machine, ID: {{machine.id}}</a></h2>
 	<p>Enter a MAC address and IP address pair below.</p>
@@ -14,7 +17,7 @@
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">IP Address</label>
-		<div class="thefield">{{machine.ID_pair}}</div> <br>
+		<div class="thefield">{{machine.IP_pair}}</div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">PC Name</label>

@@ -17,6 +17,7 @@ class DHCP_machine(models.Model):
 	time_deleted 	= models.DateTimeField(blank=True, null=True)		#registration deletion time
 	description 	= models.TextField(blank=True, null=True)		#description of machine (optional)
 	#to add date_modified
+	#to add global_machine_number unique
 	def __unicode__(self):
 		return u'%s-%s-%s %s, %s' % (self.MAC_pair, self.IP_pair, self.PC_pair, self.time_created,self.time_deleted )
 

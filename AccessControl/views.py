@@ -10,14 +10,26 @@ def dhcp_page_listings(request):
 	return render_to_response('qmul_dhcp_listings.html', {'machinelists' : registeredmachines, 'viewmachine' : 'qmul_dhcp_viewmachine.html' })	
 	
 def dhcp_page_machine_edit(request, m_id):
+	try:
+		m_id = int(m_id)
+	except ValueError:
+		raise Http404()
+	
 	if request.method == 'POST':
-		form = EditRegisteredMachineForm(request.POST)
-		if form.is_valid():
+		editform = EditRegisteredMachineForm(request.POST)
+		if editform.is_valid():
+			info = editform.cleaned_data
+			regmachine = DHCP_machine.objects.get(id = m_id)
+			regmachine.MAC_pair 	= info['mcID']
+			regmachine.IP_pair	= info['ipID']
+			regmachine.PC_pair	= info['pcID']
+			regmachine.description	= info['dscr']
+			regmachine.save()
 			return render_to_response('qmul_dhcp.html', {})
 	else:
-		form = EditRegisteredMachineForm(initial = {})
-		
-	return render_to_response('qmul_dhcp_editmachine.html', {'form':form })
+		regmachine = DHCP_machine.objects.get(id = m_id)		
+		editform = EditRegisteredMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':regmachine.IP_pair, 									'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
+	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
 def dhcp_page_machine_delete(request):
 	return render_to_response('qmul_dhcp_deletemachine.html',{})
@@ -26,8 +38,7 @@ def dhcp_page_machine_view(request, m_id):
 	try:
 		m_id = int(m_id)
 	except ValueError:
-		raise Http404()
-	
+		raise Http404()	
 	regmachine = DHCP_machine.objects.get(id = m_id)
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 	
