@@ -1,0 +1,32 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET Login{% endblock %}
+
+{% block groupname %} - Test Department {% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Login Required</a></h2>
+	</p>
+	<p class="error" >In order to access {{ ProjectName }}, please enter your QMUL college username and password below.</p>
+	
+	<form class="feedbackform">
+		<div class="fieldwrapper">
+			<label for="uname" class="styled">User name:</label>
+			<div class="thefield">
+				<input type="text" id="username" value="" size="30" />
+			</div>
+		</div>
+
+		<div class="fieldwrapper">
+			<label for="IPID" class="styled">IP address:</label>
+			<div class="thefield">
+				<input type="password" id="pword" value="" size="30" /><br />
+			</div>
+		</div>
+	</form>
+		
+{% endblock %}
+
+
+ 	

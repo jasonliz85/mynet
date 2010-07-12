@@ -1,0 +1,391 @@
+<style type="text/css">
+body{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	height: 100%; 
+	max-height: 100%; 
+}
+
+#framecontentLeft, #framecontentTop{
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 350px;/*200px; Width of left frame div*/
+	height: 100%;
+	overflow: hidden; /*Disable scrollbars. Set to "scroll" to enable*/
+	background-color: transparent;
+	font-family: sans-serif;
+	color: black;
+}
+#maincontent{
+	position: absolute;
+	left: 300px;/*200px; Set left value to WidthOfLeftFrameDiv*/
+	top: 99px; /*Set top value to HeightOfTopFrameDiv*/
+	right: 0;
+	bottom: 0;
+	overflow: auto; 
+	background: transparent;
+	color: black;
+	font-family: sans-serif;
+	z-index:-1;
+}
+#framecontentTop{ 
+	left: 0; /*Set left value to WidthOfLeftFrameDiv*/
+	right: 0;
+	width: auto;
+	height: 99px; /*Height of top frame div*/
+	overflow: hidden; /*Disable scrollbars. Set to "scroll" to enable*/
+	background-color: white;
+	color: black;	
+}
+
+#framecontentLeft{
+	top: 99px;
+	background: transparent;
+}
+
+
+
+.innertube{
+	margin: 0px; /*Margins for inner DIV inside each DIV (to provide padding)*/
+}
+
+* html body{ /*IE6 hack*/
+	padding: 120px 0 0 200px; /*Set value to (HeightOfTopFrameDiv 0 0 WidthOfLeftFrameDiv)*/
+}
+
+* html #maincontent{ /*IE6 hack*/
+	height: 100%; 
+	width: 100%; 
+}
+
+* html #framecontentTop{ /*IE6 hack*/
+	width: 100%;
+}
+/***********************************************************************/
+/***********************************************************************/
+/***********************************************************************/
+/* set the height a little larger than the logo */
+div.banner { 
+	height:70px; width:100%; 
+}
+/* some quick links in the top rh corner */
+p.quicklinks {
+	position:absolute;
+	right:3px;
+	top:3px;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	font-size: 80%;
+}
+p.EditDeleteBack {
+	position:absolute;
+	margin-top: 0px;
+	margin-left: 2%;
+	margin-right: 2%;
+}
+/* set the logo in the top lh corner */
+p.logo {
+	position:absolute;
+	left:3px;
+	top:3px;
+	margin-top: 0%;
+	margin-left: 0%;
+	margin-right: 0%;
+}
+/* footer - at the bottom of the page with a line on top */
+p.footer { /* position: absolute;
+	      left:0px;
+	      bottom:2px; */
+	margin-top: 0%;
+	margin-left: 0%;
+	margin-right: 0%;
+	font-size:80%;
+	text-align: center;
+	width:100%;
+	border-style: solid none;
+	border-top-width:3px;
+	border-bottom-width:0px;
+}
+p.lineontop { /* footer - at the bottom of the page with a line on top */
+	padding-top: 8px;
+	margin-top: 0%;
+	margin-left: 0%;
+	margin-right: 0%;
+	text-align: left;
+	text-indent: 2%;
+	width:100%;
+	border-style: solid none;
+	border-top-width:3px;
+	border-bottom-width:0px;
+}
+
+p.lineonbottom { 
+	padding-top: 8px;
+	margin-top: 0%;
+	margin-left: 0%;
+	margin-right: 0%;
+	text-align: left;
+	text-indent: 2%;
+	width:100%;
+	border-style: solid none;
+	border-top-width:0px;
+	border-bottom-width:3px;
+}
+div.line { /* a thin black spacer line */  
+	border-width: thin;
+	height: 3px;
+	background: black;
+	color: white;
+	margin-left: 0%; margin-right: 0%;
+}
+img.center { /* setting the image in the centre */
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+p.error 	{  	color: red; 			}
+a:link 		{ 	color: #0066cc;/*background: white;*/ }
+a:visited 	{	color: #000066;/*background: white;*/ }
+a:active 	{ 	color: #9933ff; /*background: white;*/ }
+p 		{	margin-left: 2%; margin-right: 2%; }
+p.small 	{ 	margin-left: 2%; margin-right: 2%; font-size: 80%; }
+p.small_centered{ 	margin-left: 2%; margin-right: 2%; font-size: 80%; text-align: center; }
+div.p 		{ 	margin-left: 2%; margin-right: 2%; padding-top: 8px;}	
+li 		{	margin-left: 2%; margin-right: 2%; }
+dl 		{ 	margin-left: 4%; margin-right: 2%; }
+dt 		{ 	float: left; clear: left; text-align: right; width: 100px; }
+dt:after	{ 	content: ":"; 	}
+dd 		{ 	margin: 0 0 0 110px; padding: 0 0 2px 0; }
+h2 		{ 	margin-left: 2%; margin-right: 2%; font-size: 115%; }
+h3 		{ 	margin-left: 2%; margin-right: 2%; font-size: 105%; }
+h4,h5,h6 	{ 	margin-left: 2%; margin-right: 2%; font-size: 100%; }
+
+pre { 
+	margin-left: 6%; margin-right: 6%;
+	color: black; 
+	background: white;
+	border: dashed;
+	border-width: thin;
+	font: Verdana,fixed;
+	background: #EEEEEE;
+}
+h1 {  /* headings */
+	border-width: thin;
+	background: #585858; /*CCCCCC*/
+	color: white;
+	text-indent: 2%;
+	margin-left: 0%; margin-right: 0%;
+	margin-top: 0%; margin-bottom: 0%;
+	font-size: 120%;
+	border-style: solid none;
+	border-top-width:3px;
+	border-bottom-width:3px;
+	/*padding: 2px;*/
+	}
+/***********************************************************************/
+/***********************************************************************/
+/***********************************************************************/
+.sidebarmenu ul{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	font: bold 13px Verdana;
+	font-family: sans-serif;
+	width: 180px; /* Main Menu Item widths */
+	border-bottom: 1px solid #ccc;
+}
+ 
+.sidebarmenu ul li		{ 	position: relative; }
+.sidebarmenu ul li a	{/* Top level menu links style */
+	display: block;
+	overflow: auto; /*force hasLayout in IE7 */
+	color: white;
+	text-decoration: none;
+	padding: 7px;
+	border-bottom: 1px solid #778;
+	border-right: 1px solid #778;
+	}
+.sidebarmenu ul li a:link, .sidebarmenu ul li a:visited, .sidebarmenu ul li a:active{
+	background-color: #585858; /*background of tabs (default state)*//*012D58*/
+}	
+.sidebarmenu ul li a:visited	{	color: white;	}
+.sidebarmenu ul li a:hover	{	background-color: black; }
+
+.sidebarmenu ul li ul{/*Sub level menu items */
+	position: absolute;
+	width: 170px; /*Sub Menu Items width */
+	top: 0;
+	visibility: hidden;
+	}
+.sidebarmenu a.subfolderstyle{
+	background: url("../images/right.gif") no-repeat 97% 50%;
+	}
+/* Holly Hack for IE \*/
+* html .sidebarmenu ul li { float: left; height: 1%; }
+* html .sidebarmenu ul li a { height: 1%; }
+/* End */
+/***********************************************************************/
+/***********************************************************************/
+/***********************************************************************/
+.feedbackform{ padding: 2%;
+	}
+.viewbackform{ padding: 2%;
+	}
+
+div.fieldwrapper{ /*field row DIV (includes two columns- Styled label column and 'thefield' column)*/
+	width: 550px; /*width of form rows*/
+	overflow: hidden;
+	padding: 5px 0;
+	}
+
+div.fieldwrapper label.styled{ /* label elements that should be styled (left column within fieldwrapper DIV) */
+	float: left;
+	width: 150px; /*width of label (left column)*/
+	text-transform: uppercase;
+	border-bottom: 1px solid #CCCCCC;/*solid black;*/
+	margin-right: 15px; /*spacing with right column*/
+	}
+
+div.fieldwrapper div.thefield{ /* DIV that wraps around the actual form fields (right column within fieldwrapper DIV) */
+	float: left;
+	margin-bottom: 10px; /* space following the field */
+	}
+
+div.fieldwrapper div.thefield input[type="text"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	width: 150px;
+}
+div.fieldwrapper div.thefield input[type="password"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	width: 150px;
+}	
+
+div.fieldwrapper div.thefield textarea{ /* style for TEXTAREA fields. */
+	width: 300px;
+	height: 150px;
+	}
+
+div.buttonsdiv{ /*div that wraps around the submit/reset buttons*/
+	margin-top: 5px; /*space above buttonsdiv*/
+	}
+
+div.buttonsdiv input{ /* style for INPUT fields within 'buttonsdiv'. Assumed to be form buttons. */
+	width: 80px;
+}
+/***********************************************************************/
+/***********************************************************************/
+/***********************************************************************/
+
+table {
+	border-collapse:collapse;
+	border-color:#CCCCCC;
+	border: 1px solid #DDDDDD;
+}
+td, th {
+	border-bottom:1px solid #EEEEEE;
+	font-family:"Lucida Grande",Verdana,Arial,sans-serif;
+	font-size:100%; /*11px;*/
+	line-height:13px;
+	padding:5px;
+	vertical-align:top;
+}
+th {
+	font-size:100%; /*12px;*/
+	font-weight:bold;
+	text-align:left;
+}
+thead th, tfoot td {
+	background:url("../images/nav-bg.gif") repeat-x scroll left top #E1E1E1;
+	border-bottom:1px solid #DDDDDD;
+	border-left:1px solid #DDDDDD;
+	color:#666666;
+	font-size:100%; /*11px;*/
+	padding:2px 5px;
+}
+tfoot td {
+	border-bottom:medium none;
+	border-top:1px solid #DDDDDD;
+}
+thead th:first-child, tfoot td:first-child { 	border-left:medium none !important; 		}
+thead th.optional { 				font-weight:normal !important;			}
+fieldset table {				border-right:1px solid #EEEEEE; 		}
+tr.row-label td {
+	border-bottom:medium none;
+	color:#666666;
+	font-size: 100%; /*9px;*/
+	margin-top:-1px;
+	padding-bottom:0;
+	padding-top:2px;
+}
+tr.alt { 
+	background:none repeat scroll 0 0 #F6F6F6;
+	border-left:1px solid #DDDDDD;/**/
+}
+.odd{
+	background:none repeat scroll 0 0 #F8F8F8;
+	border-left:1px solid #DDDDDD;/**/
+} /*EDF3FE*/
+.even {	
+	background:none repeat scroll 0 0 white;
+	border-left:1px solid #DDDDDD; /**/
+}
+thead th a:link, thead th a:visited {
+	color:#666666;
+	display:block;
+}
+table thead th.sorted {				background-position:left bottom !important;	}
+table thead th.sorted a {			padding-right:13px;				}
+table thead th.ascending a {
+	background:url("../images/arrow-down.gif") no-repeat scroll right 0.4em transparent;
+}
+table thead th.descending a {
+	background:url("../images/arrow-up.gif") no-repeat scroll right 0.4em transparent;
+}
+table.orderable tbody tr td:hover {		cursor:move;					}
+table.orderable tbody tr td:first-child {
+	background-image:url("../images/nav-bg-grabber.gif");
+	background-repeat:repeat-y;
+	padding-left:14px;
+	border-left:1px solid #DDDDDD; /**/
+}
+table.orderable-initalized .order-cell, body > tr > td.order-cell {
+	display:none;
+}
+/***********************************************************************/
+/***********************************************************************/
+/***********************************************************************/
+#changelist table input {
+margin:0;
+}
+#changelist table tbody tr.selected {
+background-color:#FFFFCC;
+}
+#changelist .actions {
+background:url("../img/admin/nav-bg-reverse.gif") repeat-x scroll 0 -10px white;
+border-bottom:1px solid #DDDDDD;
+border-top:1px solid #FFFFFF;
+color:#999999;
+padding:3px;
+}
+#changelist .actions:last-child {
+border-bottom:medium none;
+}
+#changelist .actions select {
+border:1px solid #AAAAAA;
+margin-left:0.5em;
+padding:1px 2px;
+}
+#changelist .actions label {
+font-size:11px;
+margin-left:0.5em;
+}
+#changelist #action-toggle {
+display:none;
+}
+#changelist .actions .button {
+font-size:11px;
+padding:1px 2px;
+}
+</style>
+

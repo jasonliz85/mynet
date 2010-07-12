@@ -1,0 +1,60 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DHCP Registered Machines{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Registered Machines</a></h2>
+	<p> This page shows all the registered machines on this network. </p>
+	<form method="post" class = viewbackform action="">	
+		<div class="actions">
+			<label>Action: 
+				<select name="action">
+					<option selected="selected" value=""> </option>
+					<option value="delete_selected">Delete Selected</option>
+					<option value="edit_selected">Edit Selected</option>
+				</select>
+			</label>
+			<button value="0" name="index" title="Run the selected action" class="button" type="submit">Go</button>
+		</div>  
+		<br>
+		<table cellspacing="0">
+		<thead>
+			<tr>
+			<th>
+			<input type="checkbox" id="action-toggle" style="display: inline;">
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=1">No.</a>
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=1">MAC Address</a>
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=2"> IP Address </a>
+			</th>
+			<th> 
+				<a href="?ot=asc&amp;o=3"> PC Name </a>
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=4"> Time Created	</a>
+			</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for machinelist in machinelists %}
+			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
+				<td><input type="checkbox" name="_selected_action" value="2" class="actionselect"></td>
+				<td>{{ forloop.counter }}</td>
+				<th><a href="/dhcp/machine/{{machinelist.id}}">{{ machinelist.MAC_pair }}</a></th>
+				<td>{{ machinelist.IP_pair }}</td>
+				<td>{{ machinelist.PC_pair }}</td>
+				<td class="nowrap">{{ machinelist.time_created}}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+      </form>
+      
+		
+{% endblock %}

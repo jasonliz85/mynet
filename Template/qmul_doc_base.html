@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html lang="en">
+	<script type="text/javascript">
+	//Nested Side Bar Menu (Mar 20th, 09)
+	//By Dynamic Drive: http://www.dynamicdrive.com/style/
+	var menuids=["sidebarmenu1"] //Enter id(s) of each Side Bar Menu's main UL, separated by commas
+	
+	function initsidebarmenu(){
+		for (var i=0; i<menuids.length; i++){
+			var ultags=document.getElementById(menuids[i]).getElementsByTagName("ul")
+			for (var t=0; t<ultags.length; t++){
+				ultags[t].parentNode.getElementsByTagName("a")[0].className+=" subfolderstyle"
+				if (ultags[t].parentNode.parentNode.id==menuids[i]) //if this is a first level submenu
+					ultags[t].style.left=ultags[t].parentNode.offsetWidth+"px" //dynamically position first level submenus to be width of main menu item
+				else //else if this is a sub level submenu (ul)
+					ultags[t].style.left=ultags[t-1].getElementsByTagName("a")[0].offsetWidth+"px" //position menu to the right of menu item that activated it
+					ultags[t].parentNode.onmouseover=function(){
+						this.getElementsByTagName("ul")[0].style.display="block"
+					}
+					ultags[t].parentNode.onmouseout=function(){
+						this.getElementsByTagName("ul")[0].style.display="none"
+					}
+			}
+			for (var t=ultags.length-1; t>-1; t--){ //loop through all sub menus again, and use "display:none" to hide menus (to prevent possible page scrollbars
+				ultags[t].style.visibility="visible"
+				ultags[t].style.display="none"
+			}
+		}
+	}
+
+	if (window.addEventListener)
+		window.addEventListener("load", initsidebarmenu, false)
+	else if (window.attachEvent)
+		window.attachEvent("onload", initsidebarmenu)
+
+	</script>
+	<head>
+	    <title>{% block title %}{% endblock %}</title>
+	    <link rel="stylesheet" type="text/css" href="/site_media/css/qmul_document.css" />
+	</head>
+	
+	<body>	
+		<div id="framecontentLeft">
+			<div class="innertube">
+				<div class="sidebarmenu">
+					<ul id="sidebarmenu1">
+					<li><a href="/">Home</a></li>
+					<li><a href="/dns">DNS</a>
+						<ul>
+						<li><a href="#">Add Pair</a></li>
+						<li><a href="#">View</a></li>
+						</ul>
+					</li>
+					<li><a href="/dhcp">DHCP</a>
+						<ul>
+						<li><a href="/dhcp/registeredmachines">View Registered Machines</a></li>
+						<li><a href="/dhcp/registermachine">Register a Machine</a></li>
+						<li><a href="#">Set IP Range</a></li>
+						</ul>
+					</li>
+					<li><a href="#">Import/Export</a></li>
+					<li><a href="#">Logout</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="framecontentTop">
+			<div class="innertube">	
+			<div class="banner">
+				<p class="logo">
+					<a href="http://www.qmul.ac.uk/">
+						<img src="/site_media/images/qm_logo.gif" alt="Queen Mary, University of London" border="0" height="62">
+					</a>
+				</p>
+				<p class="quicklinks">
+				{% block sidebar %}
+					<a href="/">Home</a> | 
+					<a href="/dns">DNS</a> | 
+					<a href="/dhcp">DHCP</a> | 
+					<a href="#upexp">Upload/Export</a> |
+					<a href="#logout">Logout</a> 
+				{% endblock %}
+				</p>
+			</div>
+			<h1 class="title">MyNET {% block groupname %} {% endblock %} </h1>		
+			</div>
+		</div>
+		<div id="maincontent">
+			<div class="innertube">
+			{% block content %}
+			{% endblock %}
+			{% block footer %}
+			{% endblock %}			
+			</div>
+		</div>					
+	</body>
+</html>
