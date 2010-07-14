@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response
 #from django.core.validators import ValidationError, NON_FIELD_ERRORS
 from django.http import HttpResponse
 from mynet.AccessControl.models import DHCP_machine, test_machine
-from mynet.AccessControl.forms import RegisterMachineForm, EditRegisteredMachineForm
+from mynet.AccessControl.forms import RegisterMachineForm, EditRegisteredMachineForm, DeleteRegisteredMachineForm
 import datetime
 
 def dhcp_page_listings(request):
@@ -31,8 +31,32 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = EditRegisteredMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':regmachine.IP_pair, 									'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
-def dhcp_page_machine_delete(request):
-	return render_to_response('qmul_dhcp_deletemachine.html',{})
+def dhcp_page_machine_delete_multiple(request):	
+	if request.method == 'POST':
+		deleteForm = DeleteRegisteredMachineForm(request.POST)
+		if form.isvalid():
+			info = deleteForm.cleaned_data
+			now = datetime.datetime.today()
+			mDelete = DHCP_machine.objects.get(id = info['machine_id'])
+			#mDelete = DHCP_machine(time_deleted = now)
+			#mDelete.delete()
+			return render_to_response('qmul_dhcp_deletemachine.html',{'form':deleteForm})
+	else:
+		deleteForm = DeleteRegisteredMachineForm(initial = {})
+		return render_to_response('qmul_dhcp_deletemachine.html',{'form':deleteForm})
+
+def dhcp_page_machine_delete_single(request, m_id):
+	try:
+		m_id = int(m_id)
+	except ValueError:
+		raise Http404()		
+	now = datetime.datetime.today()
+	mDelete = []
+	mDelete.append(DHCP_machine.objects.get(id = m_id))
+	#mDelete.append(DHCP_machine.objects.get(id = 2))	
+	#mDelete = DHCP_machine(time_deleted = now)
+	#mDelete.delete()
+	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
 
 def dhcp_page_machine_view(request, m_id):
 	try:

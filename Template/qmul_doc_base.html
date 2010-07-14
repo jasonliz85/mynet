@@ -27,12 +27,22 @@
 			}
 		}
 	}
+	
+	function ConfirmDelete() {
+		if (confirm("Are you sure you want to delete this machine?")) {
+		document.bgColor = (document.bgColor == "#000000") ? "#cccccc" : "#000000";
+		document.forma.texta.value = "";
+		setTimeout("document.forma.texta.value = 'Click Greetings button again to turn on the lights - Bart';", 3000);
+		} 
+		else { }
+	}
 
 	if (window.addEventListener)
 		window.addEventListener("load", initsidebarmenu, false)
 	else if (window.attachEvent)
 		window.attachEvent("onload", initsidebarmenu)
-
+	
+	
 	</script>
 	<head>
 	    <title>{% block title %}{% endblock %}</title>

@@ -21,7 +21,7 @@ body{
 }
 #maincontent{
 	position: absolute;
-	left: 300px;/*200px; Set left value to WidthOfLeftFrameDiv*/
+	left: 350px;/*200px; Set left value to WidthOfLeftFrameDiv*/
 	top: 99px; /*Set top value to HeightOfTopFrameDiv*/
 	right: 0;
 	bottom: 0;

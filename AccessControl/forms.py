@@ -18,4 +18,10 @@ class EditRegisteredMachineForm(forms.Form):
 	ipID = forms.IPAddressField(label = 'IP Address')
 	pcID = forms.CharField(max_length=15, label = 'PC Name')
 	dscr = forms.CharField(required=False, widget = forms.Textarea, label = 'Description')
+	
+class DeleteRegisteredMachineForm(forms.Form):
+	machine_ID = forms.IntegerField()
+	mcID = forms.CharField(max_length=12, min_length=5, label = 'MAC Address')
+	ipID = forms.IPAddressField(label = 'IP Address')
+	
 

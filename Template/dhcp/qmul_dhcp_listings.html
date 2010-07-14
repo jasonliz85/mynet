@@ -44,12 +44,12 @@
 		<tbody>
 		{% for machinelist in machinelists %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
-				<td><input type="checkbox" name="_selected_action" value="2" class="actionselect"></td>
+				<td><input type="checkbox" name="_selected_action" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
-				<th><a href="/dhcp/machine/{{machinelist.id}}">{{ machinelist.MAC_pair }}</a></th>
+				<th><a href="/dhcp/viewmachine/{{machinelist.id}}">{{ machinelist.MAC_pair }}</a></th>
 				<td>{{ machinelist.IP_pair }}</td>
 				<td>{{ machinelist.PC_pair }}</td>
-				<td class="nowrap">{{ machinelist.time_created}}</td>
+				<td class="nowrap">{{ machinelist.time_created }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

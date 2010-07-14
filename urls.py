@@ -26,9 +26,10 @@ urlpatterns = patterns('',
 	(r'^dhcp/registeredmachines$', views.dhcp_page_listings), 	#dhcp - registered machine listings
 	#CRUD Registered Machine- Create, Read, Update, Destroy
 	(r'^dhcp/registermachine$', views.dhcp_page_machine_add),	#dhcp - register a machine
-	(r'^dhcp/machine/(\d{1,3})/$', views.dhcp_page_machine_view),	#dhcp - view individual machine
+	(r'^dhcp/viewmachine/(\d{1,3})/$', views.dhcp_page_machine_view),	#dhcp - view individual machine
 	(r'^dhcp/editmachine/(\d{1,3})/$', views.dhcp_page_machine_edit),	#dhcp - edit an existing machine record
-	(r'^dhcp/deletemachine$', views.dhcp_page_machine_delete), 	#dhcp - delete an existing machine records	
+	(r'^dhcp/deletemachine/(\d{1,3})/$', views.dhcp_page_machine_delete_single), 	#dhcp - delete existing machine record (single)
+	(r'^dhcp/deletemachine/$', views.dhcp_page_machine_delete_multiple), 	#dhcp - delete existing machine record (multiple)
 	
 	#####################################################
 	##################Admin Pages########################

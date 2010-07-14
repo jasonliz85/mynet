@@ -4,6 +4,24 @@
 
 {% block content %}
 
-	<h2><a name="status">Machine Deleted</a></h2>
-		
+	<h2><a name="status">Delete Registered Machine</a></h2>
+	<p> Deleted machine{{machines|pluralize}} displayed below:<p> </br>
+
+	{% if not machines %}
+		<p class="error"> An Error has occured, could not delete record.</p>
+	{% else %}
+		{% for machine in machines %}
+				<p><li>Machine ID: {{machine.id}}, MAC/IP: {{machine.MAC_pair}} - {{machine.IP_pair}} </li></p>
+		{% endfor %}	
+	{% endif %}
+	<br></br>
+	<br></br>
+	<br></br>
+	<br></br>
+	<p class = "EditDeleteBack"> 
+		<a href="/dhcp/registeredmachines"> Back<a> 
+	</p>
 {% endblock %}
+	<! <p class="error" {{form.as_p}} </p>
+	
+
