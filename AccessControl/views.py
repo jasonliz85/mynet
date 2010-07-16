@@ -1,8 +1,9 @@
 from django.shortcuts import render_to_response
 #from django.core.validators import ValidationError, NON_FIELD_ERRORS
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import DHCP_machine, test_machine
-from mynet.AccessControl.forms import RegisterMachineForm, EditRegisteredMachineForm, DeleteRegisteredMachineForm
+from mynet.AccessControl.forms import RegisterMachineForm, EditRegisteredMachineForm, ViewMachinesActionForm, ViewMachinesForm
+from django.forms.formsets import formset_factory
 import datetime
 
 def dhcp_page_listings(request):
@@ -13,8 +14,7 @@ def dhcp_page_machine_edit(request, m_id):
 	try:
 		m_id = int(m_id)
 	except ValueError:
-		raise Http404()
-	
+		raise Http404()	
 	if request.method == 'POST':
 		editform = EditRegisteredMachineForm(request.POST)
 		if editform.is_valid():
@@ -31,19 +31,57 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = EditRegisteredMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':regmachine.IP_pair, 									'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
-def dhcp_page_machine_delete_multiple(request):	
+def dhcp_page_list_machines(request):
+	ViewMachinesFormSet = formset_factory(ViewMachinesForm)
 	if request.method == 'POST':
-		deleteForm = DeleteRegisteredMachineForm(request.POST)
-		if form.isvalid():
-			info = deleteForm.cleaned_data
-			now = datetime.datetime.today()
-			mDelete = DHCP_machine.objects.get(id = info['machine_id'])
-			#mDelete = DHCP_machine(time_deleted = now)
-			#mDelete.delete()
-			return render_to_response('qmul_dhcp_deletemachine.html',{'form':deleteForm})
+		mDelete = []
+		return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
 	else:
-		deleteForm = DeleteRegisteredMachineForm(initial = {})
-		return render_to_response('qmul_dhcp_deletemachine.html',{'form':deleteForm})
+		now = datetime.datetime.today()
+		regmachine =  DHCP_machine.objects.all().order_by("IP_pair")
+		m_form = ViewMachinesFormSet( {		'form-TOTAL_FORMS': u'1',
+							'form-INITIAL_FORMS': u'0',
+							'form-MAX_NUM_FORMS': u'',
+							'form-0-mcID':		'AABBCCDDEEFF',#regmachine.MAC_pair,
+							'form-0-ipID':		'192.168.0.0',#regmachine.IP_pair,
+							'form-0-pcID':		'asdasd',#regmachine.PC_pair,
+							'form-0-date_created':	now #regmachine.date_created
+						})
+		if m_form.is_valid():
+			status = 'yes'
+		else:
+			status = 'no'
+		return render_to_response('qmul_dhcp_listings.html',{'formset': m_form, 'mc':status })
+
+def dhcp_page_machine_delete_multiple(request):	
+	registeredmachines =  DHCP_machine.objects.all().order_by("IP_pair")
+	if request.method == 'POST':
+		actionForm = ViewMachinesActionForm(request.POST)		
+		action = request.POST['status']
+		if actionForm.is_valid():
+			item_selected = request.POST.getlist('cbox_id')
+			if item_selected:			
+				if action == 'del':
+					mDelete = []
+					for item in item_selected:		
+						mDelete.append(DHCP_machine.objects.get(id = item))
+					return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
+				elif action == 'vue':
+					if len(item_selected) > 1:
+						actionForm = ViewMachinesActionForm(initial = {})
+						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : registeredmachines })
+					else:
+						regmachine = DHCP_machine.objects.get(id = item_selected[0])
+						return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
+				else:
+					actionForm = ViewMachinesActionForm(initial = {})
+					return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines })	
+			else:		
+				actionForm = ViewMachinesActionForm(initial = {})
+				return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines })	
+	else:
+		actionForm = ViewMachinesActionForm(initial = {})
+		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines})
 
 def dhcp_page_machine_delete_single(request, m_id):
 	try:
@@ -52,8 +90,7 @@ def dhcp_page_machine_delete_single(request, m_id):
 		raise Http404()		
 	now = datetime.datetime.today()
 	mDelete = []
-	mDelete.append(DHCP_machine.objects.get(id = m_id))
-	#mDelete.append(DHCP_machine.objects.get(id = 2))	
+	mDelete.append(DHCP_machine.objects.get(id = m_id))	
 	#mDelete = DHCP_machine(time_deleted = now)
 	#mDelete.delete()
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})

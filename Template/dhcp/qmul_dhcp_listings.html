@@ -1,31 +1,56 @@
 {% extends "qmul_doc_base.html" %}
 
 {% block title %}MyNET DHCP Registered Machines{% endblock %}
-
+{% block script %}
+<script language="javascript">
+	function checkAll(){
+		for (var i=0;i<document.forms[0].elements.length;i++)
+		{
+			var e=document.forms[0].elements[i];
+			if ((e.name != 'allbox') && (e.type=='checkbox'))
+			{
+				e.checked=document.forms[0].allbox.checked;
+			}
+		}
+	}
+	function actionCheck(){
+		var a = document.forms[0].status;
+		if( a.selectedIndex == 1) {
+			return confirm('Are you sure you want to delete these registered machines?');
+		}
+	}
+</script>
+{% endblock %}
 {% block content %}
+	
 
 	<h2><a name="status">Registered Machines</a></h2>
 	<p> This page shows all the registered machines on this network. </p>
+	{% if form.errors %}
+		<p class="error"> Please correct the following error{{ form.errors|pluralize }}:</p>
+		<ul>
+	        {% for error in form.errors %}
+			<li>{{ error }}</li>
+	        {% endfor %}
+	        </ul>
+	{% endif %}
 	<form method="post" class = viewbackform action="">	
 		<div class="actions">
+			
 			<label>Action: 
-				<select name="action">
-					<option selected="selected" value=""> </option>
-					<option value="delete_selected">Delete Selected</option>
-					<option value="edit_selected">Edit Selected</option>
-				</select>
+				{{form.status}}
 			</label>
-			<button value="0" name="index" title="Run the selected action" class="button" type="submit">Go</button>
+			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete these registered machines?');" title="Run the selected action" class="button" type="submit" >Go</button>
 		</div>  
 		<br>
 		<table cellspacing="0">
 		<thead>
 			<tr>
 			<th>
-			<input type="checkbox" id="action-toggle" style="display: inline;">
+			<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
 			</th>
 			<th>
-				<a href="?ot=asc&amp;o=1">No.</a>
+				<a>No.</a>
 			</th>
 			<th>
 				<a href="?ot=asc&amp;o=1">MAC Address</a>
@@ -44,16 +69,19 @@
 		<tbody>
 		{% for machinelist in machinelists %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
-				<td><input type="checkbox" name="_selected_action" value="{{machinelist.id}}" class="action-select"></td>
+				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
-				<th><a href="/dhcp/viewmachine/{{machinelist.id}}">{{ machinelist.MAC_pair }}</a></th>
-				<td>{{ machinelist.IP_pair }}</td>
+				<th><a href="/dhcp/viewmachine/{{machinelist.id}}"> {{ machinelist.MAC_pair }} </a></th>
+				<td name="IP">{{ machinelist.IP_pair }}</td>
 				<td>{{ machinelist.PC_pair }}</td>
 				<td class="nowrap">{{ machinelist.time_created }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 		</table>
+		<!<input type="checkbox" name="_selected_action" value="{{machinelist.id}}" class="action-select">
+		<!td{{form.cc_myself.html_name}}</td>
+
       </form>
       
 		
