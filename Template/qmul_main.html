@@ -2,13 +2,14 @@
 
 {% block title %}MyNET Home Page{% endblock %}
 
-{% block groupname %} - Test Department {% endblock %}
+{% block groupname %} {{ userInfo.group_list }} {% endblock %}
 
 {% block content %}
 
 	<h2><a name="status">Overview</a></h2>
 	</p>
-	<p> Below summaries the state of the network </p>
+	<p> Hello {{ userInfo.first_name }} {{ userInfo.last_name }}, </p>
+	
 	
 	<table align="center" border="1">
 	<tbody><tr><td>Future planned downtime:</td><td><a href="NetworkPlannedDowntime.html#future">Future</a></td></tr>

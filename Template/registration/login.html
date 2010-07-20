@@ -1,0 +1,39 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET Login{% endblock %}
+
+{% block groupname %} {% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Login Required</a></h2>
+	</p>
+	<p>In order to access {{ ProjectName }}, please enter your QMUL college username and password below.</p>
+	{% if form.errors %}
+		<p class="error">Sorry, that's not a valid username or password</p>
+	{% endif %}
+	
+	<form class="feedbackform" method="post" action = "">
+		<div class="fieldwrapper">
+		<label for="username" class="styled">User name:</label>
+		<div class="thefield">
+			<input type="text" id="username" name="username" value="" size="30" />
+		</div>
+		</div>
+		<div class="fieldwrapper">
+		<label for="password" class="styled">Password:</label>
+		<div class="thefield">
+			<input type="password" name="password" id="password" value="" size="30" /><br />
+		</div>
+		</div>
+		<div class="thefield">
+			<input type="submit" value="login" />
+		</div>
+		<input type="hidden" name="next" value="{{ next|escape }}" />
+	</form>
+	
+		
+{% endblock %}
+
+
+ 	

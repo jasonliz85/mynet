@@ -1,15 +1,17 @@
 from django.shortcuts import render_to_response
-#from django.core.validators import ValidationError, NON_FIELD_ERRORS
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import DHCP_machine, test_machine
 from mynet.AccessControl.forms import RegisterMachineForm, EditRegisteredMachineForm, ViewMachinesActionForm, ViewMachinesForm
 from django.forms.formsets import formset_factory
 import datetime
 
+@login_required
 def dhcp_page_listings(request):
 	registeredmachines =  DHCP_machine.objects.all().order_by("IP_pair")
 	return render_to_response('qmul_dhcp_listings.html', {'machinelists' : registeredmachines, 'viewmachine' : 'qmul_dhcp_viewmachine.html' })	
-	
+
+@login_required	
 def dhcp_page_machine_edit(request, m_id):
 	try:
 		m_id = int(m_id)
@@ -31,6 +33,7 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = EditRegisteredMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':regmachine.IP_pair, 									'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
+@login_required
 def dhcp_page_list_machines(request):
 	ViewMachinesFormSet = formset_factory(ViewMachinesForm)
 	if request.method == 'POST':
@@ -53,6 +56,7 @@ def dhcp_page_list_machines(request):
 			status = 'no'
 		return render_to_response('qmul_dhcp_listings.html',{'formset': m_form, 'mc':status })
 
+@login_required
 def dhcp_page_machine_delete_multiple(request):	
 	registeredmachines =  DHCP_machine.objects.all().order_by("IP_pair")
 	if request.method == 'POST':
@@ -83,6 +87,7 @@ def dhcp_page_machine_delete_multiple(request):
 		actionForm = ViewMachinesActionForm(initial = {})
 		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines})
 
+@login_required
 def dhcp_page_machine_delete_single(request, m_id):
 	try:
 		m_id = int(m_id)
@@ -95,6 +100,7 @@ def dhcp_page_machine_delete_single(request, m_id):
 	#mDelete.delete()
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
 
+@login_required
 def dhcp_page_machine_view(request, m_id):
 	try:
 		m_id = int(m_id)
@@ -102,7 +108,8 @@ def dhcp_page_machine_view(request, m_id):
 		raise Http404()	
 	regmachine = DHCP_machine.objects.get(id = m_id)
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
-	
+
+@login_required	
 def dhcp_page_machine_add(request):
 	if request.method == 'POST':
 		form = RegisterMachineForm(request.POST)
