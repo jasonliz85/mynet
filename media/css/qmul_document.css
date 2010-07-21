@@ -12,7 +12,7 @@ body{
 	position: absolute; 
 	top: 0; 
 	left: 0; 
-	width: 350px;/*200px; Width of left frame div*/
+	width: 500px;/*200px; Width of left frame div*/
 	height: 100%;
 	overflow: hidden; /*Disable scrollbars. Set to "scroll" to enable*/
 	background-color: transparent;
@@ -22,7 +22,7 @@ body{
 #maincontent{
 	position: absolute;
 	left: 350px;/*200px; Set left value to WidthOfLeftFrameDiv*/
-	top: 99px; /*Set top value to HeightOfTopFrameDiv*/
+	top: 100px; /*Set top value to HeightOfTopFrameDiv*/
 	right: 0;
 	bottom: 0;
 	overflow: auto; 
@@ -156,7 +156,7 @@ p 		{	margin-left: 2%; margin-right: 2%; }
 p.small 	{ 	margin-left: 2%; margin-right: 2%; font-size: 80%; }
 p.small_centered{ 	margin-left: 2%; margin-right: 2%; font-size: 80%; text-align: center; }
 div.p 		{ 	margin-left: 2%; margin-right: 2%; padding-top: 8px;}	
-li 		{	margin-left: 2%; margin-right: 2%; }
+li 		{	margin-left: 0%; margin-right: 0%; }
 dl 		{ 	margin-left: 4%; margin-right: 2%; }
 dt 		{ 	float: left; clear: left; text-align: right; width: 100px; }
 dt:after	{ 	content: ":"; 	}
@@ -179,13 +179,13 @@ h1 {  /* headings */
 	background: #585858; /*CCCCCC*/
 	color: white;
 	text-indent: 2%;
-	margin-left: 0%; margin-right: 0%;
-	margin-top: 0%; margin-bottom: 0%;
+	margin: 0;
 	font-size: 120%;
+	border-color:  #585858;
 	border-style: solid none;
 	border-top-width:3px;
 	border-bottom-width:3px;
-	/*padding: 2px;*/
+	padding: 0px;
 	}
 /***********************************************************************/
 /***********************************************************************/
@@ -198,6 +198,7 @@ h1 {  /* headings */
 	font-family: sans-serif;
 	width: 180px; /* Main Menu Item widths */
 	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #778;
 }
  
 .sidebarmenu ul li		{ 	position: relative; }

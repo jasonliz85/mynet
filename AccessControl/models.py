@@ -10,12 +10,14 @@ class test_machine(models.Model):
 		
 class DNS_names(models.Model):							#DNS NAMING MODEL
 	DNS_expression 	= models.CharField('DNS name',max_length = 30)		#DNS name regular expression
+	is_active 	= models.BooleanField()					#DNS reg active
+	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6
 	time_created 	= models.DateTimeField()				#DNS name creation time
 	time_deleted 	= models.DateTimeField(blank=True, null=True)		#DNS name deletion time
 	time_modified	= models.DateTimeField(blank=True, null=True)		#DNS name registration deletion time
 	description 	= models.TextField(blank=True, null=True)		#DNS name description
 	def __unicode__(self):
-		return u'%s-%s-%s' % (self.DNS_expression, self.time_created)
+		return u'%s-%s-%s' % (self.DNS_expression, self.is_active, self.time_created)
 
 class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	MAC_pair	= models.CharField('MAC Address',max_length = 12)	#DHCP MAC address 
@@ -26,8 +28,20 @@ class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	description 	= models.TextField(blank=True, null=True)		#DHCP machine description of machine (optional)
 	#to add date_modified
 	#to add global_machine_number unique ??
-	#to add belongs_to_group
+	#to add belongs_to_group ??
+	#to add active
+	#to add bool_is_IPv6
 	def __unicode__(self):
 		return u'%s-%s-%s %s, %s' % (self.MAC_pair, self.IP_pair, self.PC_pair, self.time_created, self.time_deleted )
 
+class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
+	IP_pool		= models.CharField('IP Range', max_length = 40 )	#DHCP address range
+	is_active 	= models.BooleanField()					#DHCP IP pool activation
+	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
+	time_created 	= models.DateTimeField()				#DHCP time IP pool creation time
+	time_deleted 	= models.DateTimeField(blank=True, null=True)		#DHCP time IP pool deletion time
+	time_modified 	= models.DateTimeField(blank=True, null=True)		#DHCP time IP pool modification time
+	description 	= models.TextField(blank=True, null=True)		#DHCP IP pool description
+	def __unicode__(self):
+		return u'%s %s %s %s' % (self.IP_pool, self.is_active, self.time_created, self.time_deleted )
 

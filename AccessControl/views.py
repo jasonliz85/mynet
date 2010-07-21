@@ -4,13 +4,49 @@ from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import DHCP_machine, test_machine
 from mynet.AccessControl.forms import RegisterMachineForm, EditRegisteredMachineForm, ViewMachinesActionForm, ViewMachinesForm
 from django.forms.formsets import formset_factory
+from IPy import IP
 import datetime
 
+#################################################################################
+####################### DHCP IP Pool ############################################
+#################################################################################
+
+#Add a IP range to the DHCP IP pool model
+@login_required
+def dhcp_page_IP_range_add(request):
+	return render_to_response('qmul_dhcp_create_IP_range.html',{})
+
+#Viw a single IP range record on the DHCP IP pool model
+@login_required
+def dhcp_page_IP_range_view(request):
+	return render_to_response('qmul_dhcp_view_IP_range.html',{})
+
+#Delete a single IP range on the DHCP IP pool model
+@login_required
+def dhcp_page_IP_range_delete(request):
+	return render_to_response('qmul_dhcp_delete_IP_range.html',{})
+
+#Edit a single IP range to the DHCP IP pool model
+@login_required
+def dhcp_page_IP_range_edit(request):
+	return render_to_response('qmul_dhcp_edit_IP_range.html',{})
+
+#List all IP range records in the DHCP IP pool model
+@login_required
+def dhcp_page_IP_range_listing(request):
+	return render_to_response('qmul_dhcp_listings_IP_range.html',{})
+
+#################################################################################
+####################### DHCP Machine Registration ###############################
+#################################################################################
+	
+#
 @login_required
 def dhcp_page_listings(request):
 	registeredmachines =  DHCP_machine.objects.all().order_by("IP_pair")
 	return render_to_response('qmul_dhcp_listings.html', {'machinelists' : registeredmachines, 'viewmachine' : 'qmul_dhcp_viewmachine.html' })	
 
+#Edit DHCP machine registered records 
 @login_required	
 def dhcp_page_machine_edit(request, m_id):
 	try:
@@ -33,6 +69,7 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = EditRegisteredMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':regmachine.IP_pair, 									'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
+#
 @login_required
 def dhcp_page_list_machines(request):
 	ViewMachinesFormSet = formset_factory(ViewMachinesForm)
@@ -56,6 +93,7 @@ def dhcp_page_list_machines(request):
 			status = 'no'
 		return render_to_response('qmul_dhcp_listings.html',{'formset': m_form, 'mc':status })
 
+#
 @login_required
 def dhcp_page_machine_delete_multiple(request):	
 	registeredmachines =  DHCP_machine.objects.all().order_by("IP_pair")
@@ -87,6 +125,7 @@ def dhcp_page_machine_delete_multiple(request):
 		actionForm = ViewMachinesActionForm(initial = {})
 		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines})
 
+#Delete a single record in the DHCP registration model
 @login_required
 def dhcp_page_machine_delete_single(request, m_id):
 	try:
@@ -100,6 +139,7 @@ def dhcp_page_machine_delete_single(request, m_id):
 	#mDelete.delete()
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
 
+#View a single registered machine in the DHCP model
 @login_required
 def dhcp_page_machine_view(request, m_id):
 	try:
@@ -109,6 +149,7 @@ def dhcp_page_machine_view(request, m_id):
 	regmachine = DHCP_machine.objects.get(id = m_id)
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 
+#Add a machine to the DHCP registration model
 @login_required	
 def dhcp_page_machine_add(request):
 	if request.method == 'POST':

@@ -4,6 +4,7 @@ from django.template import Context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from IPy import IP
 import datetime
 
 def login(request):
@@ -27,15 +28,19 @@ def home(request):
 	userInfo["first_name"] = request.user.first_name
 	userInfo["last_name"] = request.user.last_name
 	userInfo["group_list"] = request.user.groups.all()
-	return render_to_response('qmul_main.html', {'userInfo':userInfo})
-
-def dns_page(request):
-	return render_to_response('qmul_dns.html', {})
-
-def dns_page_addname(request):
-	return render_to_response('qmul_dns_addname.html', {})
+	return render_to_response('qmul_main.html', {'userInfo': userInfo})
+@login_required
+def history(request):
+	historyMessage = {}
+	#historyMessage["message"] = request.user.message_get.all() try actions
+	return render_to_response('qmul_history.html', {"hMessage": historyMessage})
 @login_required
 def dhcp_page(request):
 	return render_to_response('qmul_dhcp.html', {})
+def dns_page(request):
+	return render_to_response('qmul_dns.html', {})
+def dns_page_addname(request):
+	return render_to_response('qmul_dns_addname.html', {})
+
 
 

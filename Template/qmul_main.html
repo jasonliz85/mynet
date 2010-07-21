@@ -2,7 +2,7 @@
 
 {% block title %}MyNET Home Page{% endblock %}
 
-{% block groupname %} {{ userInfo.group_list }} {% endblock %}
+{% block groupname %}  {% endblock %}
 
 {% block content %}
 
@@ -10,17 +10,18 @@
 	</p>
 	<p> Hello {{ userInfo.first_name }} {{ userInfo.last_name }}, </p>
 	
+	<p>You belong to the folowing groups:</p>
+	<p> {{ userInfo.group_list }} </p>
 	
+
+	<h3><a>Network Details</a></h3>
+	<p>Here contains the details of all the network configuration details.</p>
 	<table align="center" border="1">
 	<tbody><tr><td>Future planned downtime:</td><td><a href="NetworkPlannedDowntime.html#future">Future</a></td></tr>
 	<tr><td>History of planned downtime:</td><td><a href="NetworkPlannedDowntime.html#history">History</a></td></tr>
 	<tr><td>History of major network issues:</td><td><a href="NetworkIssueHistory.html">History</a></td></tr>
 	<tr><td>History of major IT Security issues:</td><td><a href="ITSecurityIssueHistory.html">History</a></td></tr>
 	</tbody></table>
-
-	<h3><a>Network Details</a></h3>
-	<p>Here contains the details of all the network configuration details.</p>
-	
 		
 {% endblock %}
 

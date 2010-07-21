@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 	('^$', 'mynet.views.home'),
 	#('^login/$', 'mynet.views.login'),
 	(r'^home/$','mynet.views.home'),
+	(r'^history/$','mynet.views.history'),
 	
 	#####################################################
 	##################DNS Pages##########################
@@ -41,11 +42,5 @@ urlpatterns = patterns('',
 	(r'^accounts/login/$', login),
 	#(r'^login/accounts/login/?next=$', login_redirect),
 	(r'^accounts/logout/$', logout),
-	
-	
-	#####################################################
-	#####################################################
-	#####################################################
-
 	
 )
