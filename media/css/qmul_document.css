@@ -12,7 +12,7 @@ body{
 	position: absolute; 
 	top: 0; 
 	left: 0; 
-	width: 500px;/*200px; Width of left frame div*/
+	width: 180px;/*200px; Width of left frame div*/
 	height: 100%;
 	overflow: hidden; /*Disable scrollbars. Set to "scroll" to enable*/
 	background-color: transparent;
@@ -21,7 +21,7 @@ body{
 }
 #maincontent{
 	position: absolute;
-	left: 350px;/*200px; Set left value to WidthOfLeftFrameDiv*/
+	left: 180px;/*200px; Set left value to WidthOfLeftFrameDiv*/
 	top: 100px; /*Set top value to HeightOfTopFrameDiv*/
 	right: 0;
 	bottom: 0;
@@ -31,6 +31,7 @@ body{
 	font-family: sans-serif;
 	z-index:-1;
 }
+
 #framecontentTop{ 
 	left: 0; /*Set left value to WidthOfLeftFrameDiv*/
 	right: 0;
@@ -44,9 +45,9 @@ body{
 #framecontentLeft{
 	top: 99px;
 	background: transparent;
+	z-index: 1001;
+	overflow: visible; 
 }
-
-
 
 .innertube{
 	margin: 0px; /*Margins for inner DIV inside each DIV (to provide padding)*/

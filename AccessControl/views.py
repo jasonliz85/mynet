@@ -18,7 +18,7 @@ def dhcp_page_IP_range_add(request):
 
 #Viw a single IP range record on the DHCP IP pool model
 @login_required
-def dhcp_page_IP_range_view(request):
+def dhcp_page_IP_range_view(request, ip_id):
 	return render_to_response('qmul_dhcp_view_IP_range.html',{})
 
 #Delete a single IP range on the DHCP IP pool model
