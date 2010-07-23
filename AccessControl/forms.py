@@ -32,15 +32,28 @@ class ViewMachinesActionForm(forms.Form):
 		return 
 
 class Register_IP_range_Form(forms.Form):									
-	IP_range	= forms.CharField(label = 'Address Range', max_length = 40 )					
+	IP_range1	= forms.CharField(label = 'Address Range', max_length = 40 )					
+	IP_range2	= forms.CharField(label = 'Range To', max_length = 40 )
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
-		
-	def clean_IP_range(self):
-		IP_range = self.cleaned_data['IP_range']
+
+	def clean_IP_range1(self):
+		IP_range1 = self.cleaned_data['IP_range1']
 		try: 
-			IP(IP_range)
+			IP(IP_range1)
 	   	except (ValueError, NameError): 
 	   		raise forms.ValidationError("IP address range is not valid. Please change and try again. ")
-	   		
-		return IP_range
+	   	return IP_range1
+		
+	def clean_IP_range2(self):
+		IP_range2 = self.cleaned_data['IP_range2']
+		try: 
+			IP(IP_range2)
+	   	except (ValueError, NameError): 
+	   		raise forms.ValidationError("IP address is not valid. Please change and try again. ")
+   		return IP_range2
+	   	 
+	#to check:
+	#	ip version consistent
+	#	single ip values and not a range
+	#
 		

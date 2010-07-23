@@ -25,7 +25,7 @@ body{
 	top: 100px; /*Set top value to HeightOfTopFrameDiv*/
 	right: 0;
 	bottom: 0;
-	overflow: auto; 
+	overflow: visible; 
 	background: transparent;
 	color: black;
 	font-family: sans-serif;
@@ -211,7 +211,7 @@ h1 {  /* headings */
 	border-top-width:3px;
 	border-bottom-width:3px;
 	padding: 0px;
-	}
+}
 /***********************************************************************/
 /***********************************************************************/
 /***********************************************************************/
@@ -219,38 +219,42 @@ h1 {  /* headings */
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
-	font: bold 13px Verdana;
+	font: bold 14px Verdana;
 	font-family: sans-serif;
 	width: 180px; /* Main Menu Item widths */
-	border-bottom: 1px solid #ccc;
+	/*border-bottom: 1px solid #778;*/
 	border-top: 1px solid #778;
+	background-color: #585858;
 }
- 
 .sidebarmenu ul li		{ 	position: relative; }
-.sidebarmenu ul li a	{/* Top level menu links style */
+.sidebarmenu ul li a		{/* Top level menu links style */
 	display: block;
 	overflow: auto; /*force hasLayout in IE7 */
 	color: white;
 	text-decoration: none;
 	padding: 7px;
-	border-bottom: 1px solid #778;
-	border-right: 1px solid #778;
-	}
-.sidebarmenu ul li a:link, .sidebarmenu ul li a:visited, .sidebarmenu ul li a:active{
-	background-color: #585858; /*background of tabs (default state)*//*012D58*/
-}	
+	border-bottom: 1px solid #778 
+	/*border-bottom: 1px solid #778;*/
+}
 .sidebarmenu ul li a:visited	{	color: white;	}
 .sidebarmenu ul li a:hover	{	background-color: black; }
-
-.sidebarmenu ul li ul{/*Sub level menu items */
-	position: absolute;
+.sidebarmenu ul li ul		{/*Sub level menu items */
+	/*position: absolute;*/
+	/*visibility: hidden;*/
+	text-indent: 10%;
+	font-size: 13px;
 	width: 170px; /*Sub Menu Items width */
 	top: 0;
-	visibility: hidden;
-	}
+	background-color: #787878;
+	border-left: 10px solid #585858;
+}
+.sidebarmenu ul li ul li 	{ border-bottom: 1px solid #585858;  }
+.sidebarmenu ul li a:link, .sidebarmenu ul li a:visited, .sidebarmenu ul li a:active{
+	/*background-color: #585858; background of tabs (default state)*//*012D58*/
+}
 .sidebarmenu a.subfolderstyle{
 	background: url("../images/right.gif") no-repeat 97% 50%;
-	}
+}
 /* Holly Hack for IE \*/
 * html .sidebarmenu ul li { float: left; height: 1%; }
 * html .sidebarmenu ul li a { height: 1%; }
@@ -258,16 +262,13 @@ h1 {  /* headings */
 /***********************************************************************/
 /***********************************************************************/
 /***********************************************************************/
-.feedbackform{ padding: 2%;
-	}
-.viewbackform{ padding: 2%;
-	}
-
+.feedbackform{ padding: 2%;}
+.viewbackform{ padding: 2%;}
 div.fieldwrapper{ /*field row DIV (includes two columns- Styled label column and 'thefield' column)*/
 	width: 550px; /*width of form rows*/
 	overflow: hidden;
 	padding: 5px 0;
-	}
+}
 
 div.fieldwrapper label.styled{ /* label elements that should be styled (left column within fieldwrapper DIV) */
 	float: left;
@@ -275,12 +276,12 @@ div.fieldwrapper label.styled{ /* label elements that should be styled (left col
 	text-transform: uppercase;
 	border-bottom: 1px solid #CCCCCC;/*solid black;*/
 	margin-right: 15px; /*spacing with right column*/
-	}
+}
 
 div.fieldwrapper div.thefield{ /* DIV that wraps around the actual form fields (right column within fieldwrapper DIV) */
 	float: left;
 	margin-bottom: 10px; /* space following the field */
-	}
+}
 
 div.fieldwrapper div.thefield input[type="text"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	width: 150px;
 }
@@ -290,11 +291,11 @@ div.fieldwrapper div.thefield input[type="password"]{ /* style for INPUT type="t
 div.fieldwrapper div.thefield textarea{ /* style for TEXTAREA fields. */
 	width: 300px;
 	height: 150px;
-	}
+}
 
 div.buttonsdiv{ /*div that wraps around the submit/reset buttons*/
 	margin-top: 5px; /*space above buttonsdiv*/
-	}
+}
 
 div.buttonsdiv input{ /* style for INPUT fields within 'buttonsdiv'. Assumed to be form buttons. */
 	width: 80px;
@@ -413,5 +414,8 @@ display:none;
 font-size:11px;
 padding:1px 2px;
 }
-</style>
+
+/***********************************************************************/
+/***********************************************************************/
+/***********************************************************************/
 

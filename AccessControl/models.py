@@ -25,9 +25,8 @@ class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	PC_pair		= models.CharField('PC Name',max_length = 12)		#DHCP PC name
 	time_created 	= models.DateTimeField()				#DHCP machine registration creation time
 	time_deleted 	= models.DateTimeField(blank=True, null=True)		#DHCP machine registration deletion time
+	time_modified 	= models.DateTimeField(blank=True, null=True)		#DHCP machine registration modification time
 	description 	= models.TextField(blank=True, null=True)		#DHCP machine description of machine (optional)
-	#to add date_modified
-	#to add global_machine_number unique ??
 	#to add belongs_to_group ??
 	#to add active
 	#to add bool_is_IPv6
@@ -35,7 +34,8 @@ class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 		return u'%s-%s-%s %s, %s' % (self.MAC_pair, self.IP_pair, self.PC_pair, self.time_created, self.time_deleted )
 
 class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
-	IP_pool		= models.CharField('IP Range', max_length = 40 )	#DHCP address range
+	IP_pool1	= models.CharField('IP Range1', max_length = 40 )	#DHCP address range
+	IP_pool2	= models.CharField('IP Range2', max_length = 40 )	#DHCP address range
 	is_active 	= models.BooleanField()					#DHCP IP pool activation
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
 	time_created 	= models.DateTimeField()				#DHCP time IP pool creation time

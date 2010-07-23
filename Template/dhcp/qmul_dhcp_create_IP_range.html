@@ -5,21 +5,37 @@
 {% block content %}
 
 	<h2><a name="status">Register an IP Range</a></h2>
-	<p>Please enter a valid IP Range below</p>
+	<p>Please enter a valid IP Range below:</p>
 	
 	<form class="feedbackform" action="" method="post">
-	{% for field in form %}
-		<div class="fieldwrapper">
-			<label class="styled">{{field.label}}</label>
-			<div class="thefield">{{field}}</div> <br>
-			<p>{% if field.errors %}
-				{{field.errors}}
-			{% endif %}</p>
-		</div>
-	{% endfor %}
+	<div class="fieldwrapper">
+		<label class="styled">{{form.IP_range1.label}}</label>
+		<div class="thefield">
+			{{form.IP_range1}} -
+			{{form.IP_range2}}
+			
+		</div> <br>
+		<p>
+		{% if form.IP_range1.errors %}
+			{% if form.IP_range2.errors %}
+				{{form.IP_range2.errors}}
+			{% else %}
+				{{form.IP_range1.errors}}
+			{% endif %}
+		{% endif %}
+		</p>
+	</div>
+	<div class="fieldwrapper">
+		<label class="styled">{{form.dscr.label}}</label>
+		<div class="thefield">{{form.dscr}}</div> <br>
+		<p>
+		{% if field.errors %}
+			{{field.errors}}
+		{% endif %}
+		</p>
+	</div>
 	<input type="submit" value="Submit"><br/>	
 
 	</form>
-
 		
 {% endblock %}

@@ -19,11 +19,12 @@ def dhcp_page_IP_range_add(request):
 		if form.is_valid():
 			now = datetime.datetime.today()
 			info = form.cleaned_data
-			if (IP(info['IP_range']).version() == 6):
+			if (IP(info['IP_range1']).version() == 6):
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)				
-			IP_pool_registered = DHCP_ip_pool(	IP_pool		= IP(info['IP_range']).strNormal(1),
+			IP_pool_registered = DHCP_ip_pool(	IP_pool1	= IP(info['IP_range1']).strNormal(1),
+								IP_pool2	= IP(info['IP_range2']).strNormal(1),
 								is_active 	= bool(1),
 								is_ipv6 	= ipVersion,
 								time_created 	= now,
@@ -38,7 +39,7 @@ def dhcp_page_IP_range_add(request):
 #List all IP range records in the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_listing(request):
-	registered_IP_pools =  DHCP_ip_pool.objects.all().order_by("IP_pool")
+	registered_IP_pools =  DHCP_ip_pool.objects.all().order_by("IP_pool1")
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
@@ -106,9 +107,10 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			regpool = DHCP_ip_pool.objects.get(id = ip_id)
-			regpool.IP_pool		= IP(info['IP_range']).strNormal(1)
+			regpool.IP_pool1	= IP(info['IP_range1']).strNormal(1)
+			regpool.IP_pool2	= IP(info['IP_range2']).strNormal(1)
 			regpool.description	= info['dscr']
-			if (IP(info['IP_range']).version() == 6):
+			if (IP(info['IP_range1']).version() == 6):
 				regpool.is_ipv6 = bool(1)
 			else:
 				regpool.is_ipv6 = bool(0)
