@@ -1,0 +1,26 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DHCP Registration{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Delete Registered IP Range</a></h2>
+	<p> The following IP Range{{machines|pluralize}}{% ifequal mlength 1 %} has {% else %} have {% endifequal %} been deleted:<p> </br>
+
+	{% if not machines %}
+		<ul class="errorlist"><li> An Error has occured, could not delete record.</li></ul>
+	{% else %}
+		{% for machine in machines %}
+				<p><li>ID: {{machine.id}}, Range: {{machine.IP_pool}} - {{machine.IP_pool}} </li></p>
+		{% endfor %}	
+	{% endif %}
+	<br></br>
+	<br></br>
+	<br></br>
+	<br></br>
+	<p class = "EditDeleteBack"> 
+		<a href="/dhcp/registered_IP_pools"> Back<a> 
+	</p>
+{% endblock %}
+	
+

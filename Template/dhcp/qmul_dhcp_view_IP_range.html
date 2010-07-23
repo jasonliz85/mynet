@@ -1,0 +1,39 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DHCP | IP Range ID {{machine.id}}{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Registered IP Range, ID: {{machine.id}}</a></h2>
+	
+	
+	<form  class = "viewbackform">
+	<div class="fieldwrapper">
+		<label class="styled">IP Range</label>
+		<div class="thefield">{{machine.IP_pool}}</div> <br>
+	</div>
+	<div class="fieldwrapper">
+		<label class="styled">IP version</label>
+		<div class="thefield">{% if machine.is_ipv6 %} 6 {% else %}  4 {% endif %}</div> <br>
+	</div>
+	<div class="fieldwrapper">
+		<label class="styled">Description</label>
+		<div class="thefield">{{machine.description}}</div> <br>
+	</div>
+	<div class="fieldwrapper">
+		<label class="styled">Date Modified</label>
+		<div class="thefield">{{machine.time_modified}}</div> <br>
+	</div>
+	<div class="fieldwrapper">
+		<label class="styled">Time Created</label>
+		<div class="thefield">{{machine.time_created}}</div> <br>
+	</div>
+	</form>
+	<p class = "EditDeleteBack"> 
+		<a href="/dhcp/edit_IP_range/{{machine.id}}"> Edit<a> |
+		<a  href="/dhcp/delete_IP_range/{{machine.id}}" onclick="return confirm('Are you sure you want to delete this machine registration?');"> Delete<a> |		
+		<a href="/dhcp/registered_IP_pools"> Back<a> 
+	</p>
+	      
+		
+{% endblock %}

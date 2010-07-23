@@ -1,0 +1,28 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DHCP Registration{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Edit Registered IP Range, ID: {{ip_id}}</a></h2>
+	<p>Please edit the information below.</p>
+	
+	{% for field in form %}
+		{% if field.errors %}
+			{{field.errors}}
+		{% endif %}
+	{% endfor %}
+    	
+	<form class="feedbackform" action="" method="post">
+	{% for field in form %}
+		<div class="fieldwrapper">
+			<label class="styled">{{field.label}}</label>
+			<div class="thefield">{{field}}</div> <br>
+		</div>
+	{% endfor %}
+	<input type="submit" value="Submit"><br/>	
+
+	</form>
+
+		
+{% endblock %}

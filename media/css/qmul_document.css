@@ -69,6 +69,19 @@ body{
 /***********************************************************************/
 /***********************************************************************/
 /* set the height a little larger than the logo */
+
+ul.errorlist {
+	margin: 2%;
+	padding: 0;
+}
+.errorlist li {
+	background-color: #FF6347;
+	color: 	white;
+	display: block;
+	margin: 0 0 3px;
+	padding: 4px 5px;	
+}
+		
 div.banner { 
 	height:70px; width:100%; 
 }

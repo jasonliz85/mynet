@@ -1,0 +1,87 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DHCP Registered Machines{% endblock %}
+{% block script %}
+<script language="javascript">
+	function checkAll(){
+		for (var i=0;i<document.forms[0].elements.length;i++)
+		{
+			var e=document.forms[0].elements[i];
+			if ((e.name != 'allbox') && (e.type=='checkbox'))
+			{
+				e.checked=document.forms[0].allbox.checked;
+			}
+		}
+	}
+	function actionCheck(){
+		var a = document.forms[0].status;
+		if( a.selectedIndex == 1) {
+			return confirm('Are you sure you want to delete these registered machines?');
+		}
+	}
+</script>
+{% endblock %}
+{% block content %}
+	
+
+	<h2><a name="status">Registered IP Ranges</a></h2>
+	<p> This page shows all the registered IP Pools on this network. </p>
+	{% if form.errors %}
+		<p class="error"> Please correct the following error{{ form.errors|pluralize }}:</p>
+		<ul>
+	        {% for error in form.errors %}
+			<li>{{ error }}</li>
+	        {% endfor %}
+	        </ul>
+	{% endif %}
+	<form method="post" class = viewbackform action="">	
+		<div class="actions">
+			
+			<label>Action: 
+				{{form.status}}
+			</label>
+			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete these registered machines?');" title="Run the selected action" class="button" type="submit" >Go</button>
+		</div>  
+		<br>
+		<table cellspacing="0">
+		<thead>
+			<tr>
+			<th>
+			<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
+			</th>
+			<th>
+				<a>No.</a>
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=1">IP Address Range</a>
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=2"> Active </a>
+			</th>
+			<th> 
+				<a href="?ot=asc&amp;o=3"> IP version </a>
+			</th>
+			<th>
+				<a href="?ot=asc&amp;o=4"> Time Created	</a>
+			</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for machinelist in machinelists %}
+			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
+				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
+				<td>{{ forloop.counter }}</td>
+				<th><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.IP_pool }} </a></th>
+				<td align = center >{% if machinelist.is_active %} A {% else %} N {% endif %}</td>
+				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
+				<td class="nowrap">{{ machinelist.time_created }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	
+
+      </form>
+      
+		
+{% endblock %}
