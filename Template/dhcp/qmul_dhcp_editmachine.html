@@ -6,21 +6,15 @@
 
 	<h2><a name="status">Edit Registered Machine, ID: {{m_id}}</a></h2>
 	<p>Please edit the information below.</p>
-	
-	{% if form.errors %}
-		<p class="error"> Please correct the following error{{ form.errors|pluralize }}:</p>
-		<ul>
-	        {% for error in form.errors %}
-			<li>{{ error }}</li>
-	        {% endfor %}
-	        </ul>
-	{% endif %}
     	
 	<form class="feedbackform" action="" method="post">
 	{% for field in form %}
 		<div class="fieldwrapper">
 			<label class="styled">{{field.label}}</label>
 			<div class="thefield">{{field}}</div> <br>
+			<p>{% if field.errors %}
+				{{field.errors}}
+			{% endif %}</p>
 		</div>
 
 	{% endfor %}

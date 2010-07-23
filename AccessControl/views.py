@@ -49,7 +49,7 @@ def dhcp_page_IP_range_listing(request):
 					mDelete = []
 					for item in item_selected:		
 						mDelete.append(DHCP_ip_pool.objects.get(id = item))
-						#DHCP_ip_pool.objects.get(id = item).delete()
+						DHCP_ip_pool.objects.get(id = item).delete()
 					mlength = len(mDelete)
 					return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
@@ -168,7 +168,9 @@ def dhcp_page_machine_delete_multiple(request):
 					mDelete = []
 					for item in item_selected:		
 						mDelete.append(DHCP_machine.objects.get(id = item))
-					return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
+						DHCP_machine.objects.get(id = item).delete()
+					mlength = len(mDelete)
+					return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
@@ -196,9 +198,9 @@ def dhcp_page_machine_delete_single(request, m_id):
 	now = datetime.datetime.today()
 	mDelete = []
 	mDelete.append(DHCP_machine.objects.get(id = m_id))	
-	#mDelete = DHCP_machine(time_deleted = now)
-	#mDelete.delete()
-	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete})
+	DHCP_machine.objects.get(id = m_id).delete()
+	mlength = len(mDelete)
+	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
 
 #View a single registered machine in the DHCP model
 @login_required

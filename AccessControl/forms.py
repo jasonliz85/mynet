@@ -32,7 +32,7 @@ class ViewMachinesActionForm(forms.Form):
 		return 
 
 class Register_IP_range_Form(forms.Form):									
-	IP_range	= forms.CharField(label = 'IP Address Range', max_length = 40 )					
+	IP_range	= forms.CharField(label = 'Address Range', max_length = 40 )					
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
 		
 	def clean_IP_range(self):

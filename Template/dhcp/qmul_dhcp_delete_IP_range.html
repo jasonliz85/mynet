@@ -11,7 +11,7 @@
 		<ul class="errorlist"><li> An Error has occured, could not delete record.</li></ul>
 	{% else %}
 		{% for machine in machines %}
-				<p><li>ID: {{machine.id}}, Range: {{machine.IP_pool}} - {{machine.IP_pool}} </li></p>
+			<ul class = "highlight"><li>ID: {{machine.id}}, Range: {{machine.IP_pool}} - {{machine.IP_pool}} </li></ul>
 		{% endfor %}	
 	{% endif %}
 	<br></br>

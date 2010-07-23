@@ -26,14 +26,16 @@
 
 	<h2><a name="status">Registered Machines</a></h2>
 	<p> This page shows all the registered machines on this network. </p>
-	{% if form.errors %}
-		<p class="error"> Please correct the following error{{ form.errors|pluralize }}:</p>
-		<ul>
-	        {% for error in form.errors %}
-			<li>{{ error }}</li>
-	        {% endfor %}
-	        </ul>
-	{% endif %}
+	
+	{% for field in form %}
+		{% if field.errors %}
+			{{field.errors}}
+		{% endif %}
+	{% endfor %}
+	
+	{% if not machinelists %}
+		<ul class = "errorlist"><li> This table is empty </ul><li>	
+	{% else %}
 	<form method="post" class = viewbackform action="">	
 		<div class="actions">
 			
@@ -82,7 +84,7 @@
 		<!<input type="checkbox" name="_selected_action" value="{{machinelist.id}}" class="action-select">
 		<!td{{form.cc_myself.html_name}}</td>
 
-      </form>
-      
+	</form>
+	{% endif %}
 		
 {% endblock %}
