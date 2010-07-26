@@ -1,0 +1,26 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DNS Registration{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Register an IP-Name Pair</a></h2>
+	<p>Enter a valid IP address and DNS expression below.</p>
+	
+	<form class="feedbackform" action="" method="post">
+	{% for field in form %}
+		<div class="fieldwrapper">
+			<label class="styled">{{field.label}}</label>
+			<div class="thefield">{{field}}</div><br>
+			<p>{% if field.errors %}
+				{{field.errors}}
+			{% endif %}
+			</p>
+		</div>
+	{% endfor %}
+	<input type="submit" value="Register"><br/>	
+
+	</form>
+
+		
+{% endblock %}

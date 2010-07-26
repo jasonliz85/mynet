@@ -9,7 +9,8 @@ class test_machine(models.Model):
 		return u'%s-%s-%s' % (self.MAC_pair, self.IP_pair, self.PC_pair)
 		
 class DNS_names(models.Model):							#DNS NAMING MODEL
-	DNS_expression 	= models.CharField('DNS name',max_length = 30)		#DNS name regular expression
+	dns_expression 	= models.CharField('DNS name', max_length = 30)		#DNS name regular expression
+	ip_pair		= models.CharField('IP Address', max_length = 40)	#DNs ip address pair
 	is_active 	= models.BooleanField()					#DNS reg active
 	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6
 	time_created 	= models.DateTimeField()				#DNS name creation time
@@ -17,12 +18,13 @@ class DNS_names(models.Model):							#DNS NAMING MODEL
 	time_modified	= models.DateTimeField(blank=True, null=True)		#DNS name registration deletion time
 	description 	= models.TextField(blank=True, null=True)		#DNS name description
 	def __unicode__(self):
-		return u'%s-%s-%s' % (self.DNS_expression, self.is_active, self.time_created)
+		return u'%s-%s-%s' % (self.dns_expression, self.is_active, self.time_created)
 
 class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	MAC_pair	= models.CharField('MAC Address',max_length = 12)	#DHCP MAC address 
-	IP_pair		= models.IPAddressField('IP Address')			#DHCP IP address 
+	IP_pair		= models.CharField('IP Address', max_length = 40)	#DHCP IP address 
 	PC_pair		= models.CharField('PC Name',max_length = 12)		#DHCP PC name
+#add	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6
 	time_created 	= models.DateTimeField()				#DHCP machine registration creation time
 	time_deleted 	= models.DateTimeField(blank=True, null=True)		#DHCP machine registration deletion time
 	time_modified 	= models.DateTimeField(blank=True, null=True)		#DHCP machine registration modification time

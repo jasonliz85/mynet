@@ -20,8 +20,14 @@ urlpatterns = patterns('',
 	##################DNS Pages##########################
 	#####################################################
 	
-	(r'^dns/$', 'mynet.views.dns_page'),
-	(r'^dns/namespace$', 'mynet.views.dns_page_addname'),
+	(r'^dns/$', 'mynet.views.dns_page'),						#dns- main dns home page
+	
+	#CRUD Registed DNS pairs - Create, Read, Update, Destroy
+	(r'^dns/register_DNS_pair$', views.dns_namepair_add),				#dns -
+	(r'^dns/view_DNS_pair/(\d{1,3})/$', views.dns_namepair_view),			#dns -
+	(r'^dns/registered_DNS_pairs$', views.dns_namepair_listing),			#dns - 
+	(r'^dns/edit_DNS_pair/(\d{1,3})/$', views.dns_namepair_edit),				#dns - 
+	(r'^dns/delete_DNS_pair/(\d{1,3})/$', views.dns_namepair_delete),				#dns - 
 	
 	#####################################################
 	##################DHCP Pages#########################

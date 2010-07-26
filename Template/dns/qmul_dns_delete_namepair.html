@@ -1,0 +1,25 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DNS Registration{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Deleted IP-Name Pair</a></h2>
+	<p> The following IP-Name pair{{machines|pluralize}}{% ifequal mlength 1 %} has {% else %} have {% endifequal %} been deleted:<p> </br>
+
+	{% if not machines %}
+		<ul class="errorlist"><li> An Error has occured, could not delete record.</li></ul>
+	{% else %}
+		{% for machine in machines %}
+			<ul class = "highlight"><li>ID:{{machine.id}} - {{machine.ip_pair}}:{{machine.dns_expression}} </li></ul>
+		{% endfor %}	
+	{% endif %}
+	<br></br>
+	<br></br>
+	<br></br>
+	<br></br>
+	<p class = "EditDeleteBack"> 
+		<a href="/dns/registered_DNS_pairs"> Back<a> 
+	</p>
+{% endblock %}
+

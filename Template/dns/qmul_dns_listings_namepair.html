@@ -1,6 +1,6 @@
 {% extends "qmul_doc_base.html" %}
 
-{% block title %}MyNET DHCP Registered Machines{% endblock %}
+{% block title %}MyNET DNS pairs{% endblock %}
 {% block script %}
 <script language="javascript">
 	function checkAll(){
@@ -16,7 +16,7 @@
 	function actionCheck(){
 		var a = document.forms[0].status;
 		if( a.selectedIndex == 1) {
-			return confirm('Are you sure you want to delete these registered IP pools?');
+			return confirm('Are you sure you want to delete these registered IP-name pairs?');
 		}
 	}
 </script>
@@ -24,16 +24,18 @@
 {% block content %}
 	
 
-	<h2><a name="status">Registered IP Ranges</a></h2>
-	<p> This page shows all the registered IP Pools on this network. </p>
+	<h2><a name="status">Registered Pairs</a></h2>
+	<p> This page shows all the registered DNS name-pairs on this network. </p>
+	
 	{% for field in form %}
 		{% if field.errors %}
 			{{field.errors}}
 		{% endif %}
 	{% endfor %}
+	
 	{% if not machinelists %}
 		<ul class = "errorlist"><li> This table is empty </ul><li>	
-	{% else %}	
+	{% else %}
 	<form method="post" class = viewbackform action="">	
 		<div class="actions">
 			
@@ -53,13 +55,13 @@
 				<a>No.</a>
 			</th>
 			<th>
-				<a href="?ot=asc&amp;o=1">IP Address Range</a>
+				<a href="?ot=asc&amp;o=1"> Name </a>
 			</th>
 			<th>
-				<a href="?ot=asc&amp;o=2"> Active </a>
+				<a href="?ot=asc&amp;o=2"> IP Address </a>
 			</th>
 			<th> 
-				<a href="?ot=asc&amp;o=3"> IP version </a>
+				<a href="?ot=asc&amp;o=3"> IP Version </a>
 			</th>
 			<th>
 				<a href="?ot=asc&amp;o=4"> Time Created	</a>
@@ -71,14 +73,15 @@
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
-				<th><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.IP_pool1 }} - {{ machinelist.IP_pool2 }} </a></th>
-				<td align = center >{% if machinelist.is_active %} A {% else %} N {% endif %}</td>
+				<th><a href="/dns/view_DNS_pair/{{machinelist.id}}"> {{ machinelist.dns_expression }} </a></th>
+				<td name="IP">{{ machinelist.ip_pair }}</td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
 				<td class="nowrap">{{ machinelist.time_created }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 		</table>
+
 	</form>
 	{% endif %}
 		

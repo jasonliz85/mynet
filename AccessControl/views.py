@@ -1,11 +1,128 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
-from mynet.AccessControl.models import DHCP_machine,DHCP_ip_pool, test_machine
-from mynet.AccessControl.forms import RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form
-from django.forms.formsets import formset_factory
+from mynet.AccessControl.models import DHCP_machine, DHCP_ip_pool, DNS_names, test_machine
+from mynet.AccessControl.forms import RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
+
 from IPy import IP
 import datetime
+
+#################################################################################
+####################### DNS NAME Pair ###########################################
+#################################################################################
+
+#Add an Ip-name pair to model
+@login_required
+def dns_namepair_add(request):
+	if request.method == 'POST':
+		form = Register_namepair_Form(request.POST)
+		if form.is_valid():
+			now = datetime.datetime.today()
+			info = form.cleaned_data
+			if (IP(info['ip_pair']).version() == 6):
+				ipVersion = bool(1)
+			else:
+				ipVersion = bool(0)				
+			namepair_registered = DNS_names(	dns_expression	= info['dns_expr'],
+								ip_pair		= IP(info['ip_pair']).strNormal(1),
+								is_active 	= bool(1),
+								is_ipv6 	= ipVersion,
+								time_created 	= now,
+								description 	= info['dscr']								
+								)		
+			namepair_registered.save()					
+			return render_to_response('qmul_dhcp.html', {})
+	else:
+		form = Register_namepair_Form(initial = {})
+	return render_to_response('qmul_dns_create_namepair.html',{'form':form })
+
+#list all ip-name records in the model
+@login_required
+def dns_namepair_listing(request):
+	registered_pairs =  DNS_names.objects.all().order_by("ip_pair")
+	if request.method == 'POST':
+		actionForm = ViewMachinesActionForm(request.POST)	
+		action = request.POST['status']
+		if actionForm.is_valid():
+			item_selected = request.POST.getlist('cbox_id')
+			if item_selected:			
+				if action == 'del':
+					mDelete = []
+					for item in item_selected:		
+						mDelete.append(DNS_names.objects.get(id = item))
+						DNS_names.objects.get(id = item).delete()
+					mlength = len(mDelete)
+					return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength' : mlength})
+				elif action == 'vue':
+					if len(item_selected) > 1:
+						actionForm = ViewMachinesActionForm(initial = {})
+						return render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : registered_pairs })
+					else:
+						regmachine = DNS_names.objects.get(id = item_selected[0])
+						return render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine})
+				else:
+					actionForm = ViewMachinesActionForm(initial = {})
+					return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs })	
+			else:		
+				actionForm = ViewMachinesActionForm(initial = {})
+				return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs })	
+	else:
+		actionForm = ViewMachinesActionForm(initial = {})
+		return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs})
+	return render_to_response('qmul_dns_listings_namepair.html',{})
+
+#view a single ip-name pair 
+@login_required
+def dns_namepair_view(request, pair_id):
+	try:
+		pair_id = int(pair_id)
+	except ValueError:
+		raise Http404()	
+	regpair = DNS_names.objects.get(id = pair_id)
+	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair})
+
+#delete a single record 
+@login_required
+def dns_namepair_delete(request, pair_id):
+	try:
+		pair_id = int(pair_id)
+	except ValueError:
+		raise Http404()		
+	now = datetime.datetime.today()
+	mDelete = []
+	DeleteRecord = DNS_names.objects.get(id = pair_id)
+	mDelete.append(DeleteRecord)	
+	mlength = len(mDelete)
+	DeleteRecord.delete()
+	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
+
+#edit a single record
+@login_required
+def dns_namepair_edit(request, pair_id):
+	try:
+		pair_id = int(pair_id)
+	except ValueError:
+		raise Http404()	
+	if request.method == 'POST':
+		editform = Register_namepair_Form(request.POST)
+		if editform.is_valid():
+			info = editform.cleaned_data
+			regpair = DNS_names.objects.get(id = pair_id)
+			regpair.dns_expression	= info['dns_expr']
+			regpair.ip_pair		= IP(info['ip_pair']).strNormal(1)
+			regpair.description	= info['dscr']
+			if (IP(info['ip_pair']).version() == 6):
+				regpair.is_ipv6 = bool(1)
+			else:
+				regpair.is_ipv6 = bool(0)
+			now = datetime.datetime.today()
+			regpair.time_modified = now
+			regpair.save()
+			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair})
+	else:
+		regpair = DNS_names.objects.get(id = pair_id)		
+		editform = Register_namepair_Form(initial = {'dns_expr':regpair.dns_expression,'ip_pair':regpair.ip_pair,'dscr':regpair.description})	
+	return render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})
 
 #################################################################################
 ####################### DHCP IP Pool ############################################
@@ -74,7 +191,7 @@ def dhcp_page_IP_range_listing(request):
 @login_required
 def dhcp_page_IP_range_view(request, ip_id):
 	try:
-		m_id = int(ip_id)
+		ip_id = int(ip_id)
 	except ValueError:
 		raise Http404()	
 	regpools = DHCP_ip_pool.objects.get(id = ip_id)
@@ -99,7 +216,7 @@ def dhcp_page_IP_range_delete(request, ip_id):
 @login_required
 def dhcp_page_IP_range_edit(request, ip_id):
 	try:
-		m_id = int(ip_id)
+		ip_id = int(ip_id)
 	except ValueError:
 		raise Http404()	
 	if request.method == 'POST':
