@@ -1,5 +1,5 @@
 from django.contrib import admin
-from mynet.AccessControl.models import DHCP_machine, test_machine, DHCP_ip_pool, DNS_names
+from mynet.AccessControl.models import DHCP_machine, test_machine, DHCP_ip_pool, DNS_names, DNS_ipval, DNS_expr
 
 
 class DHCP_Admin(admin.ModelAdmin):

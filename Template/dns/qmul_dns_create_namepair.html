@@ -18,8 +18,22 @@
 			</p>
 		</div>
 	{% endfor %}
-	<input type="submit" value="Register"><br/>	
-
+	<div class="fieldwrapper">
+		<label class="styled">Add Services</label>
+		<div class="thefield">
+			<script type="text/javascript">
+				addEvent(window, "load", function(e) {SelectFilter.init("id_authors", "authors", 0, "/media/"); });
+			</script>
+			<a onclick="return showAddAnotherPopup(this);" id="add_id_authors" class="add-another" href="/dns/"> 
+			<img width="10" height="10" alt="Add Another" src="/site_media/images/add.gif">
+			</a>
+		</div>
+	</div>
+	
+     
+	<div class = "buttonsdiv">
+		<input type="submit" value="Register"><br/>	
+	</div>
 	</form>
 
 		

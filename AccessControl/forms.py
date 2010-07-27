@@ -51,8 +51,14 @@ class Register_IP_range_Form(forms.Form):
 	#	-single ip values and not a range
 	#
 class Register_namepair_Form(forms.Form):
-	dns_expr 	= forms.CharField(label = 'DNS Expression', max_length = 30)		#DNS name regular expression
-	ip_pair		= forms.CharField(label = 'IP Address', max_length = 40 )					
+	dns_expr 	= forms.CharField(label = 'Machine Name', widget = forms.TextInput(attrs={'class':'special', 'size':'10'}))		#DNS name regular expression
+	ip_pair		= forms.CharField(label = 'IP Address', widget = forms.TextInput(attrs={'class':'special'}))					
+	TYPE_CHOICES = ( 
+			('1BD', 'Bi-Directional '), 			# 
+	                ('2NA', 'Machine Name --> IP Address'), 		# NA = name-address
+        	        ('3AN', 'Machine Name <-- IP Address'), 	# AD = address-name
+			)
+	dns_typ		= forms.ChoiceField(choices=TYPE_CHOICES, initial = '1BD', widget = forms.RadioSelect(), label = 'Type')
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
 	
 	def clean_ip_pair(self):

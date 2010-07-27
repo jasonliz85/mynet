@@ -22,9 +22,14 @@ def dns_namepair_add(request):
 			if (IP(info['ip_pair']).version() == 6):
 				ipVersion = bool(1)
 			else:
-				ipVersion = bool(0)				
-			namepair_registered = DNS_names(	dns_expression	= info['dns_expr'],
+				ipVersion = bool(0)
+			tp = request.POST['dns_typ']
+			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+				tp = '1BD'
+
+			namepair_registered = DNS_names(	machine_name	= info['dns_expr'],
 								ip_pair		= IP(info['ip_pair']).strNormal(1),
+								dns_type	= tp,
 								is_active 	= bool(1),
 								is_ipv6 	= ipVersion,
 								time_created 	= now,
@@ -39,7 +44,7 @@ def dns_namepair_add(request):
 #list all ip-name records in the model
 @login_required
 def dns_namepair_listing(request):
-	registered_pairs =  DNS_names.objects.all().order_by("ip_pair")
+	registered_pairs =  DNS_names.objects.all()#.order_by("dns_type")
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
@@ -108,7 +113,7 @@ def dns_namepair_edit(request, pair_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			regpair = DNS_names.objects.get(id = pair_id)
-			regpair.dns_expression	= info['dns_expr']
+			regpair.machine_name	= info['dns_expr']
 			regpair.ip_pair		= IP(info['ip_pair']).strNormal(1)
 			regpair.description	= info['dscr']
 			if (IP(info['ip_pair']).version() == 6):
@@ -121,7 +126,7 @@ def dns_namepair_edit(request, pair_id):
 			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair})
 	else:
 		regpair = DNS_names.objects.get(id = pair_id)		
-		editform = Register_namepair_Form(initial = {'dns_expr':regpair.dns_expression,'ip_pair':regpair.ip_pair,'dscr':regpair.description})	
+		editform = Register_namepair_Form(initial = {'dns_expr':regpair.machine_name,'ip_pair':regpair.ip_pair,'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
 	return render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})
 
 #################################################################################
@@ -175,7 +180,7 @@ def dhcp_page_IP_range_listing(request):
 						actionForm = ViewMachinesActionForm(initial = {})
 						return render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : registered_IP_pools })
 					else:
-						regmachine = DHCP_ip_pool.objects.get(id = item_selected[0])
+						regmachine = DHCP_ip_pool.objects.get(idns_typed = item_selected[0])
 						return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})

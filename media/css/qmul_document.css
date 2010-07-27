@@ -173,10 +173,10 @@ img.center { /* setting the image in the centre */
 	margin-right: auto;
 }
 
-p.error 	{  	color: red; 			}
-a:link 		{ 	color: #0066cc;/*background: white;*/ }
-a:visited 	{	color: #000066;/*background: white;*/ }
-a:active 	{ 	color: #9933ff; /*background: white;*/ }
+p.error 	{  	color: red; 	 	}
+a:link 		{ 	color: #0066cc;  text-decoration: none;/*background: white;*/ }
+a:visited 	{	color: #000066;  text-decoration: none;/*background: white;*/ }
+a:active 	{ 	color: #9933ff;  text-decoration: none;	 /*background: white;*/ }
 p 		{	margin-left: 2%; margin-right: 2%; }
 p.small 	{ 	margin-left: 2%; margin-right: 2%; font-size: 80%; }
 p.small_centered{ 	margin-left: 2%; margin-right: 2%; font-size: 80%; text-align: center; }
@@ -285,12 +285,30 @@ div.fieldwrapper div.thefield{ /* DIV that wraps around the actual form fields (
 
 div.fieldwrapper div.thefield input[type="text"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	width: 150px;
 }
-div.fieldwrapper div.thefield input[type="password"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	width: 150px;
+div.fieldwrapper div.thefield ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	font-family: sans-serif;
+	width: 300px; /* Main Menu Item widths */
+
+}
+div.fieldwrapper div.thefield ul li {
+	display: block;
+	overflow: auto; /*force hasLayout in IE7 */
+	color: black;
+	padding: 1px;
+}
+div.fieldwrapper div.thefield input.special[type="text"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 
+	width: 300px;
+}
+div.fieldwrapper div.thefield input[type="password"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	
+	width: 150px;
 }	
 
 div.fieldwrapper div.thefield textarea{ /* style for TEXTAREA fields. */
 	width: 300px;
-	height: 150px;
+	height: 75px;
 }
 
 div.buttonsdiv{ /*div that wraps around the submit/reset buttons*/

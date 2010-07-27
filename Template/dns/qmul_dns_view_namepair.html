@@ -10,15 +10,22 @@
 	<form  class = "viewbackform">
 	<div class="fieldwrapper">
 		<label class="styled">DNS Expression</label>
-		<div class="thefield">{{machine.dns_expression}}</div> <br>
+		<div class="thefield">{{machine.machine_name}}</div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">IP Address</label>
 		<div class="thefield">{{machine.ip_pair}}</div> <br>
 	</div>
 	<div class="fieldwrapper">
-		<label class="styled">IP version</label>
-		<div class="thefield">{% if machine.is_ipv6 %} 6 {% else %}  4 {% endif %}</div> <br>
+		<label class="styled">Type</label>
+		<div class="thefield">
+			{% ifequal machine.dns_type '1BD' %} Bi-Directional (<-->)
+			{% else %} 
+				{% ifequal machine.dns_type '2NA' %} Machine name to IP address (-->)
+				{% else %} IP address to machine name (<--)
+				{% endifequal %}
+			{% endifequal %}
+		</div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Description</label>

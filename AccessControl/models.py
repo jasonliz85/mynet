@@ -8,17 +8,34 @@ class test_machine(models.Model):
 	def __unicode__(self):
 		return u'%s-%s-%s' % (self.MAC_pair, self.IP_pair, self.PC_pair)
 		
+class DNS_expr(models.Model):
+	expression 	= models.CharField('expression', max_length = 30)	#DNS name regular expression
+
+class DNS_ipval(models.Model):
+	ip_value	= models.CharField('name', max_length = 30)		#DNS ip address expression
+			
 class DNS_names(models.Model):							#DNS NAMING MODEL
-	dns_expression 	= models.CharField('DNS name', max_length = 30)		#DNS name regular expression
+	machine_name 	= models.CharField('DNS name', max_length = 30)		#DNS name regular expression
 	ip_pair		= models.CharField('IP Address', max_length = 40)	#DNs ip address pair
+#	TYPE_CHOICES = ( 
+#				(1, 'BD'), 	# Bi directional
+#		                (2, 'NA'), 	# Machine name to IP address
+#		       	        (3, 'AN'), 	# IP address to Machine name
+#			)
+	dns_type	= models.CharField(max_length = 3 )	#DNS type
 	is_active 	= models.BooleanField()					#DNS reg active
 	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6
 	time_created 	= models.DateTimeField()				#DNS name creation time
 	time_deleted 	= models.DateTimeField(blank=True, null=True)		#DNS name deletion time
 	time_modified	= models.DateTimeField(blank=True, null=True)		#DNS name registration deletion time
 	description 	= models.TextField(blank=True, null=True)		#DNS name description
+
 	def __unicode__(self):
-		return u'%s-%s-%s' % (self.dns_expression, self.is_active, self.time_created)
+		return u'%s-%s-%s' % (self.machine_name, self.is_active, self.time_created)
+	
+	class Meta:
+        	ordering = ['ip_pair','dns_type']
+
 
 class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	MAC_pair	= models.CharField('MAC Address',max_length = 12)	#DHCP MAC address 
