@@ -5,13 +5,37 @@ from mynet.AccessControl.models import DHCP_machine, DHCP_ip_pool, DNS_names, te
 from mynet.AccessControl.forms import RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
 from IPy import IP
+from django.utils.html import escape 
+
+import django.forms as forms 
 import datetime
 
 #################################################################################
 ####################### DNS NAME Pair ###########################################
 #################################################################################
 
-#Add an Ip-name pair to model
+#
+@login_required
+def dns_namepair_simpleAdd(request):
+	return handlePopAdd(request, Register_namepair_Form, 'services')
+#handle pop_up
+def handlePopAdd(request, addForm, field):
+	if request.method == "POST":
+		form = addForm(request.POST)
+		if form.is_valid():
+			try:
+				newObject = form.cleaned_data#form.save()
+			except forms.ValidationError, error:
+				newObject = None
+			if newObject:
+				return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>', (escape(newObject), escape(newObject))) #._get_pk_val()
+	else:
+		form = addForm()
+		
+	pageContext = {'form': form, 'field': field}
+	return render_to_response("qmul_dns_create_simple.html", pageContext)
+
+#Add an IP-name pair to model
 @login_required
 def dns_namepair_add(request):
 	if request.method == 'POST':

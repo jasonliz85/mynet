@@ -172,7 +172,6 @@ img.center { /* setting the image in the centre */
 	margin-left: auto;
 	margin-right: auto;
 }
-
 p.error 	{  	color: red; 	 	}
 a:link 		{ 	color: #0066cc;  text-decoration: none;/*background: white;*/ }
 a:visited 	{	color: #000066;  text-decoration: none;/*background: white;*/ }
