@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>Add {{ field }}</title>
-	<script type="text/javascript" src="/media/js/RelatedObjectLookups.js"></script>
+	<script type="text/javascript" src="/site_media/js/RelatedObjectLookups.js"></script>
 	<link rel="stylesheet" type="text/css" href="/site_media/css/qmul_document.css" />
 	</head>
 <body>
@@ -9,10 +9,17 @@
 	<!div class="innertube">	
 		<h1>Add {{ field }}</h1>
 		<form method="POST" action="" enctype="multipart/form-data">
-			<table>
-				{{ form }}
-			</table>
-			<p><input type="submit" /> | <a href="javascript:window.close()">Cancel</a></p>
+		{% for field in form %}
+		<div class="fieldwrapper">
+			<label class="styled">{{field.label}}</label>
+			<div class="thefield">{{field}}</div><br>
+			<p>{% if field.errors %}
+				{{ field.errors }}
+			{% endif %}
+			</p>
+		</div>
+		{% endfor %}
+		<p><input type="submit" value="Add"/> | <a href="javascript:window.close()">Cancel</a></p>
 		</form>
 	<!/div>
 	<!/div>	

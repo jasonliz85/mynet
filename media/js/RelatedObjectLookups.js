@@ -54,7 +54,7 @@ function dismissRelatedLookupPopup(win, chosenId) {
 
 function showAddAnotherPopup(triggeringLink) {
     var name = triggeringLink.id.replace(/^add_/, '');
-    name = id_to_windowname(name);
+    name = id_to_windowname(name);  
     href = triggeringLink.href
     if (href.indexOf('?') == -1) {
         href += '?_popup=1';
@@ -72,13 +72,17 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
     newId = html_unescape(newId);
     newRepr = html_unescape(newRepr);
     var name = windowname_to_id(win.name);
-    var elem = document.getElementById(name);
+    var elem = document.getElementById(name); 
+    //alert(name)    
     if (elem) {
+    	//alert("one") 
         if (elem.nodeName == 'SELECT') {
+            //alert("select")
             var o = new Option(newRepr, newId);
             elem.options[elem.options.length] = o;
             o.selected = true;
         } else if (elem.nodeName == 'INPUT') {
+      	    //alert("input")
             if (elem.className.indexOf('vManyToManyRawIdAdminField') != -1 && elem.value) {
                 elem.value += ',' + newId;
             } else {
@@ -86,11 +90,12 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
             }
         }
     } else {
+    	//alert("two")
         var toId = name + "_to";
         elem = document.getElementById(toId);
         var o = new Option(newRepr, newId);
-        SelectBox.add_to_cache(toId, o);
-        SelectBox.redisplay(toId);
+        //SelectBox.add_to_cache(toId, o);
+        //SelectBox.redisplay(toId);
     }
     win.close();
 }

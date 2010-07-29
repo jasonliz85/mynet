@@ -28,9 +28,17 @@ def handlePopAdd(request, addForm, field):
 			except forms.ValidationError, error:
 				newObject = None
 			if newObject:
-				return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>', (escape(newObject), escape(newObject))) #._get_pk_val()
+				if newObject['dns_typ'] == "1BD":
+					sign = " <=> "
+				elif newObject['dns_typ'] == "2NA":
+					sign = " <== "
+				else:
+					sign = " ==> "
+				display = newObject['dns_expr'] + sign + IP(newObject['ip_pair']).strNormal(1) 
+				return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script> <p>Test to display.</p>' %\
+					(newObject, display )) #._get_pk_val()
 	else:
-		form = addForm()
+		form = addForm(initial = {})
 		
 	pageContext = {'form': form, 'field': field}
 	return render_to_response("qmul_dns_create_simple.html", pageContext)
@@ -50,16 +58,39 @@ def dns_namepair_add(request):
 			tp = request.POST['dns_typ']
 			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
 				tp = '1BD'
-
-			namepair_registered = DNS_names(	machine_name	= info['dns_expr'],
-								ip_pair		= IP(info['ip_pair']).strNormal(1),
-								dns_type	= tp,
-								is_active 	= bool(1),
-								is_ipv6 	= ipVersion,
-								time_created 	= now,
-								description 	= info['dscr']								
-								)		
-			namepair_registered.save()					
+			namepair_registered = DNS_names(machine_name	= info['dns_expr'],
+							ip_pair		= IP(info['ip_pair']).strNormal(1),
+							dns_type	= tp,
+							is_active 	= bool(1),
+							is_ipv6 	= ipVersion,
+							time_created 	= now,
+							description 	= info['dscr']								
+							)		
+			namepair_registered.save()
+			add_service = request.POST.getlist('service_add')
+			if add_service:
+				#		
+				for item in add_service:
+					service_add = eval(item)
+					if (IP(service_add['ip_pair']).version() == 6):
+						ipVersion = bool(1)
+					else:
+						ipVersion = bool(0)
+					tp = service_add['dns_typ']
+					if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+						tp = '1BD'
+					registered_services = DNS_names( machine_name	= service_add['dns_expr'],
+									ip_pair		= IP(service_add['ip_pair']).strNormal(1),
+									dns_type	= tp,
+									is_active 	= bool(1),
+									is_ipv6 	= ipVersion,
+									time_created 	= now,
+									description 	= service_add['dscr']								
+									)
+					registered_services.save()			
+					#for k, v in item.iteritems():						
+					#registered_services.append(item)					
+				#return HttpResponse(listings)					
 			return render_to_response('qmul_dhcp.html', {})
 	else:
 		form = Register_namepair_Form(initial = {})

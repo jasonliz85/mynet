@@ -310,6 +310,11 @@ div.fieldwrapper div.thefield textarea{ /* style for TEXTAREA fields. */
 	height: 75px;
 }
 
+div.fieldwrapper div.thefield select { /* style for TEXTAREA fields. */
+	width: 500px;
+	overflow: visible; 
+}
+
 div.buttonsdiv{ /*div that wraps around the submit/reset buttons*/
 	margin-top: 5px; /*space above buttonsdiv*/
 }
