@@ -2,13 +2,18 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import DHCP_machine, DHCP_ip_pool, DNS_names, test_machine
-from mynet.AccessControl.forms import RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
+from mynet.AccessControl.forms import * 
+#RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
 from IPy import IP
+from netaddr import *
 from django.utils.html import escape 
 
 import django.forms as forms 
 import datetime
+
+class mac_custom(mac_unix): pass
+mac_custom.word_fmt = '%.2X'
 
 #################################################################################
 ####################### DNS NAME Pair ###########################################
@@ -16,10 +21,17 @@ import datetime
 
 #
 @login_required
-def dns_namepair_simpleAdd(request):
-	return handlePopAdd(request, Register_namepair_Form, 'services')
+def dns_namepair_simpleAdd(request, pair_id):
+	try:
+		pair_id = int(pair_id)
+	except ValueError:
+		raise Http404()	
+	return handlePopAdd(request, Register_service_Form, 'services', pair_id)
 #handle pop_up
-def handlePopAdd(request, addForm, field):
+def handlePopAdd(request, addForm, field, original_id):
+	original_machine = DNS_names.objects.get(id = original_id)
+	ip_pair = original_machine.ip_pair
+	mn_pair = original_machine.machine_name
 	if request.method == "POST":
 		form = addForm(request.POST)
 		if form.is_valid():
@@ -28,19 +40,23 @@ def handlePopAdd(request, addForm, field):
 			except forms.ValidationError, error:
 				newObject = None
 			if newObject:
-				if newObject['dns_typ'] == "1BD":
-					sign = " <=> "
-				elif newObject['dns_typ'] == "2NA":
-					sign = " <== "
-				else:
-					sign = " ==> "
-				display = newObject['dns_expr'] + sign + IP(newObject['ip_pair']).strNormal(1) 
+				now = datetime.datetime.today()
+				newService = DNS_names(machine_name	= newObject['service_name'],
+							ip_pair		= original_machine.ip_pair,
+							dns_type	= "2NA",
+							is_active 	= bool(1),
+							is_ipv6 	= original_machine.is_ipv6,
+							time_created 	= now,
+							description 	= newObject['dscr']								
+							)
+				newService.save()					
+				display = "Added " + " " + newObject['service_name']
 				return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script> <p>Test to display.</p>' %\
 					(newObject, display )) #._get_pk_val()
-	else:
+	else:		
 		form = addForm(initial = {})
-		
-	pageContext = {'form': form, 'field': field}
+	
+	pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':ip_pair}
 	return render_to_response("qmul_dns_create_simple.html", pageContext)
 
 #Add an IP-name pair to model
@@ -88,10 +104,9 @@ def dns_namepair_add(request):
 									description 	= service_add['dscr']								
 									)
 					registered_services.save()			
-					#for k, v in item.iteritems():						
-					#registered_services.append(item)					
-				#return HttpResponse(listings)					
-			return render_to_response('qmul_dhcp.html', {})
+					
+			regServices = DNS_names.objects.filter(ip_pair = namepair_registered.ip_pair).exclude(id = namepair_registered.id)	
+			return render_to_response('qmul_dns_view_namepair.html', {'machine': namepair_registered, 'machinelists':regServices})
 	else:
 		form = Register_namepair_Form(initial = {})
 	return render_to_response('qmul_dns_create_namepair.html',{'form':form })
@@ -139,7 +154,8 @@ def dns_namepair_view(request, pair_id):
 	except ValueError:
 		raise Http404()	
 	regpair = DNS_names.objects.get(id = pair_id)
-	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair})
+	regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
+	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists': regServices})
 
 #delete a single record 
 @login_required
@@ -297,7 +313,7 @@ def dhcp_page_IP_range_edit(request, ip_id):
 			return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
 	else:
 		regmachine = DHCP_ip_pool.objects.get(id = ip_id)		
-		editform = Register_IP_range_Form(initial = {'IP_range':regmachine.IP_pool,'dscr':regmachine.description})	
+		editform = Register_IP_range_Form(initial = {'IP_range1':regmachine.IP_pool1,'IP_range2':regmachine.IP_pool2,'dscr':regmachine.description})	
 	return render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
 
 #################################################################################
@@ -322,8 +338,8 @@ def dhcp_page_machine_edit(request, m_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			regmachine = DHCP_machine.objects.get(id = m_id)
-			regmachine.MAC_pair 	= info['mcID']
-			regmachine.IP_pair	= info['ipID']
+			regmachine.MAC_pair 	= str(EUI(info['mcID'], dialect=mac_custom))
+			regmachine.IP_pair	= str(IPAddress(info['ipID']))
 			regmachine.PC_pair	= info['pcID']
 			regmachine.description	= info['dscr']
 			regmachine.save()
@@ -398,16 +414,16 @@ def dhcp_page_machine_add(request):
 		form = RegisterMachineForm(request.POST)
 		if form.is_valid():
 			now = datetime.datetime.today()
-			info = form.cleaned_data
-			machine_registered = DHCP_machine(	MAC_pair = info['mcID'],
-								IP_pair	= info['ipID'],
+			info = form.cleaned_data			
+			machine_registered = DHCP_machine(	MAC_pair = str(EUI(info['mcID'], dialect=mac_custom)),
+								IP_pair	= str(IPAddress(info['ipID'])),
 								PC_pair = info['pcID'],
 								time_created = now,
 								description = info['dscr']
 								)
 		
 			machine_registered.save()					
-			return render_to_response('qmul_dhcp.html', {})
+			return render_to_response('qmul_dhcp_viewmachine.html', {'machine': machine_registered})
 	else:
 		form = RegisterMachineForm(initial = {})
 		

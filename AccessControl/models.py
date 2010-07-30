@@ -38,7 +38,7 @@ class DNS_names(models.Model):							#DNS NAMING MODEL
 
 
 class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
-	MAC_pair	= models.CharField('MAC Address',max_length = 12)	#DHCP MAC address 
+	MAC_pair	= models.CharField('MAC Address',max_length = 40)	#DHCP MAC address 
 	IP_pair		= models.CharField('IP Address', max_length = 40)	#DHCP IP address 
 	PC_pair		= models.CharField('PC Name',max_length = 12)		#DHCP PC name
 #add	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6

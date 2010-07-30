@@ -28,7 +28,7 @@ urlpatterns = patterns('',
 	(r'^dns/registered_DNS_pairs$', views.dns_namepair_listing),			#dns - 
 	(r'^dns/edit_DNS_pair/(\d{1,3})/$', views.dns_namepair_edit),			#dns - 
 	(r'^dns/delete_DNS_pair/(\d{1,3})/$', views.dns_namepair_delete),		#dns - 
-	(r'^dns/add/?$', views.dns_namepair_simpleAdd),
+	(r'^dns/add/(\d{1,3})/$', views.dns_namepair_simpleAdd),
 	
 	#####################################################
 	##################DHCP Pages#########################

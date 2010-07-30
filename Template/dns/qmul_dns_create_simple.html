@@ -1,23 +1,24 @@
 <html>
 <head>
-	<title>Add {{ field }}</title>
+	<title>Add service to {{ mach }} @ {{ ip }}</title>
 	<script type="text/javascript" src="/site_media/js/RelatedObjectLookups.js"></script>
 	<link rel="stylesheet" type="text/css" href="/site_media/css/qmul_document.css" />
 	</head>
 <body>
 	<!div id="maincontent">
 	<!div class="innertube">	
-		<h1>Add {{ field }}</h1>
+		<h1>Add service to {{ mach }} @ {{ ip }}</h1>
 		<form method="POST" action="" enctype="multipart/form-data">
-		{% for field in form %}
+		{% for field in form %}		
 		<div class="fieldwrapper">
 			<label class="styled">{{field.label}}</label>
 			<div class="thefield">{{field}}</div><br>
 			<p>{% if field.errors %}
 				{{ field.errors }}
 			{% endif %}
-			</p>
+			</p>			
 		</div>
+		
 		{% endfor %}
 		<p><input type="submit" value="Add"/> | <a href="javascript:window.close()">Cancel</a></p>
 		</form>

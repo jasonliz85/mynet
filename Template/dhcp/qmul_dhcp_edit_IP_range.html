@@ -23,6 +23,13 @@
 				{{form.IP_range1.errors}}
 			{% endif %}
 		{% endif %}
+		{% if form.IP_range2.errors %}
+			{% if form.IP_range1.errors %}
+				{{form.IP_range1.errors}}
+			{% else %}
+				{{form.IP_range2.errors}}
+			{% endif %}
+		{% endif %}
 		</p>
 	</div>
 	<div class="fieldwrapper">

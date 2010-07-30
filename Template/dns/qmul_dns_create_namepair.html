@@ -18,23 +18,10 @@
 			</p>
 		</div>
 	{% endfor %}
-	<div class="fieldwrapper">
-	<label class="styled">Services</label>	
-	</div>
-	<div class="fieldwrapper">		
-		<label class="styled" style = "text-align:center; border-bottom: 0px; "> Add
-			<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/"> 
-			<img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
-			</a>
-		</label>
-		<div class="thefield" > 
-			<select class="addservice" id="services" name="service_add" multiple="multiple"></select>		
-		</div>		
-	</div>
-	<div class = "buttonsdiv">
-		<input type="submit" value="Register"><br/>	
-	</div>
+		<div class = "buttonsdiv">
+			<input type="submit" value="Register"><br/>	
+		</div>	
 	</form>
-
+	
 		
 {% endblock %}

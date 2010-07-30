@@ -309,7 +309,6 @@ div.fieldwrapper div.thefield textarea{ /* style for TEXTAREA fields. */
 	width: 300px;
 	height: 75px;
 }
-
 div.fieldwrapper div.thefield select { /* style for TEXTAREA fields. */
 	width: 500px;
 	overflow: visible; 
