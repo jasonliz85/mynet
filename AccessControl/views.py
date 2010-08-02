@@ -67,7 +67,7 @@ def dns_namepair_add(request):
 		if form.is_valid():
 			now = datetime.datetime.today()
 			info = form.cleaned_data
-			if (IP(info['ip_pair']).version() == 6):
+			if (IPAddress(info['ip_pair']).version == 6):
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)
@@ -75,7 +75,7 @@ def dns_namepair_add(request):
 			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
 				tp = '1BD'
 			namepair_registered = DNS_names(machine_name	= info['dns_expr'],
-							ip_pair		= IP(info['ip_pair']).strNormal(1),
+							ip_pair		= str(IPAddress(info['ip_pair'])),
 							dns_type	= tp,
 							is_active 	= bool(1),
 							is_ipv6 	= ipVersion,
@@ -88,7 +88,7 @@ def dns_namepair_add(request):
 				#		
 				for item in add_service:
 					service_add = eval(item)
-					if (IP(service_add['ip_pair']).version() == 6):
+					if (IPAddress(service_add['ip_pair']).version == 6):
 						ipVersion = bool(1)
 					else:
 						ipVersion = bool(0)
@@ -96,7 +96,7 @@ def dns_namepair_add(request):
 					if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
 						tp = '1BD'
 					registered_services = DNS_names( machine_name	= service_add['dns_expr'],
-									ip_pair		= IP(service_add['ip_pair']).strNormal(1),
+									ip_pair		= str(IPAddress(service_add['ip_pair'])),
 									dns_type	= tp,
 									is_active 	= bool(1),
 									is_ipv6 	= ipVersion,
@@ -134,7 +134,8 @@ def dns_namepair_listing(request):
 						return render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : registered_pairs })
 					else:
 						regmachine = DNS_names.objects.get(id = item_selected[0])
-						return render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine})
+						regServices = DNS_names.objects.filter(ip_pair = regmachine.ip_pair).exclude(id = regmachine.id)
+						return render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine, 'machinelists':regServices})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
 					return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs })	
@@ -185,16 +186,17 @@ def dns_namepair_edit(request, pair_id):
 			info = editform.cleaned_data
 			regpair = DNS_names.objects.get(id = pair_id)
 			regpair.machine_name	= info['dns_expr']
-			regpair.ip_pair		= IP(info['ip_pair']).strNormal(1)
+			regpair.ip_pair		= str(IPAddress(info['ip_pair']))
 			regpair.description	= info['dscr']
-			if (IP(info['ip_pair']).version() == 6):
+			if (IPAddress(info['ip_pair']) == 6):
 				regpair.is_ipv6 = bool(1)
 			else:
 				regpair.is_ipv6 = bool(0)
 			now = datetime.datetime.today()
 			regpair.time_modified = now
 			regpair.save()
-			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair})
+			regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
+			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 	else:
 		regpair = DNS_names.objects.get(id = pair_id)		
 		editform = Register_namepair_Form(initial = {'dns_expr':regpair.machine_name,'ip_pair':regpair.ip_pair,'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
@@ -212,19 +214,19 @@ def dhcp_page_IP_range_add(request):
 		if form.is_valid():
 			now = datetime.datetime.today()
 			info = form.cleaned_data
-			if (IP(info['IP_range1']).version() == 6):
+			if (IPAddress(info['IP_range1']).version == 6):
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)				
-			IP_pool_registered = DHCP_ip_pool(	IP_pool1	= IP(info['IP_range1']).strNormal(1),
-								IP_pool2	= IP(info['IP_range2']).strNormal(1),
+			IP_pool_registered = DHCP_ip_pool(	IP_pool1	= str(IPAddress(info['IP_range1'])),
+								IP_pool2	= str(IPAddress(info['IP_range2'])),
 								is_active 	= bool(1),
 								is_ipv6 	= ipVersion,
 								time_created 	= now,
 								description 	= info['dscr']								
 								)		
 			IP_pool_registered.save()					
-			return render_to_response('qmul_dhcp.html', {})
+			return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
 	else:
 		form = Register_IP_range_Form(initial = {})
 
@@ -300,10 +302,10 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			regpool = DHCP_ip_pool.objects.get(id = ip_id)
-			regpool.IP_pool1	= IP(info['IP_range1']).strNormal(1)
-			regpool.IP_pool2	= IP(info['IP_range2']).strNormal(1)
+			regpool.IP_pool1	= str(IPAddress(info['IP_range1']))
+			regpool.IP_pool2	= str(IPAddress(info['IP_range2']))
 			regpool.description	= info['dscr']
-			if (IP(info['IP_range1']).version() == 6):
+			if (IPAddress(info['IP_range1']).version == 6):
 				regpool.is_ipv6 = bool(1)
 			else:
 				regpool.is_ipv6 = bool(0)

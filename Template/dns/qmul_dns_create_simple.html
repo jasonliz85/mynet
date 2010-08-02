@@ -1,11 +1,19 @@
 <html>
+
 <head>
+	<style type="text/css"> 
+	#AdditionalPage { 
+		color: black; 
+		font-family: sans-serif; 
+	}
+	</style>
 	<title>Add service to {{ mach }} @ {{ ip }}</title>
 	<script type="text/javascript" src="/site_media/js/RelatedObjectLookups.js"></script>
+	
 	<link rel="stylesheet" type="text/css" href="/site_media/css/qmul_document.css" />
 	</head>
 <body>
-	<!div id="maincontent">
+	<div id="AdditionalPage">
 	<!div class="innertube">	
 		<h1>Add service to {{ mach }} @ {{ ip }}</h1>
 		<form method="POST" action="" enctype="multipart/form-data">
@@ -23,7 +31,7 @@
 		<p><input type="submit" value="Add"/> | <a href="javascript:window.close()">Cancel</a></p>
 		</form>
 	<!/div>
-	<!/div>	
+	</div>	
 	
 </body>
 </html>

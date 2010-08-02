@@ -49,10 +49,10 @@
 		<thead>
 			<tr>
 			<th>
-			<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
+				<a>IP Address </a>
 			</th>
 			<th>
-				<a>IP Address </a>
+				<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
 			</th>
 			<th>
 				<a href="?ot=asc&amp;o=1">   Type </a>
@@ -71,24 +71,46 @@
 		<tbody>
 		{% for machinelist in machinelists %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
+				<td>{% ifchanged machinelist.ip_pair%} {{ machinelist.ip_pair }} {% endifchanged %} </td>
+				<!td><!{% ifequal machinelist.dns_type '1BD' %} {{ machinelist.ip_pair }} {% endifequal %} </td>
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<th><a href="/dns/view_DNS_pair/{{machinelist.id}}"> {{ machinelist.ip_pair }} </a></th>
-				<td align = center> 	{% ifequal machinelist.dns_type '1BD' %} <img border="0" width="35" height="35" src="/site_media/images/bd.png" alt="bidirectional">
-							{% else %} 
-								{% ifequal machinelist.dns_type '2NA' %} <img border="0" width="35" height="35" src="/site_media/images/an.png" alt="address-name"> 
-								{% else %} <img border="0" width="35" height="35" src="/site_media/images/na.png" alt="name-address">
-								{% endifequal %}
-							{% endifequal %}</td>
-				
+				<td align = center> 	
+					<a href="/dns/view_DNS_pair/{{machinelist.id}}"> 
+					{% ifequal machinelist.dns_type '1BD' %} 
+						<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional">
+					{% else %} 
+						{% ifequal machinelist.dns_type '2NA' %} 
+							<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> 
+						{% else %} 
+							<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address">
+						{% endifequal %}
+					{% endifequal %}</td>
+					</a>				
 				<td name="IP">{{ machinelist.machine_name }}</td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
 				<td class="nowrap">{{ machinelist.time_created }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
+		<tfoot>
+			<tr> 
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tfoot>
 		</table>
 
 	</form>
+	
+	<p> 
+	<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional"> Bi-directional IP mapping | 
+	<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> Machine name to IP address mapping | 
+	<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address"> IP address to machine name mapping
+	</p>
+	
+	
 	{% endif %}
 		
 {% endblock %}

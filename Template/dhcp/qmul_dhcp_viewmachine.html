@@ -21,7 +21,11 @@
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Description</label>
-		<div class="thefield">{{machine.description}}</div> <br>	
+		{% if not machine.description %}
+		<div class="thefield">None</div> <br>
+		{% else %}		
+		<div class="thefield">{{machine.description}}</div> <br>
+		{% endif %}	
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Time Created</label>

@@ -67,12 +67,13 @@ class Register_namepair_Form(forms.Form):
 	def clean_ip_pair(self):
 		ip_pair = self.cleaned_data['ip_pair']
 		try: 
-			IP(ip_pair)
-	   	except (ValueError, NameError, TypeError): 
+			IPAddress(ip_pair)
+   		except (NameError, TypeError, AddrFormatError): 
 	   		raise forms.ValidationError("IP address is not valid. Please change and try again. ")
-   		if IP(ip_pair).len() > 1:
-	   		raise forms.ValidationError("Please enter a single IP address, not a range. ")
+	   	except ValueError:
+	   		raise forms.ValidationError("Netmasks or subnet prefixes are not allowed. ")
 	   	return ip_pair
+	   	
 class Register_service_Form(forms.Form):
 	service_name 	= forms.CharField(label = 'Machine Name', widget = forms.TextInput(attrs={'class':'special', 'size':'10'}))		#DNS name regular expression
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')

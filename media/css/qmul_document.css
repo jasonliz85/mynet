@@ -330,6 +330,9 @@ table {
 	border-color:#CCCCCC;
 	border: 1px solid #DDDDDD;
 }
+tbody td {
+	border-left:1px solid #DDDDDD;
+}
 td, th {
 	border-bottom:1px solid #EEEEEE;
 	font-family:"Lucida Grande",Verdana,Arial,sans-serif;
@@ -348,6 +351,16 @@ thead th, tfoot td {
 	border-bottom:1px solid #DDDDDD;
 	border-left:1px solid #DDDDDD;
 	color:#666666;
+	font-size:100%; /*11px;*/
+	padding:5px 5px;
+}
+
+thead td {
+	background:url("../images/nav-bg-reverse.gif") repeat-x scroll left top #E1E1E1;
+	border-bottom:1px solid #DDDDDD;
+	border-left:1px solid #DDDDDD;
+	color:#666666;
+	/*background-color: #F8F8F8;*/
 	font-size:100%; /*11px;*/
 	padding:2px 5px;
 }

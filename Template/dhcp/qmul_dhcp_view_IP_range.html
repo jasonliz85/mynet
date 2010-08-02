@@ -16,13 +16,13 @@
 		<label class="styled">IP version</label>
 		<div class="thefield">{% if machine.is_ipv6 %} 6 {% else %}  4 {% endif %}</div> <br>
 	</div>
-	<div class="fieldwrapper">
+	<div class="fieldwrapper"> 
 		<label class="styled">Description</label>
+		{% if not machine.description %}
+		<div class="thefield">None</div> <br>
+		{% else %}		
 		<div class="thefield">{{machine.description}}</div> <br>
-	</div>
-	<div class="fieldwrapper">
-		<label class="styled">Date Modified</label>
-		<div class="thefield">{{machine.time_modified}}</div> <br>
+		{% endif %}
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Time Created</label>

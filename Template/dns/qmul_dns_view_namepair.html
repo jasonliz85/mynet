@@ -28,7 +28,12 @@
 		</div>
 		<div class="fieldwrapper">
 			<label class="styled">Description</label>
+			{% if not machine.description %}
+			<div class="thefield">None</div> <br>
+			{% else %}		
 			<div class="thefield"><textarea readonly="readonly">{{machine.description}}</textarea></div> <br>
+			{% endif %}
+			
 		</div>
 		<div class="fieldwrapper">
 			<label class="styled">Time Created</label>
@@ -37,24 +42,34 @@
 		<div class="fieldwrapper">
 			<label class="styled">Services</label>	
 			<div class="thefield"> 
-				<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > ADD SERVICE
-				<img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
-				</a>
+				<!a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > 
+				<!img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
+				<!/a>
 			</label>
 			</div>			
 		</div>
 		{% if machinelists %}
-		<table cellspacing="0" width = "500">
+		<br>
+		<table cellspacing="0" width = "600">
 			<thead>	
+			<tr> 
+				<td>
+				<img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
+				<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > ADD SERVICE
+				</td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
 			<tr>
 				<th>
-					<a>Machine Name </a>
+					<a> IP Address </a>
 				</th>
 				<th>
 					<a>   Type </a>
 				</th>
 				<th>
-					<a> IP Address </a>
+					<a> Machine Name </a>
 				</th>
 				<th> 
 					<a> IP version </a>
@@ -64,29 +79,48 @@
 			<tbody>
 			{% for machinelist in machinelists %}
 				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
-					<td> {{ machinelist.machine_name }}</td>
-					<td align = center> 	<a href="/dns/view_DNS_pair/{{machinelist.id}}">{% ifequal machinelist.dns_type '1BD' %} <img border="0" width="20" height="20" src="/site_media/images/bd.png" alt="bidirectional">
-								{% else %} 
-									{% ifequal machinelist.dns_type '2NA' %} <img border="0" width="20" height="20" src="/site_media/images/an.png" alt="address-name"> 
-									{% else %} <img border="0" width="20" height="20" src="/site_media/images/na.png" alt="name-address">
-									{% endifequal %}
-								{% endifequal %}</td>
-								</a>
-				
 					<td> {{ machinelist.ip_pair }} </td>
+					<td align = center> 	
+						<a href="/dns/view_DNS_pair/{{machinelist.id}}">
+						{% ifequal machinelist.dns_type '1BD' %} 
+							<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional">
+						{% else %} 
+							{% ifequal machinelist.dns_type '2NA' %} 
+								<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> 
+							{% else %} 
+								<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address">
+							{% endifequal %}
+						{% endifequal %}</td>
+						</a>				
+					<td> {{ machinelist.machine_name }}</td>
 					<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
+			<tfoot>
+				<tr> 
+					<td>
+					<img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
+					<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > ADD SERVICE
+					</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>
 		</table>
 		{% endif %}
-		<div class="fieldwrapper">		
-			<div class="thefield" > 
-				<select class="addservice" id="services" name="service_add" multiple="multiple"></select>		
-			</div>		
+		<!div class="fieldwrapper">		
+			<!div class="thefield" > 
+				<!select class="addservice" id="services" name="service_add" multiple="multiple"><!/select>		
+			<!/div>		
 		</div>
 	</div>
-	
+	<p> 
+	<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional"> Bi-directional IP mapping | 
+	<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> Machine name to IP address mapping | 
+	<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address"> IP address to machine name mapping
+	</p>
 	
 	<p class = "EditDeleteBack"> 
 		<a href="/dns/edit_DNS_pair/{{machine.id}}"> Edit<a> |
