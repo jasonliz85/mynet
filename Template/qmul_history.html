@@ -1,17 +1,73 @@
 {% extends "qmul_doc_base.html" %}
 
-{% block title %}MyNET Home Page{% endblock %}
+{% block title %}MyNET Recent Activities{% endblock %}
 
 {% block groupname %}  {% endblock %}
 
 {% block content %}
 
 	<h2><a name="status">History</a></h2>
-
-	<h3> Recent Activities </h3>
-	<p> {{ hMessage }}</p>
-
-
+	<p> Review and manage changes made to {% ifequal netgroupno 1 %} this network group{% else %} these network groups{% endifequal %}. </p>	
+	{{ historyLogs }}
+	{% if not hMessage %}
+	<ul class = "highlight"><li> There are no recent changes to this group </ul><li>
+	{% else %} 
+	<form method="post" class = viewbackform action="">	
+		<div class="actions">
+			
+			<label>Action: 
+				{{form.status}}
+			</label>
+			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete?');" title="Run the selected action" class="button" type="submit" >Go</button>
+		</div>  
+		<br>
+		<table cellspacing="0">
+		<thead>
+			<tr>
+			<th>
+				<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
+			</th>
+			<th>
+				<a> Time Modified</a>
+			</th>
+			<th>
+				<a> Action </a>
+			</th>
+			<th>
+				<a> User </a>
+			</th>
+			<th> 
+				<a> Values Before </a>
+			</th>
+			<th>
+				<a> Values After </a>
+			</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for historyLog in historyLogs %}
+			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
+				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
+				<td> {{ historyLog.TimeOccured }} </td>
+				<td align = center> {{ historyLog.ActionType }} </td>
+				<td>{{ historyLog.NetUser }}</td>
+				<td>{{ historyLog.ValuesBefore }}</td>
+				<td>{{ historyLog.ValuesAfter }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr> 
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tfoot>
+		</table>
+	</form>
+	{% endif %}
+	
 {% endblock %}
 
 

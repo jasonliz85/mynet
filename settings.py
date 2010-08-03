@@ -80,4 +80,5 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'mynet.AccessControl',
+    'mynet.HistoryLog',
 )

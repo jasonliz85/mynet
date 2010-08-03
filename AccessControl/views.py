@@ -1,7 +1,8 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
-from mynet.AccessControl.models import DHCP_machine, DHCP_ip_pool, DNS_names, test_machine
+from mynet.AccessControl.models import *
+from mynet.HistoryLog.models import *
 from mynet.AccessControl.forms import * 
 #RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
@@ -15,6 +16,29 @@ import datetime
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
 
+def DeleteAndLogRecord(m_id, Model_Name):
+	mDelete = []
+	DeleteRecord = Model_Name.objects.filter(id = m_id) #vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
+	mDelete.append(DeleteRecord)
+	vals = DeleteRecord.values()
+	DeleteRecord.delete()	
+	#LogEvent('aaw111','Program Development', 'D',str(vals), "NONE")
+	return mDelete
+	
+def LogEvent(user,ngroup,action,val_bef, val_aft):
+	FindNetGroup = netgroup.objects.get(name = ngroup)
+	FindUser     = usrname.objects.get(uname = user)
+	now = datetime.datetime.today()
+	newEvent = log( NetGroupName 		= FindNetGroup,
+			NetUser		 	= FindUser,
+			TimeOccured		= now,
+			ActionType		= action,	
+			ValuesBefore		= val_bef,
+			ValuesAfter		= val_aft
+			)
+	newEvent.save()
+	return 
+	
 #################################################################################
 ####################### DNS NAME Pair ###########################################
 #################################################################################
@@ -59,7 +83,7 @@ def handlePopAdd(request, addForm, field, original_id):
 	pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':ip_pair}
 	return render_to_response("qmul_dns_create_simple.html", pageContext)
 
-#Add an IP-name pair to model
+#Add an IP-name pair to modelquery set
 @login_required
 def dns_namepair_add(request):
 	if request.method == 'POST':
@@ -80,7 +104,7 @@ def dns_namepair_add(request):
 							is_active 	= bool(1),
 							is_ipv6 	= ipVersion,
 							time_created 	= now,
-							description 	= info['dscr']								
+					#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)		description 	= info['dscr']								
 							)		
 			namepair_registered.save()
 			add_service = request.POST.getlist('service_add')
@@ -165,13 +189,18 @@ def dns_namepair_delete(request, pair_id):
 		pair_id = int(pair_id)
 	except ValueError:
 		raise Http404()		
-	now = datetime.datetime.today()
 	mDelete = []
-	DeleteRecord = DNS_names.objects.get(id = pair_id)
-	mDelete.append(DeleteRecord)	
+	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names))
 	mlength = len(mDelete)
-	DeleteRecord.delete()
 	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
+	#now = datetime.datetime.today()
+	#mDelete = []
+	#DeleteRecord = DNS_names.objects.get(id = pair_id)
+	#mDelete.append(DeleteRecord)	
+	#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
+	#LogEvent('aaw111','Program Development', 'D',str(vals), "NONE")	
+	#DeleteRecord.delete()
+
 
 #edit a single record
 @login_required

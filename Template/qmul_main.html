@@ -7,12 +7,16 @@
 {% block content %}
 
 	<h2><a name="status">Overview</a></h2>
-	</p>
+	
 	<p> Hello {{ userInfo.first_name }} {{ userInfo.last_name }}, </p>
-	
+		 
 	<p>You belong to the folowing groups:</p>
-	<p> {{ userInfo.group_list }} </p>
-	
+	<p> 
+	{%for info in GroupInfo %}
+		<ls>{{ info }} </ls>
+	{% endfor %}
+	 </p>
+
 
 	<h3><a>Network Details</a></h3>
 	<p>Here contains the details of all the network configuration details.</p>

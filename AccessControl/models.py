@@ -31,7 +31,8 @@ class DNS_names(models.Model):							#DNS NAMING MODEL
 	description 	= models.TextField(blank=True, null=True)		#DNS name description
 
 	def __unicode__(self):
-		return u'%s-%s-%s' % (self.machine_name, self.is_active, self.time_created)
+		return u'\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\''% (self.machine_name, self.ip_pair, self.is_ipv6, self.dns_type, self.description)
+		#return u'%s-%s-%s' % (self.machine_name, self.is_active, self.time_created)
 	
 	class Meta:
         	ordering = ['ip_pair','dns_type']

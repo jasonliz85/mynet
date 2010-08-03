@@ -27,13 +27,14 @@ def home(request):
 	userInfo["username"] = request.user.username
 	userInfo["first_name"] = request.user.first_name
 	userInfo["last_name"] = request.user.last_name
-	userInfo["group_list"] = request.user.groups.all()
-	return render_to_response('qmul_main.html', {'userInfo': userInfo})
-@login_required
-def history(request):
-	historyMessage = {}
-	#historyMessage["message"] = request.user.message_get.all() try actions
-	return render_to_response('qmul_history.html', {"hMessage": historyMessage})
+	Groups = request.user.groups.all().values()
+	GroupNames = []
+	for i in range(0,len(Groups)):
+		GroupNames.append(Groups[i]['name'])#[str(Groups[i]['id'])] = Groups[i]['name']
+		
+	
+	return render_to_response('qmul_main.html', {'userInfo': userInfo, 'GroupInfo':GroupNames})
+
 @login_required
 def dhcp_page(request):
 	return render_to_response('qmul_dhcp.html', {})
