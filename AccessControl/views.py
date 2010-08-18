@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
+from mynet.HistoryLog.views import LogEvent
 from mynet.AccessControl.forms import * 
 #RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
@@ -16,28 +17,38 @@ import datetime
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
 
-def DeleteAndLogRecord(m_id, Model_Name):
-	mDelete = []
-	DeleteRecord = Model_Name.objects.filter(id = m_id) #vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
-	mDelete.append(DeleteRecord)
-	vals = DeleteRecord.values()
-	DeleteRecord.delete()	
-	#LogEvent('aaw111','Program Development', 'D',str(vals), "NONE")
-	return mDelete
+def EditAndLogRecord(m_id, model_name): 
+	"""
+	This function edits a Record in the database and logs the event in the HistoryLog db
+		values: m_id = unique id of record in db, model_name = name of the table in db
+	"""
+	return
 	
-def LogEvent(user,ngroup,action,val_bef, val_aft):
-	FindNetGroup = netgroup.objects.get(name = ngroup)
-	FindUser     = usrname.objects.get(uname = user)
-	now = datetime.datetime.today()
-	newEvent = log( NetGroupName 		= FindNetGroup,
-			NetUser		 	= FindUser,
-			TimeOccured		= now,
-			ActionType		= action,	
-			ValuesBefore		= val_bef,
-			ValuesAfter		= val_aft
-			)
-	newEvent.save()
+def AddAndLogRecord(m_id, model_name):
+	"""
+	This function adds a Record in the database and logs the event in the HistoryLog db
+		values: m_id = unique id of record in db, model_name = name of the table in db
+	"""
 	return 
+	
+def DeleteAndLogRecord(m_id, Model_Name, request):
+	"""
+	This function deletes a Record in the database and logs the event in the HistoryLog db. It returns 
+	a list of the fields and values that were deleted.
+		values: m_id = unique id of record in db, model_name = name of the table in db
+	"""
+	returnRecordList = []
+	DeleteRecord = Model_Name.objects.filter(id = m_id) 
+	vals = DeleteRecord.values()
+	init_values = str(vals[0])
+	final_values = ""
+	uname = request.user.username
+	returnRecordList.append(DeleteRecord)
+	DeleteRecord.delete()
+	LogEvent('D',init_values, final_values, False, uname, "")
+		
+	return DeleteRecord
+	#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
 	
 #################################################################################
 ####################### DNS NAME Pair ###########################################
@@ -140,7 +151,7 @@ def dns_namepair_add(request):
 def dns_namepair_listing(request):
 	registered_pairs =  DNS_names.objects.all()#.order_by("dns_type")
 	if request.method == 'POST':
-		actionForm = ViewMachinesActionForm(request.POST)	
+		actionForm = ViewMachinesAction(request.POST)	
 		action = request.POST['status']
 		if actionForm.is_valid():
 			item_selected = request.POST.getlist('cbox_id')
@@ -190,18 +201,9 @@ def dns_namepair_delete(request, pair_id):
 	except ValueError:
 		raise Http404()		
 	mDelete = []
-	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names))
+	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request))
 	mlength = len(mDelete)
 	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
-	#now = datetime.datetime.today()
-	#mDelete = []
-	#DeleteRecord = DNS_names.objects.get(id = pair_id)
-	#mDelete.append(DeleteRecord)	
-	#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
-	#LogEvent('aaw111','Program Development', 'D',str(vals), "NONE")	
-	#DeleteRecord.delete()
-
-
 #edit a single record
 @login_required
 def dns_namepair_edit(request, pair_id):

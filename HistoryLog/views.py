@@ -2,6 +2,31 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
+from django.contrib.auth.models import Group, User
+
+import datetime
+
+
+def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname):
+	"""
+	This function logs an event  a Record in the database and logs the event in the HistoryLog db. It returns 
+	a list of the fields and values that were deleted.
+		values: m_id = unique id of record in db, model_name = name of the table in db
+	"""
+	
+	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
+	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
+	now = datetime.datetime.today()
+	newEvent = log( #NetGroupName 		= currentNetGroup,
+			NetUser		 	= currentUser,
+			TimeOccured		= now,
+			ActionType		= action,	
+			ValuesBefore		= val_bef,
+			ValuesAfter		= val_aft,
+			IsBulk 			= is_bulk
+		)	
+	newEvent.save()
+	return 
 
 @login_required
 def history(request):

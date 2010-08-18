@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.auth.models import Group
+
 class test_machine(models.Model):
 	MAC_pair	= models.CharField('MAC Address',max_length = 12)	#MAC address 
 	IP_pair		= models.IPAddressField('IP Address')			#IP address 
@@ -8,12 +10,7 @@ class test_machine(models.Model):
 	def __unicode__(self):
 		return u'%s-%s-%s' % (self.MAC_pair, self.IP_pair, self.PC_pair)
 		
-class DNS_expr(models.Model):
-	expression 	= models.CharField('expression', max_length = 30)	#DNS name regular expression
-
-class DNS_ipval(models.Model):
-	ip_value	= models.CharField('name', max_length = 30)		#DNS ip address expression
-			
+		
 class DNS_names(models.Model):							#DNS NAMING MODEL
 	machine_name 	= models.CharField('DNS name', max_length = 30)		#DNS name regular expression
 	ip_pair		= models.CharField('IP Address', max_length = 40)	#DNs ip address pair
@@ -64,4 +61,62 @@ class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	description 	= models.TextField(blank=True, null=True)		#DHCP IP pool description
 	def __unicode__(self):
 		return u'%s %s %s %s' % (self.IP_pool, self.is_active, self.time_created, self.time_deleted )
+
+# ---- #
+class DNS_expr(models.Model):
+	expression 	= models.CharField('expression', max_length = 100, unique=True)	#DNS name regular expression
+	def __unicode__(self):
+		return self.expression
+
+class DNS_ipval(models.Model):
+	ip_value	= models.CharField('name', max_length = 100, unique=True)		#DNS ip address expression
+	def __unicode__(self):
+		return self.ip_value
+	
+class NetGroup(models.Model):
+	name		= models.CharField('Network Resource Group name', max_length=40, unique=True)
+	managed_by	= models.ManyToManyField(Group, blank=True)
+	address_blocks	= models.ManyToManyField(DNS_ipval, blank=True)
+	dns_patterns	= models.ManyToManyField(DNS_expr, blank=True)	
+	def __unicode__(self):
+		return self.name
+
+def get_netgroups_managed_by_user(user_obj):
+	"""
+	Returns a list of NetGroup objects which the user can manage
+	"""
+	if not hasattr(user_obj, '_netgroup_cache') or True:
+		netgroup_cache = []
+		print 'Starting loops'
+		for g in user_obj.groups.all():
+			print 'Group', g
+			for ng in g.netgroup_set.all():
+				print 'NetGroup', ng
+				if ng not in netgroup_cache: netgroup_cache.append(ng)
+		user_obj._netgroup_cache = netgroup_cache
+	return	user_obj._netgroup_cache
+
+def get_address_blocks_namaged_by(user_obj):
+	"""
+	Returns a list of IP address block objects which the user can manage
+	"""
+	if not hasattr(user_obj, '_address_blocks') or True:
+		address_blocks = []
+		for ng in get_netgroups_managed_by_user(user_obj):
+			for ab in ng.address_blocks.all():
+				if an not in address_blocks: address_blocks.append(ab)
+		user_obj._address_blocks = address_blocks
+	return	user_obj._address_blocks
+
+def get_dns_patterns_managed_by(user_obj):
+	"""
+	Returns a list of dns pattern objects which the user can manage
+	"""
+	if not hasattr(user_obj, '_dns_patterns') or True:
+		dns_patterns = []
+		for ng in get_netgroups_managed_by_user(user_obj):
+			for dp in ng.dns_patterns.all():
+				if dp not in address_blocks: dns_patterns.append(dp)
+		user_obj._dns_patterns = dns_patterns
+	return	user_obj._dns_patterns
 

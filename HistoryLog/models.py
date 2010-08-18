@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import Group, User
 
 class netgroup(models.Model):
 	name = models.CharField('Network Group Name', max_length=50)
@@ -16,16 +17,16 @@ class log(models.Model):
 		        ('D', 'DEL'), 	# deleted a record in model
 			('E', 'EDIT'), 	# edited a record in model
 			)
-	NetGroupName 	= models.ForeignKey(netgroup)
-	NetUser 	= models.OneToOneField(usrname)
+	#NetGroupName 	= models.ManyToManyField(Group, blank=True)
+	#TableName	= models.CharField('Table Name',max_length = 50)
+	NetUser		= models.ForeignKey(User, blank=True)
 	TimeOccured	= models.DateTimeField()
-	ActionType	= models.CharField(max_length = 1, choices = ACTION_CHOICES)	
-	ValuesBefore	= models.CharField(max_length = 500)
-	ValuesAfter	= models.CharField(max_length = 500)
-	#TableName	= models.CharField(max_length = 50)
-	#IsBulk		= models.BooleanField()
+	ActionType	= models.CharField('Action', max_length = 1, choices = ACTION_CHOICES)	
+	ValuesBefore	= models.CharField('Before',max_length = 500, blank=True, null=True)
+	ValuesAfter	= models.CharField('After',max_length = 500, blank=True, null=True)	
+	IsBulk		= models.BooleanField()
 	def __unicode__(self):
-		return u'%s %s %s' % (self.NetGroupName, self.NetUser, self.TimeOccured)
+		return u' %s %s' % ( self.NetUser, self.TimeOccured)
 
 	class Meta:
         	ordering = ['TimeOccured']

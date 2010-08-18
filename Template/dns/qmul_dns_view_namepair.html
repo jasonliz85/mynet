@@ -109,6 +109,17 @@
 				</tr>
 			</tfoot>
 		</table>
+		<p> 
+		<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional"> Bi-directional IP mapping | 
+		<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> Machine name to IP address mapping | 
+		<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address"> IP address to machine name mapping
+		</p>
+		{% else %} 
+		<div class = "fieldwrapper">
+		<div class = "thefield">None currently registered. 
+			<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > ADD SERVICE </a>
+		</div> 
+		</div>
 		{% endif %}
 		<!div class="fieldwrapper">		
 			<!div class="thefield" > 
@@ -116,11 +127,7 @@
 			<!/div>		
 		</div>
 	</div>
-	<p> 
-	<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional"> Bi-directional IP mapping | 
-	<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> Machine name to IP address mapping | 
-	<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address"> IP address to machine name mapping
-	</p>
+	
 	
 	<p class = "EditDeleteBack"> 
 		<a href="/dns/edit_DNS_pair/{{machine.id}}"> Edit<a> |

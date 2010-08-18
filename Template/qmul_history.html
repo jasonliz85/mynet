@@ -8,7 +8,7 @@
 
 	<h2><a name="status">History</a></h2>
 	<p> Review and manage changes made to {% ifequal netgroupno 1 %} this network group{% else %} these network groups{% endifequal %}. </p>	
-	{{ historyLogs }}
+	
 	{% if not hMessage %}
 	<ul class = "highlight"><li> There are no recent changes to this group </ul><li>
 	{% else %} 
@@ -49,8 +49,22 @@
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td> {{ historyLog.TimeOccured }} </td>
-				<td align = center> {{ historyLog.ActionType }} </td>
-				<td>{{ historyLog.NetUser }}</td>
+				<td align = center> 
+					{% ifequal historyLog.ActionType 'A' %} 
+						Added
+					{% else %} 
+						{% ifequal historyLog.ActionType 'D' %} 
+						Deleted
+						{% else %} 
+						Modified
+						{% endifequal %}
+					{% endifequal %} </td>
+				<td>
+				{% for user in historyLog.NetUser_set.auth_user %}
+    					{{ user }}
+				{% endfor %}				
+				{{ historyLog.NetUser }}
+				</td>
 				<td>{{ historyLog.ValuesBefore }}</td>
 				<td>{{ historyLog.ValuesAfter }}</td>
 			</tr>
