@@ -4,8 +4,30 @@ from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
 from django.contrib.auth.models import Group, User
 
-import datetime
-
+import datetime, json
+def new_and_changed_keys(val_bef, val_aft):
+	"""
+	This function compares two python dictionaries and returns the keys (as a list)
+	which are different in both dictionaries.
+	If the length of the returned list is 1 and value is "EMPTYDICT", then one or both
+	of the input dictionaries are empty.
+	"""
+	if len(val_bef) == 0 :
+		result = val_aft
+		return result
+	elif len(val_aft) == 0:
+		result = val_bef
+		return result
+	else:
+		result = list()	
+		for (key, value) in val_aft.iteritems():
+			try:
+				if val_bef[key] != value:
+					changes = str(val_bef[key] + " :: " + value)
+					result.append(changes)
+			except KeyError:
+				result.append(key)
+	return result
 
 def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname):
 	"""
@@ -30,8 +52,19 @@ def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname):
 
 @login_required
 def history(request):
-	historyMessage = {'IP': '192.12222.22'}
-	#historyLogs = {'TimeOccured':'2010-08-02 09:41:08.720640','ActionType':'EDIT','NetUser':'aaw099','NetGroupName':'NetworkGroup','ValuesBefore':'ip_pair:192.168.0.1','ValuesAfter':'ip_pair:192.168.0.100','TableName':'DNS_names', 'IsBulk':'0' }
-	historyLogs = log.objects.all().values()
-	#historyMessage["message"] = request.user.message_get.all() try actions
-	return render_to_response('qmul_history.html', {'hMessage': historyMessage, 'historyLogs':historyLogs, 'netgroupno':1})
+	#display all key information
+	historyLogs = log.objects.all() 
+	#extract values from query dictionary and compare difference
+	changed_list = list()
+	log_values = log.objects.all().values()
+	for i in range(len(log_values)):
+		#a = eval(log_values[i]['ValuesBefore'])
+		#b = eval(log_values[i]['ValuesAfter'])
+		a = json.loads(log_values[i]['ValuesBefore'])
+		b = json.loads(log_values[i]['ValuesAfter'])
+		changed_list.append(new_and_changed_keys(a,b))
+	
+	return render_to_response('qmul_history.html', {'historyLogs':historyLogs, 'netgroupno':1, 'changed_list':changed_list})
+	
+	
+	

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
-from mynet.HistoryLog.views import LogEvent
+from mynet.HistoryLog.views import *
 from mynet.AccessControl.forms import * 
 #RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
@@ -12,7 +12,7 @@ from netaddr import *
 from django.utils.html import escape 
 
 import django.forms as forms 
-import datetime
+import datetime, json
 
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
@@ -40,8 +40,8 @@ def DeleteAndLogRecord(m_id, Model_Name, request):
 	returnRecordList = []
 	DeleteRecord = Model_Name.objects.filter(id = m_id) 
 	vals = DeleteRecord.values()
-	init_values = str(vals[0])
-	final_values = ""
+	init_values = json.dumps(vals[0], sort_keys=True, indent=1) #str(vals[0])
+	final_values = json.dumps("{}", sort_keys=True, indent=1)#"{}"
 	uname = request.user.username
 	returnRecordList.append(DeleteRecord)
 	DeleteRecord.delete()
@@ -81,7 +81,7 @@ def handlePopAdd(request, addForm, field, original_id):
 							dns_type	= "2NA",
 							is_active 	= bool(1),
 							is_ipv6 	= original_machine.is_ipv6,
-							time_created 	= now,
+							#time_created 	= now,
 							description 	= newObject['dscr']								
 							)
 				newService.save()					
@@ -114,7 +114,7 @@ def dns_namepair_add(request):
 							dns_type	= tp,
 							is_active 	= bool(1),
 							is_ipv6 	= ipVersion,
-							time_created 	= now,
+							#time_created 	= now,
 					#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)		description 	= info['dscr']								
 							)		
 			namepair_registered.save()
@@ -135,7 +135,7 @@ def dns_namepair_add(request):
 									dns_type	= tp,
 									is_active 	= bool(1),
 									is_ipv6 	= ipVersion,
-									time_created 	= now,
+									#time_created 	= now,
 									description 	= service_add['dscr']								
 									)
 					registered_services.save()			
@@ -224,7 +224,7 @@ def dns_namepair_edit(request, pair_id):
 			else:
 				regpair.is_ipv6 = bool(0)
 			now = datetime.datetime.today()
-			regpair.time_modified = now
+			#regpair.time_modified = now
 			regpair.save()
 			regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
 			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
@@ -253,7 +253,7 @@ def dhcp_page_IP_range_add(request):
 								IP_pool2	= str(IPAddress(info['IP_range2'])),
 								is_active 	= bool(1),
 								is_ipv6 	= ipVersion,
-								time_created 	= now,
+								#time_created 	= now,
 								description 	= info['dscr']								
 								)		
 			IP_pool_registered.save()					
@@ -341,7 +341,7 @@ def dhcp_page_IP_range_edit(request, ip_id):
 			else:
 				regpool.is_ipv6 = bool(0)
 			now = datetime.datetime.today()
-			regpool.time_modified = now
+			#regpool.time_modified = now
 			regpool.save()
 			return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
 	else:
@@ -451,7 +451,7 @@ def dhcp_page_machine_add(request):
 			machine_registered = DHCP_machine(	MAC_pair = str(EUI(info['mcID'], dialect=mac_custom)),
 								IP_pair	= str(IPAddress(info['ipID'])),
 								PC_pair = info['pcID'],
-								time_created = now,
+								#time_created = now,
 								description = info['dscr']
 								)
 		

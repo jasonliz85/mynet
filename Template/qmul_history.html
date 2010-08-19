@@ -1,5 +1,4 @@
 {% extends "qmul_doc_base.html" %}
-
 {% block title %}MyNET Recent Activities{% endblock %}
 
 {% block groupname %}  {% endblock %}
@@ -9,7 +8,7 @@
 	<h2><a name="status">History</a></h2>
 	<p> Review and manage changes made to {% ifequal netgroupno 1 %} this network group{% else %} these network groups{% endifequal %}. </p>	
 	
-	{% if not hMessage %}
+	{% if not historyLogs %}
 	<ul class = "highlight"><li> There are no recent changes to this group </ul><li>
 	{% else %} 
 	<form method="post" class = viewbackform action="">	
@@ -37,10 +36,10 @@
 				<a> User </a>
 			</th>
 			<th> 
-				<a> Values Before </a>
+				<a> Network </a>
 			</th>
 			<th>
-				<a> Values After </a>
+				<a> Changes </a>
 			</th>
 			</tr>
 		</thead>
@@ -65,8 +64,49 @@
 				{% endfor %}				
 				{{ historyLog.NetUser }}
 				</td>
-				<td>{{ historyLog.ValuesBefore }}</td>
-				<td>{{ historyLog.ValuesAfter }}</td>
+				<td>
+				{#{ historyLog.ValuesBefore }#}
+				{#{ historyLog.ValuesAfter }#}
+				</td>
+				<td>
+				{% for list in changed_list  %}
+					{% ifequal forloop.parentloop.counter forloop.counter %}
+						{% ifequal historyLog.ActionType 'A' %}
+							Added a new record |
+							{{ list.ip_pair }}
+						{% else %}
+							{% ifequal historyLog.ActionType 'D' %}
+								Delete an old record |
+								{{ list|truncatewords:"2" }}
+							{% else %}
+								<style>
+								ul.CompactBullet {
+									list-style-type: circle;
+								 	/*background-color: black;*/
+									margin-left: 7px;
+									margin-top: 0px;
+									padding-left: 7px;
+									padding-top: 0px;
+								}
+								ul.CompactBullet li {
+						 			/*background-color: #C0C0C0;*/
+									margin-left: 0px;
+									padding-left: 0px;
+									padding-top: 2px;
+									margin-top: 0px;
+								}
+								</style>
+								<ul class="CompactBullet">
+								{% for i in list  %}
+									<li> {{ i }} </li>
+								{% endfor %}
+								</ul>
+							{% endifequal %}
+						{% endifequal %}
+					{% endifequal %}
+				{% endfor %} 
+				</td>
+				
 			</tr>
 		{% endfor %}
 		</tbody>
@@ -81,6 +121,7 @@
 		</table>
 	</form>
 	{% endif %}
+	
 	
 {% endblock %}
 
