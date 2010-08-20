@@ -74,7 +74,9 @@
 				<th><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.IP_pool1 }} - {{ machinelist.IP_pool2 }} </a></th>
 				<td align = center >{% if machinelist.is_active %} A {% else %} N {% endif %}</td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
-				<td class="nowrap">{{ machinelist.time_created }}</td>
+				<td class="nowrap">
+				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 
+				</td>
 			</tr>
 		{% endfor %}
 		</tbody>

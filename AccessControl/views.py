@@ -2,9 +2,10 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import *
+from mynet.AccessControl.forms import *
 from mynet.HistoryLog.models import *
 from mynet.HistoryLog.views import *
-from mynet.AccessControl.forms import * 
+
 #RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
 from IPy import IP
@@ -17,37 +18,105 @@ import datetime, json
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
 
-def EditAndLogRecord(m_id, model_name): 
+def EditAndLogRecord(m_name_str, m_id, model_name, uname, values): 
 	"""
 	This function edits a Record in the database and logs the event in the HistoryLog db
 		values: m_id = unique id of record in db, model_name = name of the table in db
 	"""
+	#initialize values
+	now = datetime.datetime.today()
+	is_modified = bool(0)
+	#switch to appropriete model and deal with each slightly differently
+	if m_name_str == "DNS_names":
+		regpair = model_name.objects.get(id = m_id)
+		valBef = {
+			'machine_name'	:regpair.machine_name,
+			'dns_type'	:regpair.dns_type,
+			'ip_pair'	:regpair.ip_pair,
+			'description'	:regpair.description
+			}
+		if not regpair.machine_name == values['machine_name']: 
+			regpair.machine_name = values['machine_name']
+			is_modified = bool(1)
+		if not regpair.description == values['description']:
+			regpair.description = values['description']
+			is_modified = bool(1)
+		if not regpair.dns_type == values['dns_type']:
+			tp = values['dns_type']
+			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+				tp = '1BD'
+			regpair.dns_type = values['dns_type']
+			is_modified = bool(1)
+		if not regpair.ip_pair == str(IPAddress(values['ip_pair'])):
+			regpair.ip_pair = str(IPAddress(values['ip_pair']))
+			is_modified = bool(1)
+			if (IPAddress(values['ip_pair']).version == 6):
+				ipVersion = bool(1)
+			else:
+				ipVersion = bool(0)
+			regpair.is_ipv6 = ipVersion
+		if is_modified:
+			final_values = str(values)
+			init_values = str(valBef)
+			regpair.save()
+			LogEvent('E',init_values, final_values, False, uname, "")
+			
+		return regpair.id
 	return
 	
-def AddAndLogRecord(m_id, model_name):
+def AddAndLogRecord(m_name_str, model_name, uname, values):
 	"""
-	This function adds a Record in the database and logs the event in the HistoryLog db
-		values: m_id = unique id of record in db, model_name = name of the table in db
+	This function adds a Record in the database and logs the event in the HistoryLog db.
 	"""
+	now = datetime.datetime.today()
+	if m_name_str == "DNS_names":
+		if (IPAddress(values['ip_pair']).version == 6):
+			ipVersion = bool(1)
+		else:
+			ipVersion = bool(0)
+		tp = values['dns_typ']
+		if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+			tp = '1BD'
+		newRecord = model_name(machine_name	= values['machine_name'],
+					ip_pair		= str(IPAddress(values['ip_pair'])),
+					dns_type	= tp,
+					is_active 	= bool(1),
+					is_ipv6 	= ipVersion,
+					time_created 	= now,
+					description 	= values['description']								
+					)
+		newRecord.save()
+		vals = model_name.objects.filter(id = newRecord.id).values() 
+		init_values = "{}" 
+		final_values = str(vals[0])
+		LogEvent('A',init_values, final_values, False, uname, "")
+		
+		return newRecord.id
+	#elif m_name_str == "DHCP_machine":
+		
+	#elif m_name_str == "DHCP_ip_pool":
+		
+	#else: 
 	return 
-	
-def DeleteAndLogRecord(m_id, Model_Name, request):
+		
+def DeleteAndLogRecord(m_id, Model_Name, uname):
 	"""
 	This function deletes a Record in the database and logs the event in the HistoryLog db. It returns 
 	a list of the fields and values that were deleted.
-		values: m_id = unique id of record in db, model_name = name of the table in db
+		values: m_id = unique id of record in db, model_name = name of the table in db, uname =
 	"""
 	returnRecordList = []
-	DeleteRecord = Model_Name.objects.filter(id = m_id) 
-	vals = DeleteRecord.values()
-	init_values = json.dumps(vals[0], sort_keys=True, indent=1) #str(vals[0])
-	final_values = json.dumps("{}", sort_keys=True, indent=1)#"{}"
-	uname = request.user.username
+	DeleteRecord = Model_Name.objects.get(id = m_id)	
+	#DeleteRecord = Model_Name.objects.(id = blah)
+	#init_vals = deleterecord.logrep()
+	vals = Model_Name.objects.filter(id = m_id).values() 
+	init_values = str(vals[0]) 	#json.dumps(vals[0], sort_keys=True, indent=0) 	
+	final_values = "{}"		#json.dumps("{}", sort_keys=True, indent=0)   
 	returnRecordList.append(DeleteRecord)
 	DeleteRecord.delete()
 	LogEvent('D',init_values, final_values, False, uname, "")
-		
-	return DeleteRecord
+
+	return returnRecordList
 	#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
 	
 #################################################################################
@@ -81,7 +150,7 @@ def handlePopAdd(request, addForm, field, original_id):
 							dns_type	= "2NA",
 							is_active 	= bool(1),
 							is_ipv6 	= original_machine.is_ipv6,
-							#time_created 	= now,
+							time_created 	= now,
 							description 	= newObject['dscr']								
 							)
 				newService.save()					
@@ -100,47 +169,45 @@ def dns_namepair_add(request):
 	if request.method == 'POST':
 		form = Register_namepair_Form(request.POST)
 		if form.is_valid():
-			now = datetime.datetime.today()
 			info = form.cleaned_data
-			if (IPAddress(info['ip_pair']).version == 6):
-				ipVersion = bool(1)
-			else:
-				ipVersion = bool(0)
-			tp = request.POST['dns_typ']
-			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
-				tp = '1BD'
-			namepair_registered = DNS_names(machine_name	= info['dns_expr'],
-							ip_pair		= str(IPAddress(info['ip_pair'])),
-							dns_type	= tp,
-							is_active 	= bool(1),
-							is_ipv6 	= ipVersion,
-							#time_created 	= now,
-					#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)		description 	= info['dscr']								
-							)		
-			namepair_registered.save()
+			values = {
+				'machine_name'	:info['dns_expr'],
+				'dns_typ'	:info['dns_typ'],
+				'ip_pair'	:info['ip_pair'],
+				'description'	:info['dscr']
+				}
+			registeredID = AddAndLogRecord('DNS_names', DNS_names, request.user.username, values)
 			add_service = request.POST.getlist('service_add')
 			if add_service:
 				#		
 				for item in add_service:
 					service_add = eval(item)
-					if (IPAddress(service_add['ip_pair']).version == 6):
-						ipVersion = bool(1)
-					else:
-						ipVersion = bool(0)
-					tp = service_add['dns_typ']
-					if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
-						tp = '1BD'
-					registered_services = DNS_names( machine_name	= service_add['dns_expr'],
-									ip_pair		= str(IPAddress(service_add['ip_pair'])),
-									dns_type	= tp,
-									is_active 	= bool(1),
-									is_ipv6 	= ipVersion,
-									#time_created 	= now,
-									description 	= service_add['dscr']								
-									)
-					registered_services.save()			
-					
-			regServices = DNS_names.objects.filter(ip_pair = namepair_registered.ip_pair).exclude(id = namepair_registered.id)	
+					values = {
+						'machine_name'	:service_add['dns_expr'],
+						'dns_typ'	:service_add['dns_typ'],
+						'ip_pair'	:service_add['ip_pair'],
+						'description'	:service_add['dscr']
+						}
+					AddAndLogRecord('DNS_names', DNS_names, request.user.username, values)
+					#if (IPAddress(service_add['ip_pair']).version == 6):
+					#	ipVersion = bool(1)
+					#else:
+					#	ipVersion = bool(0)
+					#tp = service_add['dns_typ']
+					#if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+					#	tp = '1BD'
+					#registered_services = DNS_names( machine_name	= service_add['dns_expr'],
+					#				ip_pair		= str(IPAddress(service_add['ip_pair'])),
+					#				dns_type	= tp,
+					#				is_active 	= bool(1),
+					#				is_ipv6 	= ipVersion,
+					#				time_created 	= now,
+					#				description 	= service_add['dscr']								
+					#				)
+					#registered_services.save()			
+			
+			regServices = DNS_names.objects.filter(ip_pair = info['ip_pair']).exclude(id = registeredID)
+			namepair_registered  = DNS_names.objects.get(id = registeredID)
 			return render_to_response('qmul_dns_view_namepair.html', {'machine': namepair_registered, 'machinelists':regServices})
 	else:
 		form = Register_namepair_Form(initial = {})
@@ -151,7 +218,7 @@ def dns_namepair_add(request):
 def dns_namepair_listing(request):
 	registered_pairs =  DNS_names.objects.all()#.order_by("dns_type")
 	if request.method == 'POST':
-		actionForm = ViewMachinesAction(request.POST)	
+		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
 		if actionForm.is_valid():
 			item_selected = request.POST.getlist('cbox_id')
@@ -200,8 +267,8 @@ def dns_namepair_delete(request, pair_id):
 		pair_id = int(pair_id)
 	except ValueError:
 		raise Http404()		
-	mDelete = []
-	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request))
+	mDelete = DeleteAndLogRecord(pair_id, DNS_names, request.user.username)
+	#mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request.user.username))
 	mlength = len(mDelete)
 	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
 #edit a single record
@@ -215,18 +282,15 @@ def dns_namepair_edit(request, pair_id):
 		editform = Register_namepair_Form(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			regpair = DNS_names.objects.get(id = pair_id)
-			regpair.machine_name	= info['dns_expr']
-			regpair.ip_pair		= str(IPAddress(info['ip_pair']))
-			regpair.description	= info['dscr']
-			if (IPAddress(info['ip_pair']) == 6):
-				regpair.is_ipv6 = bool(1)
-			else:
-				regpair.is_ipv6 = bool(0)
-			now = datetime.datetime.today()
-			#regpair.time_modified = now
-			regpair.save()
-			regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
+			valAft = {
+				'machine_name'	:info['dns_expr'],
+				'dns_type'	:info['dns_typ'],
+				'ip_pair'	:info['ip_pair'],
+				'description'	:info['dscr']
+				}
+			modID = EditAndLogRecord('DNS_names', pair_id,  DNS_names,request.user.username, valAft)
+			regpair = DNS_names.objects.get(id = modID)
+			regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = modID)
 			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 	else:
 		regpair = DNS_names.objects.get(id = pair_id)		
@@ -253,7 +317,7 @@ def dhcp_page_IP_range_add(request):
 								IP_pool2	= str(IPAddress(info['IP_range2'])),
 								is_active 	= bool(1),
 								is_ipv6 	= ipVersion,
-								#time_created 	= now,
+								time_created 	= now,
 								description 	= info['dscr']								
 								)		
 			IP_pool_registered.save()					
@@ -451,7 +515,7 @@ def dhcp_page_machine_add(request):
 			machine_registered = DHCP_machine(	MAC_pair = str(EUI(info['mcID'], dialect=mac_custom)),
 								IP_pair	= str(IPAddress(info['ipID'])),
 								PC_pair = info['pcID'],
-								#time_created = now,
+								time_created = now,
 								description = info['dscr']
 								)
 		

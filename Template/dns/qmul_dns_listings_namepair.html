@@ -88,7 +88,9 @@
 					</a>				
 				<td name="IP">{{ machinelist.machine_name }}</td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
-				<td class="nowrap">{{ machinelist.time_created }}</td>
+				<td class="nowrap">
+					{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 					
+				</td>
 			</tr>
 		{% endfor %}
 		</tbody>

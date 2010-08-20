@@ -47,7 +47,7 @@
 		{% for historyLog in historyLogs %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<td> {{ historyLog.TimeOccured }} </td>
+				<td> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }}</td>
 				<td align = center> 
 					{% ifequal historyLog.ActionType 'A' %} 
 						Added
@@ -76,7 +76,7 @@
 							{{ list.ip_pair }}
 						{% else %}
 							{% ifequal historyLog.ActionType 'D' %}
-								Delete an old record |
+								Deleted an old record |
 								{{ list|truncatewords:"2" }}
 							{% else %}
 								<style>

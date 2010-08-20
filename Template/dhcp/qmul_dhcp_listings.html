@@ -76,7 +76,9 @@
 				<th><a href="/dhcp/viewmachine/{{machinelist.id}}"> {{ machinelist.MAC_pair }} </a></th>
 				<td name="IP">{{ machinelist.IP_pair }}</td>
 				<td>{{ machinelist.PC_pair }}</td>
-				<td class="nowrap">{{ machinelist.time_created }}</td>
+				<td class="nowrap">
+				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 
+				</td>
 			</tr>
 		{% endfor %}
 		</tbody>

@@ -29,5 +29,5 @@ class log(models.Model):
 		return u' %s %s' % ( self.NetUser, self.TimeOccured)
 
 	class Meta:
-        	ordering = ['TimeOccured']
+        	ordering = ['-TimeOccured']
 	
