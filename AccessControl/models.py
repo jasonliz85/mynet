@@ -54,12 +54,13 @@ class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	IP_pool1	= models.CharField('IP Range1', max_length = 40 )	#DHCP address range
 	IP_pool2	= models.CharField('IP Range2', max_length = 40 )	#DHCP address range
-	is_active 	= models.BooleanField()					#DHCP IP pool activation
-	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
+	description 	= models.TextField(blank=True, null=True)		#DHCP IP pool description
 	time_created 	= models.DateTimeField()				#DHCP time IP pool creation time
+	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
+	is_active 	= models.BooleanField()					#DHCP IP pool activation
 	#time_deleted 	= models.DateTimeField(blank=True, null=True)		#DHCP time IP pool deletion time
 	#time_modified 	= models.DateTimeField(blank=True, null=True)		#DHCP time IP pool modification time
-	description 	= models.TextField(blank=True, null=True)		#DHCP IP pool description
+
 	def __unicode__(self):
 		return u'%s %s %s' % (self.IP_pool1, self.IP_pool2, self.is_active )
 

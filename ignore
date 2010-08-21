@@ -29,3 +29,93 @@
 			#				description 	= info['dscr']								
 			#				)		
 			#namepair_registered.save()
+			
+			#if (IPAddress(service_add['ip_pair']).version == 6):
+			#	ipVersion = bool(1)
+			#else:
+			#	ipVersion = bool(0)
+			#tp = service_add['dns_typ']
+			#if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+			#	tp = '1BD'
+			#registered_services = DNS_names( machine_name	= service_add['dns_expr'],
+			#				ip_pair		= str(IPAddress(service_add['ip_pair'])),
+			#				dns_type	= tp,
+			#				is_active 	= bool(1),
+			#				is_ipv6 	= ipVersion,
+			#				time_created 	= now,
+			#				description 	= service_add['dscr']								
+			#				)
+			#registered_services.save()
+			
+			#mDelete.append(DNS_names.objects.get(id = item))
+			#DNS_names.objects.get(id = item).delete()
+			
+			#now = datetime.datetime.today()
+			#newService = DNS_names(machine_name	= newObject['service_name'],
+			#			ip_pair		= original_machine.ip_pair,
+			#			dns_type	= "2NA",
+			#			is_active 	= bool(1),
+			#			is_ipv6 	= original_machine.is_ipv6,
+			#			time_created 	= now,
+			#			description 	= newObject['dscr']								
+			#			)
+			#newService.save()
+			
+			#now = datetime.datetime.today()
+			#mDelete = []
+			#DeleteRecord = DHCP_ip_pool.objects.get(id = ip_id)
+			#mDelete.append(DeleteRecord)	
+			#mlength = len(mDelete)
+			#DeleteRecord.delete()
+			
+			
+			#now = datetime.datetime.today()
+			#mDelete = []
+			#mDelete.append(DHCP_machine.objects.get(id = m_id))	
+			#DHCP_machine.objects.get(id = m_id).delete()
+			#mlength = len(mDelete)
+			
+			#now = datetime.datetime.today()
+			#if (IPAddress(info['IP_range1']).version == 6):
+			#	ipVersion = bool(1)
+			#else:
+			#	ipVersion = bool(0)				
+			#IP_pool_registered = DHCP_ip_pool(	IP_pool1	= str(IPAddress(info['IP_range1'])),
+			#					IP_pool2	= str(IPAddress(info['IP_range2'])),
+			#					is_active 	= bool(1),
+			#					is_ipv6 	= ipVersion,
+			#					time_created 	= now,
+			#					description 	= info['dscr']								
+			#					)		
+			#IP_pool_registered.save()
+	
+						#now = datetime.datetime.today()
+			#info = form.cleaned_data			
+			#machine_registered = DHCP_machine(	MAC_pair = str(EUI(info['mcID'], dialect=mac_custom)),
+			#					IP_pair	= str(IPAddress(info['ipID'])),
+			#					PC_pair = info['pcID'],
+			#					time_created = now,
+			#					description = info['dscr']
+			#					)
+			#
+			#machine_registered.save()
+			
+						#regpool = DHCP_ip_pool.objects.get(id = ip_id)
+			#regpool.IP_pool1	= str(IPAddress(info['IP_range1']))
+			#regpool.IP_pool2	= str(IPAddress(info['IP_range2']))
+			#regpool.description	= info['dscr']
+			#if (IPAddress(info['IP_range1']).version == 6):
+			#	regpool.is_ipv6 = bool(1)
+			#else:
+			#	regpool.is_ipv6 = bool(0)
+			#now = datetime.datetime.today()
+			#regpool.time_modified = now
+			#regpool.save()
+			
+			#regmachine = DHCP_machine.objects.get(id = m_id)
+			#regmachine.MAC_pair 	= str(EUI(info['mcID'], dialect=mac_custom))
+			#regmachine.IP_pair	= str(IPAddress(info['ipID']))
+			#regmachine.PC_pair	= info['pcID']
+			#regmachine.description	= info['dscr']
+			#regmachine.save()
+	

@@ -23,7 +23,7 @@ def new_and_changed_keys(val_bef, val_aft):
 		for (key, value) in val_aft.iteritems():
 			try:
 				if val_bef[key] != value:
-					changes = str(val_bef[key] + " :: " + value)
+					changes = str(val_bef[key] + "  to " + value)
 					result.append(changes)
 			except KeyError:
 				result.append(key)
@@ -58,10 +58,8 @@ def history(request):
 	changed_list = list()
 	log_values = log.objects.all().values()
 	for i in range(len(log_values)):
-		a = eval(log_values[i]['ValuesBefore'])
-		b = eval(log_values[i]['ValuesAfter'])
-		#a = json.loads(log_values[i]['ValuesBefore'])
-		#b = json.loads(log_values[i]['ValuesAfter'])
+		a = eval(log_values[i]['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
+		b = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
 		changed_list.append(new_and_changed_keys(a,b))
 	
 	return render_to_response('qmul_history.html', {'historyLogs':historyLogs, 'netgroupno':1, 'changed_list':changed_list})
