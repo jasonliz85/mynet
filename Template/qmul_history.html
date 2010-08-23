@@ -30,10 +30,10 @@
 				<a> Time Modified</a>
 			</th>
 			<th>
-				<a> Action </a>
+				<a> User </a>
 			</th>
 			<th>
-				<a> User </a>
+				<a> Action </a>
 			</th>
 			<th> 
 				<a> Network </a>
@@ -47,7 +47,10 @@
 		{% for historyLog in historyLogs %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<td> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }}</td>
+				<th><a href="/dhcp/viewmachine/{{historyLog.id}}"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></th>
+				<td align = center>
+					{{ historyLog.NetUser }}
+				</td>
 				<td align = center> 
 					{% ifequal historyLog.ActionType 'A' %} 
 						Added
@@ -57,50 +60,34 @@
 						{% else %} 
 						Modified
 						{% endifequal %}
-					{% endifequal %} </td>
-				<td>
-				{% for user in historyLog.NetUser_set.auth_user %}
-    					{{ user }}
-				{% endfor %}				
-				{{ historyLog.NetUser }}
+					{% endifequal %} 
 				</td>
 				<td>
 				{#{ historyLog.ValuesBefore }#}
 				{#{ historyLog.ValuesAfter }#}
 				</td>
-				<td>
+				<td class = "{% ifequal historyLog.ActionType 'E' %}TableInRow{% endifequal %}"> 
 				{% for list in changed_list  %}
 					{% ifequal forloop.parentloop.counter forloop.counter %}
 						{% ifequal historyLog.ActionType 'A' %}
-							Added a new record |
-							{{ list.ip_pair }}
+							{{ list|truncatewords:"2" }}
 						{% else %}
 							{% ifequal historyLog.ActionType 'D' %}
-								Deleted an old record |
 								{{ list|truncatewords:"2" }}
 							{% else %}
-								<style>
-								ul.CompactBullet {
-									list-style-type: circle;
-								 	/*background-color: black;*/
-									margin-left: 7px;
-									margin-top: 0px;
-									padding-left: 7px;
-									padding-top: 0px;
-								}
-								ul.CompactBullet li {
-						 			/*background-color: #C0C0C0;*/
-									margin-left: 0px;
-									padding-left: 0px;
-									padding-top: 2px;
-									margin-top: 0px;
-								}
-								</style>
-								<ul class="CompactBullet">
-								{% for i in list  %}
-									<li> {{ i }} </li>
-								{% endfor %}
-								</ul>
+								<table class = "innertable">
+									<tr width = "50%" align = left  >
+									<td> Before </td>
+									<td> After </td>
+									</tr>
+									{% for changes in list  %}
+									<tr >
+										{% for change in changes  %}
+										<td> +{{ change }} </td>
+										{% endfor %}
+									</tr>
+									{% endfor %}									
+								</table>
 							{% endifequal %}
 						{% endifequal %}
 					{% endifequal %}

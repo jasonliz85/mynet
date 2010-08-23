@@ -13,11 +13,31 @@ from netaddr import *
 from django.utils.html import escape 
 
 import django.forms as forms 
-import datetime, json
+import datetime, json, difflib
 
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
-
+def CompareDescriptions(dsrc1, dsrc2):
+	changed = bool(0)
+	s = difflib.SequenceMatcher(None, dsrc1, dsrc2)
+	for tag, i1, i2, j1, j2 in s.get_opcodes():
+ 		if tag == 'insert':
+ 			if dsrc1[i1:i2] == '' and dsrc2[j1:j2] == ' ' or dsrc1[i1:i2] == ' ' and dsrc2[j1:j2] == '':
+ 				changed = bool(0)
+ 			else:
+ 				changed = bool(1)
+ 		elif tag == 'replace':
+ 			if dsrc1[i1:i2] == '' and dsrc2[j1:j2] == ' ' or dsrc1[i1:i2] == ' ' and dsrc2[j1:j2] == '':
+ 				changed = bool(0)
+ 			else:
+ 				changed = bool(1)
+ 		elif tag == 'delete':
+ 			if dsrc1[i1:i2] == '' and dsrc2[j1:j2] == ' ' or dsrc1[i1:i2] == ' ' and dsrc2[j1:j2] == '':
+ 				changed = bool(0)
+ 			else:
+ 				changed = bool(1)
+	return changed
+	
 def EditAndLogRecord(m_name_str, m_id, model_name, uname, values): 
 	"""
 	This function edits a Record in the database and logs the event in the HistoryLog db
@@ -27,16 +47,18 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 	now = datetime.datetime.today()
 	is_modified = bool(0)
 	mod_record = model_name.objects.get(id = m_id)
+	valBef = mod_record.LogRepresentation()
 	#switch to appropriete model and deal with each slightly differently
 	if m_name_str == "DNS_names":		
-		valBef = { 'machine_name':mod_record.machine_name, 'dns_type':mod_record.dns_type,
-			'ip_pair' :mod_record.ip_pair, 'description' :mod_record.description }
+		#valBef = { 'machine_name':mod_record.machine_name, 'dns_type':mod_record.dns_type,
+		#	'ip_pair' :mod_record.ip_pair, 'description' :mod_record.description }
 		if not mod_record.machine_name == values['machine_name']: 
 			mod_record.machine_name = values['machine_name']
 			is_modified = bool(1)
 		if not mod_record.description == values['description']:
-			mod_record.description = values['description']
-			is_modified = bool(1)
+			if CompareDescriptions(mod_record.description, values['description']):
+				mod_record.description = values['description']
+				is_modified = bool(1)	
 		if not mod_record.dns_type == values['dns_type']:
 			tp = values['dns_type']
 			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
@@ -52,8 +74,8 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				ipVersion = bool(0)
 			mod_record.is_ipv6 = ipVersion		
 	elif m_name_str == "DHCP_ip_pool":
-		valBef = { 'IP_pool1':mod_record.IP_pool1, 'IP_pool2':mod_record.IP_pool2,
-			'description' :mod_record.description }
+		#valBef = { 'IP_pool1':mod_record.IP_pool1, 'IP_pool2':mod_record.IP_pool2,
+		#	'description' :mod_record.description }
 		if not mod_record.IP_pool1 == str(IPAddress(values['IP_pool1'])):
 			if (IPAddress(values['IP_pool1']).version == 6):
 				ipVersion = bool(1)
@@ -66,11 +88,12 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 			mod_record.IP_pool2 = str(IPAddress(values['IP_pool2']))
 			is_modified = bool(1)
 		if not mod_record.description == values['description']:
-			mod_record.description = values['description']
-			is_modified = bool(1)
+			if CompareDescriptions(mod_record.description, values['description']):
+				mod_record.description = values['description']
+				is_modified = bool(1)
 	elif m_name_str == "DHCP_machine":
-		valBef = { 'MAC_pair':mod_record.MAC_pair, 'IP_pair':mod_record.IP_pair,
-			'PC_pair' :mod_record.PC_pair, 'description' :mod_record.description }
+		#valBef = { 'MAC_pair':mod_record.MAC_pair, 'IP_pair':mod_record.IP_pair,
+		#	'PC_pair' :mod_record.PC_pair, 'description' :mod_record.description }
 		if not mod_record.MAC_pair == str(EUI(values['MAC_pair'], dialect=mac_custom)):
 			mod_record.MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom))
 			is_modified = bool(1)
@@ -81,8 +104,9 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 			mod_record.PC_pair = values['PC_pair']
 			is_modified = bool(1)
 		if not mod_record.description == values['description']:
-			mod_record.description	= values['description']
-			is_modified = bool(1)
+			if CompareDescriptions(mod_record.description, values['description']):
+				mod_record.description = values['description']
+				is_modified = bool(1)
 	else: 
 		return bool(0)
 	if is_modified:		

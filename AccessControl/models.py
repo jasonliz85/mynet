@@ -26,7 +26,8 @@ class DNS_names(models.Model):							#DNS NAMING MODEL
 #			)
 	#time_deleted 	= models.DateTimeField(blank=True, null=True)		#DNS name deletion time
 	#time_modified	= models.DateTimeField(blank=True, null=True)		#DNS name registration deletion time
-
+	def LogRepresentation(self):
+		return u'{\'machine_name\':\'%s\', \'ip_pair\':\'%s\', \'dns_type\':\'%s\', \'description\':\'%s\'}' % (self.machine_name, self.ip_pair, self.dns_type, self.description )
 	def __unicode__(self):
 		return u'\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\''% (self.machine_name, self.ip_pair, self.is_ipv6, self.dns_type, self.description)
 		#return u'%s-%s-%s' % (self.machine_name, self.is_active, self.time_created)
@@ -48,6 +49,9 @@ class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	#to add belongs_to_group ??
 	#to add active
 	#to add bool_is_IPv6
+	def LogRepresentation(self):
+		return u'{\'MAC_pair\':\'%s\', \'IP_pair\':\'%s\', \'PC_pair\':\'%s\', \'description\':\'%s\'}' % (self.MAC_pair, self.IP_pair, self.PC_pair, self.description )
+	
 	def __unicode__(self):
 		return u'%s-%s-%s' % (self.MAC_pair, self.IP_pair, self.PC_pair )
 
@@ -60,7 +64,10 @@ class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	is_active 	= models.BooleanField()					#DHCP IP pool activation
 	#time_deleted 	= models.DateTimeField(blank=True, null=True)		#DHCP time IP pool deletion time
 	#time_modified 	= models.DateTimeField(blank=True, null=True)		#DHCP time IP pool modification time
-
+	
+	def LogRepresentation(self):
+		return u'{\'IP_pool1\':\'%s\', \'IP_pool2\':\'%s\',\'description\':\'%s\'}' % (self.IP_pool1, self.IP_pool2,self.description )
+	
 	def __unicode__(self):
 		return u'%s %s %s' % (self.IP_pool1, self.IP_pool2, self.is_active )
 

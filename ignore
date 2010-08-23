@@ -118,4 +118,32 @@
 			#regmachine.PC_pair	= info['pcID']
 			#regmachine.description	= info['dscr']
 			#regmachine.save()
-	
+			
+			{% for user in historyLog.NetUser_set.auth_user %}
+				{{ user }}
+			{% endfor %}
+			
+			<style>
+			ul.CompactBullet {
+				list-style-type: circle;
+			 	/*background-color: black;*/
+				margin-left: 7px;
+				margin-top: 0px;
+				padding-left: 7px;
+				padding-top: 0px;
+			}
+			ul.CompactBullet li {
+	 			/*background-color: #C0C0C0;*/
+				margin-left: 0px;
+				padding-left: 0px;
+				padding-top: 2px;
+				margin-top: 0px;
+			}
+			</style>
+			
+			
+			<!ul class="CompactBullet">
+			{#% for i in list  %#}
+				<!li {{ i }} </li>
+			{#% endfor %#}
+			<!/ul>

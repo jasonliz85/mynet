@@ -23,7 +23,8 @@ def new_and_changed_keys(val_bef, val_aft):
 		for (key, value) in val_aft.iteritems():
 			try:
 				if val_bef[key] != value:
-					changes = str(val_bef[key] + "  to " + value)
+					#changes = [val_bef[key], value]#str(val_bef[key] + "  to " + value)
+					changes = (val_bef[key], value)
 					result.append(changes)
 			except KeyError:
 				result.append(key)

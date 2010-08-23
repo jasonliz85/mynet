@@ -379,6 +379,16 @@ tr.row-label td {
 	padding-bottom:0;
 	padding-top:2px;
 }
+tbody td.TableInRow {
+	border-bottom:medium none;
+	font-size: 80%; /*9px; margin-top:-1px;*/
+	border-bottom:1px solid #DDDDDD;
+	border-left:1px solid #DDDDDD;
+	padding-bottom:0;
+	padding-left:0;
+	padding-top:0;
+	padding-right: 0;
+}
 tr.alt { 
 	background:none repeat scroll 0 0 #F6F6F6;
 	border-left:1px solid #DDDDDD;/**/
@@ -394,6 +404,22 @@ tr.alt {
 thead th a:link, thead th a:visited {
 	color:#666666;
 	display:block;
+}
+table.innertable {	
+	border: none;	
+	background-color: transparent;
+	width:100%;
+	height: 100%;
+	/*bgcolor=grey border=1 width=80% height=80%*/
+	/*border-collapse:collapse;
+	border-color: transparent;
+	border: 1px solid black; */
+}
+table.innertable tr {
+	border: none; /*1px solid yellow;*/
+}
+table.innertable td {
+	border: none; /*1px solid blue;*/
 }
 table thead th.sorted {				background-position:left bottom !important;	}
 table thead th.sorted a {			padding-right:13px;				}
