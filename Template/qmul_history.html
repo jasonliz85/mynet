@@ -36,7 +36,7 @@
 				<a> Action </a>
 			</th>
 			<th> 
-				<a> Network </a>
+				<a> Table </a>
 			</th>
 			<th>
 				<a> Changes </a>
@@ -63,17 +63,26 @@
 					{% endifequal %} 
 				</td>
 				<td>
+					{{historyLog.get_TableName_display}}
 				{#{ historyLog.ValuesBefore }#}
-				{#{ historyLog.ValuesAfter }#}
+				{#{ historlabelyLog.ValuesAfter }#}
 				</td>
 				<td class = "{% ifequal historyLog.ActionType 'E' %}TableInRow{% endifequal %}"> 
 				{% for list in changed_list  %}
 					{% ifequal forloop.parentloop.counter forloop.counter %}
 						{% ifequal historyLog.ActionType 'A' %}
-							{{ list|truncatewords:"2" }}
+							{% for names, values in list  %}
+								{{ names }}:
+								{% ifequal values '' %}none{% else %}{{ values }}{% endifequal %}
+								{% if not forloop.last %},{% endif %}
+							{% endfor %}
 						{% else %}
 							{% ifequal historyLog.ActionType 'D' %}
-								{{ list|truncatewords:"2" }}
+								{% for names, values in list  %}
+									{{ names }}:{{ values }}
+									{% if not forloop.last %},{% endif %}
+								{% endfor %}
+								{#{ list|truncatewords:"2" }#}
 							{% else %}
 								<table class = "innertable">
 									<tr width = "50%" align = left  >
@@ -83,7 +92,7 @@
 									{% for changes in list  %}
 									<tr >
 										{% for change in changes  %}
-										<td> +{{ change }} </td>
+										<td> +{% ifequal change '' %} none {% else %} {{ change }} {% endifequal %} </td>
 										{% endfor %}
 									</tr>
 									{% endfor %}									

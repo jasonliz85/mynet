@@ -50,8 +50,7 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 	valBef = mod_record.LogRepresentation()
 	#switch to appropriete model and deal with each slightly differently
 	if m_name_str == "DNS_names":		
-		#valBef = { 'machine_name':mod_record.machine_name, 'dns_type':mod_record.dns_type,
-		#	'ip_pair' :mod_record.ip_pair, 'description' :mod_record.description }
+		table_name = '1'
 		if not mod_record.machine_name == values['machine_name']: 
 			mod_record.machine_name = values['machine_name']
 			is_modified = bool(1)
@@ -74,8 +73,7 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				ipVersion = bool(0)
 			mod_record.is_ipv6 = ipVersion		
 	elif m_name_str == "DHCP_ip_pool":
-		#valBef = { 'IP_pool1':mod_record.IP_pool1, 'IP_pool2':mod_record.IP_pool2,
-		#	'description' :mod_record.description }
+		table_name = '2'
 		if not mod_record.IP_pool1 == str(IPAddress(values['IP_pool1'])):
 			if (IPAddress(values['IP_pool1']).version == 6):
 				ipVersion = bool(1)
@@ -92,8 +90,7 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				mod_record.description = values['description']
 				is_modified = bool(1)
 	elif m_name_str == "DHCP_machine":
-		#valBef = { 'MAC_pair':mod_record.MAC_pair, 'IP_pair':mod_record.IP_pair,
-		#	'PC_pair' :mod_record.PC_pair, 'description' :mod_record.description }
+		table_name = '3'
 		if not mod_record.MAC_pair == str(EUI(values['MAC_pair'], dialect=mac_custom)):
 			mod_record.MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom))
 			is_modified = bool(1)
@@ -113,7 +110,7 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 		final_values = str(values)
 		init_values = str(valBef)
 		mod_record.save()
-		LogEvent('E',init_values, final_values, False, uname, "")
+		LogEvent('E',init_values, final_values, False, uname, "", table_name)
 		
 	return mod_record.id
 
@@ -124,6 +121,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 	"""
 	now = datetime.datetime.today()
 	if m_name_str == "DNS_names":
+		table_name = '1'
 		if (IPAddress(values['ip_pair']).version == 6):
 			ipVersion = bool(1)
 		else:
@@ -139,14 +137,8 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					time_created 	= now,
 					description 	= values['description']								
 					)
-	elif m_name_str == "DHCP_machine":			
-		newRecord = model_name(	MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom)),
-					IP_pair	= str(IPAddress(values['IP_pair'])),
-					PC_pair = values['PC_pair'],
-					time_created = now,
-					description = values['description']
-					)
-	elif m_name_str == "DHCP_ip_pool":			
+	elif m_name_str == "DHCP_ip_pool":
+		table_name = '2'		
 		if (IPAddress(values['IP_pool1']).version == 6):
 			ipVersion = bool(1)
 		else:
@@ -158,13 +150,20 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					time_created 	= now,
 					description 	= values['description']								
 					)
+	elif m_name_str == "DHCP_machine":			
+		table_name = '3'
+		newRecord = model_name(	MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom)),
+					IP_pair	= str(IPAddress(values['IP_pair'])),
+					PC_pair = values['PC_pair'],
+					time_created = now,
+					description = values['description']
+					)
 	else: 
 		return bool(0)
-	newRecord.save()
-	vals = model_name.objects.filter(id = newRecord.id).values() 
+	newRecord.save() #vals = model_name.objects.filter(id = newRecord.id).values() 
 	init_values = "{}" 
-	final_values = str(vals[0])
-	LogEvent('A',init_values, final_values, False, uname, "")
+	final_values = newRecord.LogRepresentation()#str(vals[0])
+	LogEvent('A',init_values, final_values, False, uname, "", table_name)
 	return newRecord.id
 		
 def DeleteAndLogRecord(m_id, Model_Name, uname):
@@ -176,11 +175,11 @@ def DeleteAndLogRecord(m_id, Model_Name, uname):
 	DeleteRecord = Model_Name.objects.get(id = m_id)	
 	#DeleteRecord = Model_Name.objects.(id = blah)
 	#init_vals = deleterecord.logrep()
-	vals = Model_Name.objects.filter(id = m_id).values() 
-	init_values = str(vals[0]) 	#json.dumps(vals[0], sort_keys=True, indent=0) 	
-	final_values = "{}"		#json.dumps("{}", sort_keys=True, indent=0)   returnRecordList.append(DeleteRecord)
+	#vals = Model_Name.objects.filter(id = m_id).values() 
+	init_values = DeleteRecord.LogRepresentation() 	#init_values = str(vals[0]) 	#json.dumps(vals[0], sort_keys=True, indent=0) 	
+	final_values = "{}"				#json.dumps("{}", sort_keys=True, indent=0)   returnRecordList.append(DeleteRecord)
 	DeleteRecord.delete()
-	LogEvent('D',init_values, final_values, False, uname, "")
+	LogEvent('D',init_values, final_values, False, uname, "",'1')
 
 	return DeleteRecord
 	#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)

@@ -336,7 +336,7 @@ tbody td {
 td, th {
 	border-bottom:1px solid #EEEEEE;
 	font-family:"Lucida Grande",Verdana,Arial,sans-serif;
-	font-size:100%; /*11px;*/
+	font-size:80%; /*11px;*/
 	line-height:13px;
 	padding:5px;
 	vertical-align:top;
@@ -381,7 +381,7 @@ tr.row-label td {
 }
 tbody td.TableInRow {
 	border-bottom:medium none;
-	font-size: 80%; /*9px; margin-top:-1px;*/
+	font-size: 100%; /*9px; margin-top:-1px;*/
 	border-bottom:1px solid #DDDDDD;
 	border-left:1px solid #DDDDDD;
 	padding-bottom:0;
@@ -403,7 +403,7 @@ tr.alt {
 }
 thead th a:link, thead th a:visited {
 	color:#666666;
-	display:block;
+	display:block;/**/
 }
 table.innertable {	
 	border: none;	
@@ -419,6 +419,7 @@ table.innertable tr {
 	border: none; /*1px solid yellow;*/
 }
 table.innertable td {
+	width: 50%;
 	border: none; /*1px solid blue;*/
 }
 table thead th.sorted {				background-position:left bottom !important;	}

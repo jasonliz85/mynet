@@ -147,3 +147,32 @@
 				<!li {{ i }} </li>
 			{#% endfor %#}
 			<!/ul>
+			
+			class test_machine(models.Model):
+			MAC_pair	= models.CharField('MAC Address',max_length = 12)	#MAC address 
+			IP_pair		= models.IPAddressField('IP Address')			#IP address 
+			PC_pair		= models.CharField('PC Name',max_length = 12)		#PC name
+			description 	= models.TextField('Description',blank=True, null=True)		#description of machine (optional)
+			def __unicode__(self):
+				return u'%s-%s-%s' % (self.MAC_pair, self.IP_pair, self.PC_pair)
+			
+			
+			#valBef = { 'MAC_pair':mod_record.MAC_pair, 'IP_pair':mod_record.IP_pair,
+			#	'PC_pair' :mod_record.PC_pair, 'description' :mod_record.description }
+			
+			
+		#valBef = { 'IP_pool1':mod_record.IP_pool1, 'IP_pool2':mod_record.IP_pool2,
+		#	'description' :mod_record.description }
+		
+		
+		#valBef = { 'machine_name':mod_record.machine_name, 'dns_type':mod_record.dns_type,
+		#	'ip_pair' :mod_record.ip_pair, 'description' :mod_record.description }
+		
+
+		elif len(val_aft) == 0: 
+		result = list()	
+		for (key, value) in val_bef.iteritems():
+			val = (model_instance._meta.get_field(key).verbose_name,value)#val = (model_name._meta.get_field(key).verbose_name,value)
+			result.append(val)
+		return result
+	

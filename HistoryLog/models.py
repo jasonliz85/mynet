@@ -1,4 +1,5 @@
 from django.db import models
+from mynet.AccessControl.models import *
 from django.contrib.auth.models import Group, User
 
 class netgroup(models.Model):
@@ -16,9 +17,16 @@ class log(models.Model):
 			('A', 'ADD'), 	# added a record in model
 		        ('D', 'DEL'), 	# deleted a record in model
 			('E', 'EDIT'), 	# edited a record in model
+			('R', 'REDO'),  # redo a previous action in log
+			('U', 'UNDO'), 	# undo a previous action in log
 			)
+	MODEL_CHOICES = (
+			('1','DNS Names'),
+			('2','DHCP IP Pools'),
+			('3','DHCP Machines')
+	)
 	#NetGroupName 	= models.ManyToManyField(Group, blank=True)
-	#TableName	= models.CharField('Table Name',max_length = 50)
+	TableName	= models.CharField('Table Name',max_length = 1, choices = MODEL_CHOICES)
 	NetUser		= models.ForeignKey(User, blank=True)
 	TimeOccured	= models.DateTimeField()
 	ActionType	= models.CharField('Action', max_length = 1, choices = ACTION_CHOICES)	
