@@ -47,20 +47,12 @@
 		{% for historyLog in historyLogs %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<th><a href="/dhcp/viewmachine/{{historyLog.id}}"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></th>
+				<th><a href="/history/{{historyLog.id}}/view"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></th>
 				<td align = center>
 					{{ historyLog.NetUser }}
 				</td>
 				<td align = center> 
-					{% ifequal historyLog.ActionType 'A' %} 
-						Added
-					{% else %} 
-						{% ifequal historyLog.ActionType 'D' %} 
-						Deleted
-						{% else %} 
-						Modified
-						{% endifequal %}
-					{% endifequal %} 
+					{{ historyLog.get_ActionType_display }}
 				</td>
 				<td>
 					{{historyLog.get_TableName_display}}

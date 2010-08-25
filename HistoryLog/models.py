@@ -14,11 +14,11 @@ class usrname(models.Model):
 	
 class log(models.Model):
 	ACTION_CHOICES = ( 
-			('A', 'ADD'), 	# added a record in model
-		        ('D', 'DEL'), 	# deleted a record in model
-			('E', 'EDIT'), 	# edited a record in model
-			('R', 'REDO'),  # redo a previous action in log
-			('U', 'UNDO'), 	# undo a previous action in log
+			('A', 'Created'), 	# added a record in model
+		        ('D', 'Deleted'), 	# deleted a record in model
+			('E', 'Modified'), 	# edited a record in model
+			('R', 'Redo'),  # redo a previous action in log
+			('U', 'Undo'), 	# undo a previous action in log
 			)
 	MODEL_CHOICES = (
 			('1','DNS Names'),
@@ -32,7 +32,7 @@ class log(models.Model):
 	ActionType	= models.CharField('Action', max_length = 1, choices = ACTION_CHOICES)	
 	ValuesBefore	= models.CharField('Before',max_length = 500, blank=True, null=True)
 	ValuesAfter	= models.CharField('After',max_length = 500, blank=True, null=True)	
-	IsBulk		= models.BooleanField()
+	IsBulk		= models.BooleanField('Bulk Upload')
 	def __unicode__(self):
 		return u' %s %s' % ( self.NetUser, self.TimeOccured)
 

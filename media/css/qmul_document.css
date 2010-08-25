@@ -389,6 +389,15 @@ tbody td.TableInRow {
 	padding-top:0;
 	padding-right: 0;
 }
+tbody tr.highlightRowMOD {
+	background-color: #FFFF66;
+}
+tbody tr.highlightRowADD {
+	background-color: #66FF33;
+}
+tbody tr.highlightRowDEL {
+	background-color: #FF0000;
+}
 tr.alt { 
 	background:none repeat scroll 0 0 #F6F6F6;
 	border-left:1px solid #DDDDDD;/**/

@@ -69,6 +69,7 @@ TEMPLATE_DIRS = (
 	'/home/jasonl/svn/mynet/Template',
 	'/home/jasonl/svn/mynet/Template/dhcp',
 	'/home/jasonl/svn/mynet/Template/dns',
+	'/home/jasonl/svn/mynet/Template/history',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.

@@ -14,7 +14,8 @@ urlpatterns = patterns('',
 	('^$', 'mynet.views.home'),
 	#('^login/$', 'mynet.views.login'),
 	(r'^home/$','mynet.views.home'),
-	(r'^history/$','mynet.HistoryLog.views.history'),
+	(r'^history/$','mynet.HistoryLog.views.HistoryList'),
+	(r'^history/(\d{1,3})/view$','mynet.HistoryLog.views.HistoryView'),
 	
 	#####################################################
 	##################DNS Pages##########################

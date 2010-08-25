@@ -175,4 +175,15 @@
 			val = (model_instance._meta.get_field(key).verbose_name,value)#val = (model_name._meta.get_field(key).verbose_name,value)
 			result.append(val)
 		return result
+		
+		
+					{% ifequal historyLog.ActionType 'A' %} 
+						Added
+					{% else %} 
+						{% ifequal historyLog.ActionType 'D' %} 
+						Deleted
+						{% else %} 
+						Modified
+						{% endifequal %}
+					{% endifequal %} 
 	
