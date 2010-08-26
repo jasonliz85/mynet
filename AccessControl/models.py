@@ -73,7 +73,7 @@ class DNS_ipval(models.Model):
 		return self.ip_value
 	
 class NetGroup(models.Model):
-	name		= models.CharField('Network Resource Group name', max_length=40, unique=True)
+	name		= models.CharField('Network Resource', max_length=40, unique=True)
 	managed_by	= models.ManyToManyField(Group, blank=True)
 	address_blocks	= models.ManyToManyField(DNS_ipval, blank=True)
 	dns_patterns	= models.ManyToManyField(DNS_expr, blank=True)	

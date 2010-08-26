@@ -393,10 +393,10 @@ tbody tr.highlightRowMOD {
 	background-color: #FFFF66;
 }
 tbody tr.highlightRowADD {
-	background-color: #66FF33;
+	background-color: #CCFFCC;
 }
 tbody tr.highlightRowDEL {
-	background-color: #FF0000;
+	background-color: #FF6666;
 }
 tr.alt { 
 	background:none repeat scroll 0 0 #F6F6F6;

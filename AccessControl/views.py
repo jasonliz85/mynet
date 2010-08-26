@@ -37,7 +37,7 @@ def CompareDescriptions(dsrc1, dsrc2):
  			else:
  				changed = bool(1)
 	return changed
-	
+
 def EditAndLogRecord(m_name_str, m_id, model_name, uname, values): 
 	"""
 	This function edits a Record in the database and logs the event in the HistoryLog db
@@ -48,9 +48,9 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 	is_modified = bool(0)
 	mod_record = model_name.objects.get(id = m_id)
 	valBef = mod_record.LogRepresentation()
+	t_number = get_table_number(m_name_str)
 	#switch to appropriete model and deal with each slightly differently
-	if m_name_str == "DNS_names":		
-		table_name = '1'
+	if m_name_str == "DNS_names":	
 		if not mod_record.machine_name == values['machine_name']: 
 			mod_record.machine_name = values['machine_name']
 			is_modified = bool(1)
@@ -73,7 +73,6 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				ipVersion = bool(0)
 			mod_record.is_ipv6 = ipVersion		
 	elif m_name_str == "DHCP_ip_pool":
-		table_name = '2'
 		if not mod_record.IP_pool1 == str(IPAddress(values['IP_pool1'])):
 			if (IPAddress(values['IP_pool1']).version == 6):
 				ipVersion = bool(1)
@@ -90,7 +89,6 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				mod_record.description = values['description']
 				is_modified = bool(1)
 	elif m_name_str == "DHCP_machine":
-		table_name = '3'
 		if not mod_record.MAC_pair == str(EUI(values['MAC_pair'], dialect=mac_custom)):
 			mod_record.MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom))
 			is_modified = bool(1)
@@ -110,7 +108,7 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 		final_values = str(values)
 		init_values = str(valBef)
 		mod_record.save()
-		LogEvent('E',init_values, final_values, False, uname, "", table_name)
+		LogEvent('E',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, m_id)
 		
 	return mod_record.id
 
@@ -120,8 +118,8 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 	This function adds a Record in the database and logs the event in the HistoryLog db.
 	"""
 	now = datetime.datetime.today()
+	t_number = get_table_number(m_name_str)
 	if m_name_str == "DNS_names":
-		table_name = '1'
 		if (IPAddress(values['ip_pair']).version == 6):
 			ipVersion = bool(1)
 		else:
@@ -137,8 +135,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					time_created 	= now,
 					description 	= values['description']								
 					)
-	elif m_name_str == "DHCP_ip_pool":
-		table_name = '2'		
+	elif m_name_str == "DHCP_ip_pool":		
 		if (IPAddress(values['IP_pool1']).version == 6):
 			ipVersion = bool(1)
 		else:
@@ -150,8 +147,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					time_created 	= now,
 					description 	= values['description']								
 					)
-	elif m_name_str == "DHCP_machine":			
-		table_name = '3'
+	elif m_name_str == "DHCP_machine":
 		newRecord = model_name(	MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom)),
 					IP_pair	= str(IPAddress(values['IP_pair'])),
 					PC_pair = values['PC_pair'],
@@ -163,27 +159,27 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 	newRecord.save() #vals = model_name.objects.filter(id = newRecord.id).values() 
 	init_values = "{}" 
 	final_values = newRecord.LogRepresentation()#str(vals[0])
-	LogEvent('A',init_values, final_values, False, uname, "", table_name)
+	LogEvent('A',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, newRecord.id)
 	return newRecord.id
 		
-def DeleteAndLogRecord(m_id, Model_Name, uname):
+def DeleteAndLogRecord(m_id, Model_Name, uname, table_name, action):
 	"""
 	This function deletes a Record in the database and logs the event in the HistoryLog db. It returns 
 	a list of the fields and values that were deleted.
 		values: m_id = unique id of record in db, model_name = name of the table in db, uname =
 	"""
-	DeleteRecord = Model_Name.objects.get(id = m_id)	
-	#DeleteRecord = Model_Name.objects.(id = blah)
-	#init_vals = deleterecord.logrep()
-	#vals = Model_Name.objects.filter(id = m_id).values() 
+	t_number = get_table_number(table_name)
+	DeleteRecord = Model_Name.objects.get(id = m_id)
 	init_values = DeleteRecord.LogRepresentation() 	#init_values = str(vals[0]) 	#json.dumps(vals[0], sort_keys=True, indent=0) 	
 	final_values = "{}"				#json.dumps("{}", sort_keys=True, indent=0)   returnRecordList.append(DeleteRecord)
 	DeleteRecord.delete()
-	LogEvent('D',init_values, final_values, False, uname, "",'1')
+	if len(action) == 0:
+		action = 'D'
+	#log event 
+	LogEvent(action,init_values, final_values, False, uname, "NetGroup:ToDo", t_number, m_id)
 
 	return DeleteRecord
-	#vals = u'{\'machine_name\':\'%s\',\'ip_pair\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\'}' % (DeleteRecord.machine_name, DeleteRecord.ip_pair, DeleteRecord.is_ipv6, DeleteRecord.dns_type, DeleteRecord.description)
-	
+
 #################################################################################
 ####################### DNS NAME Pair ###########################################
 #################################################################################
@@ -259,7 +255,7 @@ def dns_namepair_listing(request):
 					mDelete = list()
 					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DNS_names, c_user))
+						mDelete.append(DeleteAndLogRecord(item, DNS_names, c_user, 'DNS_names'))
 					mlength = len(mDelete)
 					return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
@@ -300,7 +296,7 @@ def dns_namepair_delete(request, pair_id):
 	except ValueError:
 		raise Http404()		
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request.user.username))
+	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request.user.username, 'DNS_names'))
 	mlength = len(mDelete)
 	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
 #edit a single record
@@ -359,7 +355,7 @@ def dhcp_page_IP_range_listing(request):
 					mDelete = list()	
 					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, c_user))
+						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, c_user, 'DHCP_ip_pool'))
 					mlength = len(mDelete)
 					return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
@@ -398,7 +394,7 @@ def dhcp_page_IP_range_delete(request, ip_id):
 		raise Http404()	
 	
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username))
+	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username, 'DHCP_ip_pool'))
 	mlength = len(mDelete)
 
 	return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength':mlength})
@@ -469,7 +465,7 @@ def dhcp_page_machine_delete_multiple(request):
 					mDelete = list()
 					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, c_user))
+						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, c_user, 'DHCP_machine'))
 					mlength = len(mDelete)
 					return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
 				elif action == 'vue':
@@ -498,7 +494,7 @@ def dhcp_page_machine_delete_single(request, m_id):
 		raise Http404()	
 	
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username))
+	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine'))
 	mlength = len(mDelete)
 	
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})

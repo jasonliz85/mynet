@@ -16,6 +16,8 @@ urlpatterns = patterns('',
 	(r'^home/$','mynet.views.home'),
 	(r'^history/$','mynet.HistoryLog.views.HistoryList'),
 	(r'^history/(\d{1,3})/view$','mynet.HistoryLog.views.HistoryView'),
+	(r'^history/(\d{1,3})/view/[^/]+$','mynet.HistoryLog.views.HistoryView'),
+	(r'^history/(\d{1,3})/undo/$$','mynet.HistoryLog.views.HistoryUndoAction'),
 	
 	#####################################################
 	##################DNS Pages##########################

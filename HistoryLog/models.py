@@ -27,6 +27,7 @@ class log(models.Model):
 	)
 	#NetGroupName 	= models.ManyToManyField(Group, blank=True)
 	TableName	= models.CharField('Table Name',max_length = 1, choices = MODEL_CHOICES)
+	RecordID	= models.IntegerField('Table Unique ID')
 	NetUser		= models.ForeignKey(User, blank=True)
 	TimeOccured	= models.DateTimeField()
 	ActionType	= models.CharField('Action', max_length = 1, choices = ACTION_CHOICES)	

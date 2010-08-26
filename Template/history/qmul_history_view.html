@@ -58,12 +58,12 @@
 		</div>
 		<div class="fieldwrapper">
 			<label class="styled"> History </label>
-			<div class="thefield"> <a href="/history/{{HistoryLog.id}}/view/alt">Click Here<a></div> 
+			<div class="thefield"> <a href="/history/{{HistoryLog.id}}/view/multiple">Click Here<a></div> 
 		</div>
 	</div>
 	
 	<p class = "EditDeleteBack"> 
-		<a  href="#" onclick="return confirm('Are you sure you want undo the changes to this record?');"> Undo Changes*<a> |		
+		<a  href="/history/{{ HistoryLog.id }}/undo" onclick="return confirm('Are you sure you want undo the changes to this record?');"> Undo Changes*<a> |		
 		<a href="/history"> Back<a> 
 	</p>
 	

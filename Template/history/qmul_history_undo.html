@@ -1,0 +1,25 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET DNS Registration{% endblock %}
+
+{% block content %}
+
+	<h2><a name="status">Restoring Actions</a></h2>
+	<p> The following Action{{historyRecords|pluralize}}{% ifequal hlength 1 %} has {% else %} have {% endifequal %} been deleted:<p> </br>
+
+	{% if not historyRecords %}
+		<ul class="errorlist"><li> An Error has occured, could not restore record.</li></ul>
+	{% else %}
+		{% for historyRecord in historyRecords %}
+			<ul class = "highlight"><li>ID:{{historyRecord.id}}, Action:{{historyRecord.ActionType}}, Table:{{historyRecord.get_TableName_display}} </li></ul>
+		{% endfor %}	
+	{% endif %}
+	<br></br>
+	<br></br>
+	<br></br>
+	<br></br>
+	<p class = "EditDeleteBack"> 
+		<a href="/history/"> Back<a> 
+	</p>
+{% endblock %}
+
