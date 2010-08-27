@@ -186,4 +186,36 @@
 						Modified
 						{% endifequal %}
 					{% endifequal %} 
+					
+	
+	{% for items in ChangeLog %}
+	{% for fieldname, valueBefore, valueAfter, haschanged in items  %}
+	{% ifequal HistoryLog.ActionType 'A' %}
+		<tr class = "highlightRowADD">
+	{% else %}
+		{% ifequal HistoryLog.ActionType 'D' %}
+			<tr class = "highlightRowDEL">
+		{% else %}
+			<tr class = "{% if haschanged %}highlightRowMOD{% endif %}">
+		{% endifequal %}
+	{% endifequal %}
+		<td> {{ fieldname }} </td>
+		<td> {% ifequal valueBefore '' %}none{% else %}{{ valueBefore }} {% endifequal %}</td>
+		<td> {% ifequal valueAfter '' %}none{% else %} {{ valueAfter }} {% endifequal %}</td>			
+	</tr>
+	{% endfor %}
+{% endfor %}
+
+{% for changes in list  %}
+<tr >
+	{% for change in changes  %}
+	<td> +{% ifequal change '' %} none {% else %} {{ change }} {% endifequal %} </td>
+	{% endfor %}
+</tr>
+{% endfor %}
+{% for fieldname, valueBefore, valueAfter, haschanged on row %}
+	{#% ifequal forloop.parentloop.counter forloop.counter %#}
+	{#% endifequal %#}	
+	<tr>{{fieldname}}, {{valueBefore}}, {{valueAfter}}, {{haschanged}}</tr>
+{% endfor %}	
 	

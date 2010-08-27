@@ -15,8 +15,8 @@ urlpatterns = patterns('',
 	#('^login/$', 'mynet.views.login'),
 	(r'^home/$','mynet.views.home'),
 	(r'^history/$','mynet.HistoryLog.views.HistoryList'),
-	(r'^history/(\d{1,3})/view$','mynet.HistoryLog.views.HistoryView'),
-	(r'^history/(\d{1,3})/view/[^/]+$','mynet.HistoryLog.views.HistoryView'),
+	(r'^history/(\d{1,3})/view/single$','mynet.HistoryLog.views.HistoryView'),
+	(r'^history/(\d{1,3})/view/multiple$', 'mynet.HistoryLog.views.HistoryView2'),#'mynet.HistoryLog.views.HistoryView'), #(?P<vtype>\w{8})
 	(r'^history/(\d{1,3})/undo/$$','mynet.HistoryLog.views.HistoryUndoAction'),
 	
 	#####################################################

@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
-from mynet.AccessControl.views import *
+from mynet.AccessControl.views import DeleteAndLogRecord
 from django.contrib.auth.models import Group, User
 
 import datetime, json
@@ -66,7 +66,7 @@ def UndoLogAction(SingleLog, username):
 	if Action_type == 'D':
 		pass
 	elif Action_type == 'A':
-		DeleteAndLogRecord(record_id, model_name, username, table_name)
+		DeleteAndLogRecord(record_id, model_name, username, table_name, 'U')
 	elif Action_type == 'M':
 		pass
 	elif Action_type == 'U':
@@ -113,6 +113,60 @@ def NewAndChangedKeys(table_number, val_bef, val_aft):
 			except KeyError:
 				result.append(key)
 	return result
+def MulitpleViewFormat(table_number, val_bef, val_aft):
+	"""
+	This function compares two python dictionaries and returns the differences as a list of twos strings in the following 
+	format: [Before Values, After Values]
+	Before Values: "IP Address: a1.b1.c1.d1 \n MAC Address: aa.bb.cc.dd.ee.ff \n ...etc"
+	Before After: "IP Address: a2.b2.c2.d2 \n MAC Address: aa.bb.cc.dd.ee.ff \n ...etc
+	"""
+	#get the name of the model that has been logged
+	model_name = get_model_table(table_number)
+	if model_name == bool(0):
+		result = "EMPTYDICT"
+		return result
+	else:
+		model_instance = model_name.objects.get(id = 1)
+	result = list()	
+	#check for empty values
+	if len(val_aft) == 0:
+		val_not_empty = val_bef
+	else:
+		val_not_empty = val_aft
+	#go through bef and aft values and format as a list	
+
+	for (key, value) in val_not_empty.iteritems():
+		field_name  = model_instance._meta.get_field(key).verbose_name
+		#check if before values are empty
+		try:
+			before = val_bef[key]
+		except KeyError:
+			before = ''
+		#check if after values are empty
+		try:
+			after = val_aft[key]
+		except KeyError:
+			after = ''
+		#if dns_type, change the format slightly
+		if key == 'dns_type':	
+			after = get_dns_type(after)	
+			before = get_dns_type(before)	
+		#check the before and after fields to see if they have changed (for highlighting purposes)		
+		if before == after:					
+			hasChanged = ''
+		elif len(val_bef) == 0:
+			hasChanged = '+'
+		elif len(val_aft) == 0:
+			after = before 
+			hasChanged = '-'
+		else:
+			hasChanged = '*'
+		#The List that is returned			
+		val = hasChanged + field_name + " : "  + after + "\n"
+		result.append(val)
+		
+	return result
+	
 def diff_values(table_number, val_bef, val_aft):
 	"""
 	This function compares two python dictionaries and returns the differences as a list in the following 
@@ -140,7 +194,7 @@ def diff_values(table_number, val_bef, val_aft):
 			before = val_bef[key]
 		except KeyError:
 			before = ''
-		#check if after values are empty
+		#check if after values acleaning my house ukre empty
 		try:
 			after = val_aft[key]
 		except KeyError:
@@ -159,34 +213,12 @@ def diff_values(table_number, val_bef, val_aft):
 		#The List that is returned	
 		val = [field_name, before, after , hasChanged]
 		result.append(val)
-		
+	
 	return result
 
-def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
-	"""
-	This function logs an event  a Record in the database and logs the event in the HistoryLog db. It returns 
-	a list of the fields and values that were deleted.
-		values: m_id = unique id of record in db, model_name = name of the table in db
-	"""
-	
-	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
-	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
-	now = datetime.datetime.today()
-	newEvent = log( #NetGroupName 		= currentNetGroup,
-			NetUser		 	= currentUser,
-			TableName		= tname,
-			RecordID		= tid,
-			TimeOccured		= now,
-			ActionType		= action,	
-			ValuesBefore		= val_bef,
-			ValuesAfter		= val_aft,
-			IsBulk 			= is_bulk
-		)	
-	newEvent.save()
-	return 
 @login_required
 def HistoryList(request):
-	#display all key information
+	#display all key informationcleaning my house uk
 	historyLogs = log.objects.all() 
 	
 	#extract values from query dictionary and compare difference
@@ -215,7 +247,23 @@ def HistoryView(request, h_id):
 	table_no = SingleLog.TableName
 	ChangeLog.append(diff_values(table_no, bef, aft))
 	#regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
-	return render_to_response('qmul_history_view.html', {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+	return render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+def HistoryView2(request, h_id):
+	try:
+		h_id = int(h_id)
+	except ValueError:
+		raise Http404()	
+	SingleLog = log.objects.get(id = h_id)
+	Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
+	ChangeLog = list()
+	for i in range(len(Logs)):
+		bef = eval(Logs[i].ValuesBefore)
+		aft = eval(Logs[i].ValuesAfter)
+		table_no = Logs[i].TableName
+		ChangeLog.append(MulitpleViewFormat(table_no, bef, aft))
+	
+	print ChangeLog
+	return render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
 
 @login_required
 def HistoryUndoAction(request, h_id):

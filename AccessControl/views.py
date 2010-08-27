@@ -4,7 +4,7 @@ from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import *
 from mynet.AccessControl.forms import *
 from mynet.HistoryLog.models import *
-from mynet.HistoryLog.views import *
+from mynet.HistoryLog.views import LogEvent, get_dns_type, get_model_table, get_table_name, get_table_number
 
 #RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
 
@@ -17,6 +17,28 @@ import datetime, json, difflib
 
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
+def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
+	"""
+	This function logs an event  a Record in the database and logs the event in the HistoryLog db. It returns 
+	a list of the fields and values that were deleted.
+		values: m_id = unique id of record in db, model_name = name of the table in db
+	"""
+	
+	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
+	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
+	now = datetime.datetime.today()
+	newEvent = log( #NetGroupName 		= currentNetGroup,
+			NetUser		 	= currentUser,
+			TableName		= tname,
+			RecordID		= tid,
+			TimeOccured		= now,
+			ActionType		= action,	
+			ValuesBefore		= val_bef,
+			ValuesAfter		= val_aft,
+			IsBulk 			= is_bulk
+		)	
+	newEvent.save()
+	return 
 def CompareDescriptions(dsrc1, dsrc2):
 	changed = bool(0)
 	s = difflib.SequenceMatcher(None, dsrc1, dsrc2)
@@ -255,7 +277,7 @@ def dns_namepair_listing(request):
 					mDelete = list()
 					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DNS_names, c_user, 'DNS_names'))
+						mDelete.append(DeleteAndLogRecord(item, DNS_names, c_user, 'DNS_names', ''))
 					mlength = len(mDelete)
 					return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
@@ -296,7 +318,7 @@ def dns_namepair_delete(request, pair_id):
 	except ValueError:
 		raise Http404()		
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request.user.username, 'DNS_names'))
+	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request.user.username, 'DNS_names', ''))
 	mlength = len(mDelete)
 	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
 #edit a single record
@@ -355,7 +377,7 @@ def dhcp_page_IP_range_listing(request):
 					mDelete = list()	
 					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, c_user, 'DHCP_ip_pool'))
+						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, c_user, 'DHCP_ip_pool', ''))
 					mlength = len(mDelete)
 					return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
@@ -394,7 +416,7 @@ def dhcp_page_IP_range_delete(request, ip_id):
 		raise Http404()	
 	
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username, 'DHCP_ip_pool'))
+	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username, 'DHCP_ip_pool', ''))
 	mlength = len(mDelete)
 
 	return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength':mlength})
@@ -465,7 +487,7 @@ def dhcp_page_machine_delete_multiple(request):
 					mDelete = list()
 					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, c_user, 'DHCP_machine'))
+						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, c_user, 'DHCP_machine', ''))
 					mlength = len(mDelete)
 					return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
 				elif action == 'vue':
@@ -494,7 +516,7 @@ def dhcp_page_machine_delete_single(request, m_id):
 		raise Http404()	
 	
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine'))
+	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine', ''))
 	mlength = len(mDelete)
 	
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
