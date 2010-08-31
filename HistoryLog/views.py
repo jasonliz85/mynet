@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
-from mynet.AccessControl.views import DeleteAndLogRecord
+from mynet.AccessControl.views import *
 from django.contrib.auth.models import Group, User
 
 import datetime, json
@@ -248,6 +248,7 @@ def HistoryView(request, h_id):
 	ChangeLog.append(diff_values(table_no, bef, aft))
 	#regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
 	return render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+	
 def HistoryView2(request, h_id):
 	try:
 		h_id = int(h_id)

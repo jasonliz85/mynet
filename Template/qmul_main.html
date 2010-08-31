@@ -8,24 +8,37 @@
 
 	<h2><a name="status">Overview</a></h2>
 	
-	<p> Hello {{ userInfo.first_name }} {{ userInfo.last_name }}, </p>
+	<p> Hello{%if userInfo.first_name %} {{ userInfo.first_name }} {{ userInfo.last_name }},{% else %},{% endif %} (if this is not you, please <a href="/accounts/logout" >sign out </a>)</p>
 		 
-	<p>You belong to the folowing groups:</p>
+	<p>You belong to the folowing Groups:</p>
 	<p> 
-	{%for info in GroupInfo %}
-		<ls>{{ info }} </ls>
-	{% endfor %}
-	 </p>
+	<ul>
+		{%for group in Groups %}
+			<li>{{ group.name }} </li>
+		{% endfor %}
+	</ul>
+	<p>You have access to the following Network Resources:</p>
+	<ul>
+		{%for networkresource in NetworkResources %}
+			<li>{{ networkresource }} </li>
+		{% endfor %}
+	</ul>
+	<p>You have access to the following Network Elements:</p>
+	<p>IP Ranges:</p>
+	<ul>
+		{%for iprange in IPRanges %}
+			<li>{{ iprange }} </li>
+		{% endfor %}
+	</ul>
+	<p>DNS Expressions:</p>
+	<ul>
+		{%for dnsexpression in DNSExpressions %}
+			<li>{{ dnsexpression }} </li>
+		{% endfor %}
+	</ul>
+	
 
 
-	<h3><a>Network Details</a></h3>
-	<p>Here contains the details of all the network configuration details.</p>
-	<table align="center" border="1">
-	<tbody><tr><td>Future planned downtime:</td><td><a href="NetworkPlannedDowntime.html#future">Future</a></td></tr>
-	<tr><td>History of planned downtime:</td><td><a href="NetworkPlannedDowntime.html#history">History</a></td></tr>
-	<tr><td>History of major network issues:</td><td><a href="NetworkIssueHistory.html">History</a></td></tr>
-	<tr><td>History of major IT Security issues:</td><td><a href="ITSecurityIssueHistory.html">History</a></td></tr>
-	</tbody></table>
 		
 {% endblock %}
 

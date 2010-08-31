@@ -9,7 +9,7 @@
 	<div class = "viewbackform">
 		<div class="fieldwrapper">
 			<label class="styled">IP Address</label>
-			<div class="thefield">{{machine.ip_pair}}</div> <br>
+			<div class="thefield">{{machine.ip}}</div> <br>
 		</div>
 		<div class="fieldwrapper">
 			<label class="styled">Machine Name</label>
@@ -54,8 +54,10 @@
 			<thead>	
 			<tr> 
 				<td>
+				<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > 
 				<img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
-				<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > ADD SERVICE
+				ADD SERVICE
+				</a>
 				</td>
 				<td></td>
 				<td></td>
@@ -79,7 +81,7 @@
 			<tbody>
 			{% for machinelist in machinelists %}
 				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
-					<td> {{ machinelist.ip_pair }} </td>
+					<td> {{ machinelist.ip}} </td>
 					<td align = center> 	
 						<a href="/dns/view_DNS_pair/{{machinelist.id}}">
 						{% ifequal machinelist.dns_type '1BD' %} 
@@ -100,8 +102,10 @@
 			<tfoot>
 				<tr> 
 					<td>
+					<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > 
 					<img border="0" width="15" height="15" src="/site_media/images/add.gif" alt="Add a service">
-					<a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > ADD SERVICE
+					ADD SERVICE
+					</a>					
 					</td>
 					<td></td>
 					<td></td>

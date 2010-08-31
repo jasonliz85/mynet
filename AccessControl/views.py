@@ -4,11 +4,9 @@ from django.http import HttpResponse, QueryDict
 from mynet.AccessControl.models import *
 from mynet.AccessControl.forms import *
 from mynet.HistoryLog.models import *
-from mynet.HistoryLog.views import LogEvent, get_dns_type, get_model_table, get_table_name, get_table_number
+from mynet.HistoryLog.views import *
+from mynet.views import get_permissions_to_session
 
-#RegisterMachineForm, ViewMachinesActionForm, Register_IP_range_Form, Register_namepair_Form 
-
-from IPy import IP
 from netaddr import *
 from django.utils.html import escape 
 
@@ -86,25 +84,25 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				tp = '1BD'
 			mod_record.dns_type = values['dns_type']
 			is_modified = bool(1)
-		if not mod_record.ip_pair == str(IPAddress(values['ip_pair'])):
-			mod_record.ip_pair = str(IPAddress(values['ip_pair']))
+		if not mod_record.ip_pair == int(IPAddress(values['ip_pair'])):
+			mod_record.ip_pair = int(IPAddress(values['ip_pair']))
 			is_modified = bool(1)
-			if (IPAddress(values['ip_pair']).version == 6):
+			if (IPAddress(values['ip_paiogRecordr']).version == 6):
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)
 			mod_record.is_ipv6 = ipVersion		
 	elif m_name_str == "DHCP_ip_pool":
-		if not mod_record.IP_pool1 == str(IPAddress(values['IP_pool1'])):
+		if not mod_record.IP_pool1 == int(IPAddress(values['IP_pool1'])):
 			if (IPAddress(values['IP_pool1']).version == 6):
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)
 			is_modified = bool(1)
-			mod_record.IP_pool1 = str(IPAddress(values['IP_pool1']))
+			mod_record.IP_pool1 = int(IPAddress(values['IP_pool1']))
 			mod_record.is_ipv6 = ipVersion
-		if not mod_record.IP_pool2 == str(IPAddress(values['IP_pool2'])):
-			mod_record.IP_pool2 = str(IPAddress(values['IP_pool2']))
+		if not mod_record.IP_pool2 == int(IPAddress(values['IP_pool2'])):
+			mod_record.IP_pool2 = int(IPAddress(values['IP_pool2']))
 			is_modified = bool(1)
 		if not mod_record.description == values['description']:
 			if CompareDescriptions(mod_record.description, values['description']):
@@ -114,8 +112,8 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 		if not mod_record.MAC_pair == str(EUI(values['MAC_pair'], dialect=mac_custom)):
 			mod_record.MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom))
 			is_modified = bool(1)
-		if not mod_record.IP_pair == str(IPAddress(values['IP_pair'])):
-			mod_record.IP_pair = str(IPAddress(values['IP_pair']))
+		if not mod_record.IP_pair == int(IPAddress(values['IP_pair'])):
+			mod_record.IP_pair = int(IPAddress(values['IP_pair']))
 			is_modified = bool(1)
 		if not mod_record.PC_pair == values['PC_pair']:
 			mod_record.PC_pair = values['PC_pair']
@@ -150,7 +148,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 		if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
 			tp = '1BD'
 		newRecord = model_name( machine_name	= values['machine_name'],
-					ip_pair		= str(IPAddress(values['ip_pair'])),
+					ip_pair		= int(IPAddress(values['ip_pair'])),
 					dns_type	= tp,
 					is_active 	= bool(1),
 					is_ipv6 	= ipVersion,
@@ -162,8 +160,8 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 			ipVersion = bool(1)
 		else:
 			ipVersion = bool(0)				
-		newRecord = model_name(	IP_pool1	= str(IPAddress(values['IP_pool1'])),
-					IP_pool2	= str(IPAddress(values['IP_pool2'])),
+		newRecord = model_name(	IP_pool1	= int(IPAddress(values['IP_pool1'])),
+					IP_pool2	= int(IPAddress(values['IP_pool2'])),
 					is_active 	= bool(1),
 					is_ipv6 	= ipVersion,
 					time_created 	= now,
@@ -171,7 +169,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					)
 	elif m_name_str == "DHCP_machine":
 		newRecord = model_name(	MAC_pair = str(EUI(values['MAC_pair'], dialect=mac_custom)),
-					IP_pair	= str(IPAddress(values['IP_pair'])),
+					IP_pair	= int(IPAddress(values['IP_pair'])),
 					PC_pair = values['PC_pair'],
 					time_created = now,
 					description = values['description']
@@ -181,6 +179,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 	newRecord.save() #vals = model_name.objects.filter(id = newRecord.id).values() 
 	init_values = "{}" 
 	final_values = newRecord.LogRepresentation()#str(vals[0])
+	print final_values
 	LogEvent('A',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, newRecord.id)
 	return newRecord.id
 		
@@ -213,6 +212,7 @@ def dns_namepair_simpleAdd(request, pair_id):
 	except ValueError:
 		raise Http404()	
 	return handlePopAdd(request, Register_service_Form, 'services', pair_id)
+	
 #handle pop_up
 def handlePopAdd(request, addForm, field, original_id):
 	original_machine = DNS_names.objects.get(id = original_id)
@@ -246,18 +246,20 @@ def dns_namepair_add(request):
 		if form.is_valid():
 			info = form.cleaned_data
 			values = { 	'machine_name' :info['dns_expr'],'dns_typ' :info['dns_typ'],
-					'ip_pair' :info['ip_pair'],'description':info['dscr'] }
+					'ip_pair' :int(IPAddress(info['ip_pair'])),'description':info['dscr'] }
 			registeredID = AddAndLogRecord('DNS_names', DNS_names, request.user.username, values)
 			add_service = request.POST.getlist('service_add')
-			if add_service:
-				#		
+			if add_service:		
 				for item in add_service:
 					service_add = eval(item)
 					values = { 	'machine_name':service_add['dns_expr'],'dns_typ':service_add['dns_typ'],
-							'ip_pair':service_add['ip_pair'],'description':service_add['dscr'] }
+							'ip_pair':int(IPAddress(service_add['ip_pair'])),'description':service_add['dscr'] }
 					AddAndLogRecord('DNS_names', DNS_names, request.user.username, values)			
-			regServices = DNS_names.objects.filter(ip_pair = info['ip_pair']).exclude(id = registeredID)
+			regServices = DNS_names.objects.filter(ip_pair = int(IPAddress(info['ip_pair']))).exclude(id = registeredID)
 			namepair_registered  = DNS_names.objects.get(id = registeredID)
+			namepair_registered.ip = str(IPAddress(namepair_registered.ip_pair))
+			for i in range(len(regServices)):
+				regServices[i].ip = str(IPAddress(regServices[i].ip_pair))
 			return render_to_response('qmul_dns_view_namepair.html', {'machine': namepair_registered, 'machinelists':regServices})
 	else:
 		form = Register_namepair_Form(initial = {})
@@ -266,7 +268,13 @@ def dns_namepair_add(request):
 #list all ip-name records in the model
 @login_required
 def dns_namepair_listing(request):
+	[cachetest, b, c] = get_permissions_to_session(request)
+	
 	registered_pairs =  DNS_names.objects.all()#.order_by("dns_type")
+	#for display purposes
+	for i in range(len(registered_pairs)):
+		registered_pairs[i].ip = str(IPAddress(registered_pairs[i].ip_pair))
+		
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
@@ -296,7 +304,7 @@ def dns_namepair_listing(request):
 				return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs })	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs})
+		return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs, 'cachetest':cachetest})
 	return render_to_response('qmul_dns_listings_namepair.html',{})
 
 #view a single ip-name pair 
@@ -307,7 +315,10 @@ def dns_namepair_view(request, pair_id):
 	except ValueError:
 		raise Http404()	
 	regpair = DNS_names.objects.get(id = pair_id)
+	regpair.ip = str(IPAddress(regpair.ip_pair))
 	regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
+	for i in range(len(regServices)):
+		regServices[i].ip = str(IPAddress(regServices[i].ip_pair))
 	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists': regServices})
 
 #delete a single record 
@@ -321,6 +332,7 @@ def dns_namepair_delete(request, pair_id):
 	mDelete.append(DeleteAndLogRecord(pair_id, DNS_names, request.user.username, 'DNS_names', ''))
 	mlength = len(mDelete)
 	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
+	
 #edit a single record
 @login_required
 def dns_namepair_edit(request, pair_id):
@@ -336,11 +348,15 @@ def dns_namepair_edit(request, pair_id):
 					'ip_pair' :info['ip_pair'],'description' :info['dscr']	}
 			modID = EditAndLogRecord('DNS_names', pair_id,  DNS_names,request.user.username, valAft)
 			regpair = DNS_names.objects.get(id = modID)
+			regpair.ip = str(IPAddress(regpair.ip_pair))
 			regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = modID)
+			for i in range(len(regServices)):
+				regServices[i].ip = str(IPAddress(regServices[i].ip_pair))
+		
 			return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 	else:
 		regpair = DNS_names.objects.get(id = pair_id)		
-		editform = Register_namepair_Form(initial = {'dns_expr':regpair.machine_name,'ip_pair':regpair.ip_pair,'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
+		editform = Register_namepair_Form(initial = {'dns_expr':regpair.machine_name,'ip_pair':str(IPAddress(regpair.ip_pair)),'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
 	return render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})
 
 #################################################################################
@@ -357,7 +373,10 @@ def dhcp_page_IP_range_add(request):
 			values = { 	'IP_pool1' :info['IP_range1'],'IP_pool2' :info['IP_range2'],
 					'description':info['dscr'] }
 			registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
-			IP_pool_registered  = DHCP_ip_pool.objects.get(id = registeredID)					
+			IP_pool_registered  = DHCP_ip_pool.objects.get(id = registeredID)
+			#for display purposes
+			IP_pool_registered.ip1 = str(IPAddress(IP_pool_registered.IP_pool1))
+			IP_pool_registered.ip2 = str(IPAddress(IP_pool_registered.IP_pool2))					
 			return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
 	else:
 		form = Register_IP_range_Form(initial = {})
@@ -367,6 +386,10 @@ def dhcp_page_IP_range_add(request):
 @login_required
 def dhcp_page_IP_range_listing(request):
 	registered_IP_pools =  DHCP_ip_pool.objects.all().order_by("IP_pool1")
+	#for display purposes
+	for i in range(len(registered_IP_pools)):
+		registered_IP_pools[i].ip1 = str(IPAddress(registered_IP_pools[i].IP_pool1))
+		registered_IP_pools[i].ip2 = str(IPAddress(registered_IP_pools[i].IP_pool2))
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
@@ -405,6 +428,8 @@ def dhcp_page_IP_range_view(request, ip_id):
 	except ValueError:
 		raise Http404()	
 	regpools = DHCP_ip_pool.objects.get(id = ip_id)
+	regpools.ip1 = str(IPAddress(regpools.IP_pool1))
+	regpools.ip2 = str(IPAddress(regpools.IP_pool2))
 	return  render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpools})
 
 #Delete a single IP range on the DHCP IP pool model
@@ -436,10 +461,12 @@ def dhcp_page_IP_range_edit(request, ip_id):
 					'description' :info['dscr']	}
 			modID = EditAndLogRecord('DHCP_ip_pool', ip_id,  DHCP_ip_pool,request.user.username, valAft)
 			regpool = DHCP_ip_pool.objects.get(id = modID)
+			regpool.ip1 = str(IPAddress(regpool.IP_pool1))
+			regpool.ip2 = str(IPAddress(regpool.IP_pool2))
 			return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
 	else:
 		regmachine = DHCP_ip_pool.objects.get(id = ip_id)		
-		editform = Register_IP_range_Form(initial = {'IP_range1':regmachine.IP_pool1,'IP_range2':regmachine.IP_pool2,'dscr':regmachine.description})	
+		editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.IP_pool1)),'IP_range2':str(IPAddress(regmachine.IP_pool2)),'dscr':regmachine.description})	
 	return render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
 
 #################################################################################
@@ -467,16 +494,20 @@ def dhcp_page_machine_edit(request, m_id):
 					'PC_pair' :info['pcID'],'description' :info['dscr']	}
 			modID = EditAndLogRecord('DHCP_machine', m_id,  DHCP_machine,request.user.username, valAft)
 			regmachine = DHCP_machine.objects.get(id = modID)
+			regmachine.ip = str(IPAddress(regmachine.IP_pair))
 			return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 	else:
 		regmachine = DHCP_machine.objects.get(id = m_id)		
-		editform = RegisterMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':regmachine.IP_pair, 									'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
+		editform = RegisterMachineForm(initial = {'mcID':regmachine.MAC_pair,'ipID':str(IPAddress(regmachine.IP_pair)), 'pcID':regmachine.PC_pair,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
 #
 @login_required
 def dhcp_page_machine_delete_multiple(request):	
 	registeredmachines =  DHCP_machine.objects.all().order_by("IP_pair")
+	#for display purposes
+	for i in range(len(registeredmachines)):
+		registeredmachines[i].ip = str(IPAddress(registeredmachines[i].IP_pair))
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)		
 		action = request.POST['status']
@@ -529,6 +560,7 @@ def dhcp_page_machine_view(request, m_id):
 	except ValueError:
 		raise Http404()	
 	regmachine = DHCP_machine.objects.get(id = m_id)
+	regmachine.ip = str(IPAddress(regmachine.IP_pair))
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 
 #Add a machine to the DHCP registration model
@@ -542,6 +574,7 @@ def dhcp_page_machine_add(request):
 					'PC_pair'  :info['pcID'],'description':info['dscr'] }
 			registeredID = AddAndLogRecord('DHCP_machine',  DHCP_machine, request.user.username, values)
 			machine_registered  = DHCP_machine.objects.get(id = registeredID)
+			machine_registered.ip = str(IPAddress(machine_registered.IP_pair))
 			return render_to_response('qmul_dhcp_viewmachine.html', {'machine': machine_registered})
 	else:
 		form = RegisterMachineForm(initial = {})

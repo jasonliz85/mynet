@@ -10,7 +10,9 @@ class RegisterMachineForm(forms.Form):
 	def clean_ipID(self):
 		ipID = self.cleaned_data['ipID']
 		try: 
-			IPAddress(ipID)
+			ip_add = IPAddress(ipID)
+			if is_ipaddress_in_netresource(ip_add):
+				raise forms.ValidationError("You are not allowed to add this IP address. It is not within your network resource group.")	
 	   	except (NameError, TypeError, AddrFormatError): 
 	   		raise forms.ValidationError("IP address is not valid. Please change and try again. ")
 	   	except ValueError:
@@ -32,7 +34,9 @@ class Register_IP_range_Form(forms.Form):
 	def clean_IP_range1(self):
 		IP_range1 = self.cleaned_data['IP_range1']
 		try: 
-			IPAddress(IP_range1)
+			ip_add = IPAddress(IP_range1)
+			if is_ipaddress_in_netresource(ip_add):
+				raise forms.ValidationError("You are not allowed to add this IP address. It is not within your network resource group.")
    	   	except (NameError, TypeError, AddrFormatError): 
 	   		raise forms.ValidationError("IP address is not valid. Please change and try again. ")
 	   	except ValueError:
@@ -42,17 +46,15 @@ class Register_IP_range_Form(forms.Form):
 	def clean_IP_range2(self):
 		IP_range2 = self.cleaned_data['IP_range2']
 		try: 
-			IPAddress(IP_range2)
+			ip_add = IPAddress(IP_range2)
+			if is_ipaddress_in_netresource(ip_add):
+				raise forms.ValidationError("You are not allowed to add this IP address. It is not within your network resource group.")	
    	   	except (NameError, TypeError, AddrFormatError): 
 	   		raise forms.ValidationError("IP address is not valid. Please change and try again. ")
 	   	except ValueError:
 	   		raise forms.ValidationError("Netmasks or subnet prefixes are not allowed. ")
 	   	return IP_range2
 	   	 
-	#to check:
-	#	-IP version consistent
-	#	-single ip values and not a range
-	#
 class Register_namepair_Form(forms.Form):
 	dns_expr 	= forms.CharField(label = 'Machine Name', widget = forms.TextInput(attrs={'class':'special', 'size':'10'}))		#DNS name regular expression
 	ip_pair		= forms.CharField(label = 'IP Address', widget = forms.TextInput(attrs={'class':'special'}))					
@@ -67,7 +69,9 @@ class Register_namepair_Form(forms.Form):
 	def clean_ip_pair(self):
 		ip_pair = self.cleaned_data['ip_pair']
 		try: 
-			IPAddress(ip_pair)
+			ip_add = IPAddress(ip_pair)
+			if is_ipaddress_in_netresource(ip_add):
+				raise forms.ValidationError("You are not allowed to add this IP address. It is not within your network resource group.")	
    		except (NameError, TypeError, AddrFormatError): 
 	   		raise forms.ValidationError("IP address is not valid. Please change and try again. ")
 	   	except ValueError:
