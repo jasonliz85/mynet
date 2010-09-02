@@ -9,8 +9,10 @@ urlpatterns = patterns('',
 	#####################################################
 	##################General Pages######################
 	#####################################################
-	
-	(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jasonl/svn/mynet/media'}),
+	#work from qm
+#	(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jasonl/svn/mynet/media'}),
+	#work from home
+	(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jason/Projects/qm_projects/mynet/media'}),
 	('^$', 'mynet.views.home'),
 	#('^login/$', 'mynet.views.login'),
 	(r'^home/$','mynet.views.home'),

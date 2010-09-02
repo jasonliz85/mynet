@@ -68,12 +68,13 @@ def get_netgroups_managed_by_user(user_obj):
 	"""
 	if not hasattr(user_obj, '_netgroup_cache') or True:
 		netgroup_cache = []
-		print 'Starting loops'
+		#print 'Starting loops'
 		for g in user_obj.groups.all():
-			print 'Group', g
+			#print 'Group', g
 			for ng in g.netgroup_set.all():
-				print 'NetGroup', ng 
-				if ng not in netgroup_cache: netgroup_cache.append(ng)
+				#print 'NetGroup', ng 
+				if ng not in netgroup_cache: 
+					netgroup_cache.append(ng)
 		user_obj._netgroup_cache = netgroup_cache
 	return	user_obj._netgroup_cache
 
@@ -82,11 +83,14 @@ def get_address_blocks_managed_by(user_obj):
 	Returns a list of IP address block objects which the user can manage
 	"""
 	if not hasattr(user_obj, '_address_blocks') or True:
-		address_blocks = []
-		for ng in get_netgroups_managed_by_user(user_obj):
-			for ab in ng.address_blocks.all():
-				if ab not in address_blocks: address_blocks.append(ab)
+		address_blocks = [] #list containing all address blocks the user is allowed to change
+		for netgroup in get_netgroups_managed_by_user(user_obj):
+			for addressblock in netgroup.address_blocks.all():
+				if addressblock not in address_blocks: 
+					address_blocks.append(addressblock)
+					#print address_blocks
 		user_obj._address_blocks = address_blocks
+		#print address_blocks
 	return	user_obj._address_blocks
 
 def get_dns_patterns_managed_by(user_obj):
