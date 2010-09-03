@@ -3,13 +3,18 @@ from django.db import models
 from django.contrib.auth.models import Group
 
 class DNS_names(models.Model):							#DNS NAMING MODEL
-	machine_name 	= models.CharField('DNS name', max_length = 30)		#DNS name regular expression
+	machine_name 	= models.CharField('DNS name', max_length = 255)	#DNS name regular expression
+	#name
 	ip_pair		= models.IntegerField('IP address')			#DNs ip address pair
+	#ip_address
 	dns_type	= models.CharField('Type', max_length = 3 )		#DNS type
+	#dns_type
 	description 	= models.TextField('Description', blank=True, null=True)#DNS name description
+	#description
 	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6
 	time_created 	= models.DateTimeField()				#DNS name creation time
-	is_active 	= models.BooleanField()					#DNS reg active
+	#time_modified - to Add
+	is_active 	= models.BooleanField()					######DNS reg active - to delete
 
 	def LogRepresentation(self):
 		return u'{\'machine_name\':\'%s\', \'ip_pair\':%s, \'dns_type\':\'%s\', \'description\':\'%s\'}' % (self.machine_name, self.ip_pair, self.dns_type, self.description )
@@ -18,12 +23,17 @@ class DNS_names(models.Model):							#DNS NAMING MODEL
 	class Meta:
         	ordering = ['ip_pair','dns_type']
 
-class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
-	MAC_pair	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address 
+class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
+	MAC_pair	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address
+	#mac_address 
 	IP_pair		= models.IntegerField('IP address')			#DHCP IP address 
-	PC_pair		= models.CharField('PC name', max_length = 12)		#DHCP PC name
+	#ip_address
+	PC_pair		= models.CharField('Host name', max_length = 63)	#DHCP Host name
+	#host_name
 	description 	= models.TextField('Description',blank=True, null=True)	#DHCP machine description of machine (optional)
 	time_created 	= models.DateTimeField()				#DHCP machine registration creation time	
+	#time_modified - to Add
+	#is_ipv6
 	def LogRepresentation(self):
 		return u'{\'MAC_pair\':\'%s\', \'IP_pair\':%s, \'PC_pair\':\'%s\', \'description\':\'%s\'}' % (self.MAC_pair, self.IP_pair, self.PC_pair, self.description )
 	def __unicode__(self):
@@ -32,11 +42,14 @@ class DHCP_machine(models.Model):						#DHCP MACHINE REGISTRATION MODEL
 	
 class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	IP_pool1	= models.IntegerField('IP range from')			#DHCP address range
+	#ip_first
 	IP_pool2	= models.IntegerField('IP range to')			#DHCP address range
+	#ip_last
 	description 	= models.TextField('Description',blank=True, null=True)	#DHCP IP pool description
 	time_created 	= models.DateTimeField()				#DHCP time IP pool creation time
+	#time_modified
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
-	is_active 	= models.BooleanField()					#DHCP IP pool activation
+	is_active 	= models.BooleanField()					#DHCP IP pool activation - to delete
 	def LogRepresentation(self):
 		return u'{\'IP_pool1\':%s, \'IP_pool2\':%s,\'description\':\'%s\'}' % (self.IP_pool1, self.IP_pool2,self.description )
 	def __unicode__(self):

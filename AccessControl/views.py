@@ -7,6 +7,8 @@ from mynet.HistoryLog.models import *
 from mynet.HistoryLog.views import *
 from mynet.views import *
 
+from django.db.models import Q, F
+
 from netaddr import *
 from django.utils.html import escape 
 
@@ -217,7 +219,7 @@ def dns_namepair_simpleAdd(request, pair_id):
 def handlePopAdd(request, addForm, field, original_id):
 	original_machine = DNS_names.objects.get(id = original_id)
 	ip_pair = original_machine.ip_pair
-	mn_pair = original_machine.machine_name
+	mn_pair = origisqlnal_machine.machine_name
 	if request.method == "POST":
 		form = addForm(request.POST)
 		if form.is_valid():
@@ -296,11 +298,28 @@ def dns_namepair_add(request):
 		form = Register_namepair_Form(initial = {})
 	return render_to_response('qmul_dns_create_namepair.html',{'form':form })
 def get_permited_records(request):
+	from django.db import connection, transaction
+	cursor = connection.cursor()
+
 	[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
-	#criterion1 = DNS_names(machine_name__contains=str(dns_exprs[0]))
-	#criterion2 = DNS_names(machine_name__contains=str(dns_exprs[1]))
-	print dns_exprs[2]
-	permited_records = DNS_names.objects.filter(machine_name__contains='elec.qmul.ac.uk')#,'boats.qmul.ac.uk')#.filter(machine_name__contains=str(dns_exprs[1]))
+	c1 = Q(machine_name__contains = str('animal.qmul.ac.uk'))
+	c2 = Q(machine_name__contains = str('boats.qmul.ac.uk'))
+	
+	network1 = IPNetwork('192.0.2.0/23')#str(ip_blocks[0]))
+	ip1 = network1[0]
+	ip2 = network1[-1]
+	c3 = Q(ip_pair__lt = ip2)
+	c4 = Q(ip_pair__gt = ip1)
+	t1 = DNS_names.objects.filter( c3, c4 )
+	t2 = DNS_names.objects.filter( c2|c1 )
+	permited_records = t1|t2#.filter(c1|c2)
+	#cursor.execute('SELECT * from AccessControl_dns_names')
+	#"SELECT * from AccessControl_dns_names WHERE (ip_pair < %s and ip_pair > %s) OR machine_name LIKE %s", [ip1, ip2, de])
+	#rows = cursor.fetchone()
+	#permited_records = DNS_names.objects.extra(where = ['machine_name = %s'], params = [de])
+	#raw('SELECT * from myapp_person')
+	#filter(c1|c2)
+	#,'boats.qmul.ac.uk')#.filter(machine_name__contains=str(dns_exprs[1]))
 	return permited_records
 #list all ip-name records in the model
 @login_required
