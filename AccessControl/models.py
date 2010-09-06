@@ -2,6 +2,8 @@ from django.db import models
 
 from django.contrib.auth.models import Group
 
+from netaddr import IPAddress
+
 class DNS_names(models.Model):							#DNS NAMING MODEL
 	machine_name 	= models.CharField('DNS name', max_length = 255)	#DNS name regular expression
 	#name

@@ -34,7 +34,6 @@ def is_ipaddress_in_netresource(request, ip_address):
 		ip_block = IPNetwork(str(ip_blocks[block]))
 		#...check if ip_address is within range
 		if ip_address < int(ip_block[-1]) and ip_address > int(ip_block[0]):
-			print "Permission allowed for ", IPAddress(ip_address), " in Network ", ip_block
 			has_permission = True
 
 	return has_permission
@@ -45,7 +44,6 @@ def is_name_in_netresource(request, dns_name):
 	"""
 	dns_expressions  = request.session['dns_expressions']
 	has_permission = False
-	print dns_expressions
 	#for each dns expression in all dns expressions in the list...
 	for expression in range(len(dns_expressions)):
 		#...modify expression...
@@ -53,7 +51,6 @@ def is_name_in_netresource(request, dns_name):
 		dns_re = re.compile(temp)
 		#... and check if matches with input dns_name
 		if re.match(dns_re, dns_name):
-			print "Machine name ", dns_name, "is allowed for expression", dns_expressions[expression]
 			has_permission = True
 
 	return has_permission

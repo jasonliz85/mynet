@@ -297,35 +297,102 @@ def dns_namepair_add(request):
 	else:
 		form = Register_namepair_Form(initial = {})
 	return render_to_response('qmul_dns_create_namepair.html',{'form':form })
-def get_permited_records(request):
-	from django.db import connection, transaction
-	cursor = connection.cursor()
-
+def get_permited_records(request, enable_type_filter):
+	"""
+	This function return a queryset from the model table DNS_names. The returned results are filtered by permitted
+	ip_blocks, dns_expressions and dns_type that the user is able to access. If enable_type_filter is enabled, 
+	a further filtering step is applied - please see comments this function for further information.
+	"""
+	#Get network groups, ip blocks and dns expressions which the user has permission to control
 	[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
-	c1 = Q(machine_name__contains = str('animal.qmul.ac.uk'))
-	c2 = Q(machine_name__contains = str('boats.qmul.ac.uk'))
 	
-	network1 = IPNetwork('192.0.2.0/23')#str(ip_blocks[0]))
-	ip1 = network1[0]
-	ip2 = network1[-1]
-	c3 = Q(ip_pair__lt = ip2)
-	c4 = Q(ip_pair__gt = ip1)
-	t1 = DNS_names.objects.filter( c3, c4 )
-	t2 = DNS_names.objects.filter( c2|c1 )
-	permited_records = t1|t2#.filter(c1|c2)
-	#cursor.execute('SELECT * from AccessControl_dns_names')
-	#"SELECT * from AccessControl_dns_names WHERE (ip_pair < %s and ip_pair > %s) OR machine_name LIKE %s", [ip1, ip2, de])
-	#rows = cursor.fetchone()
-	#permited_records = DNS_names.objects.extra(where = ['machine_name = %s'], params = [de])
-	#raw('SELECT * from myapp_person')
-	#filter(c1|c2)
-	#,'boats.qmul.ac.uk')#.filter(machine_name__contains=str(dns_exprs[1]))
-	return permited_records
+	#first find all the ip addresses that the user has permission to control
+	empty_find = True
+	for block in range(len(ip_blocks)):
+		ip_block = IPNetwork(str(ip_blocks[block]))
+		ip_filter_upper = Q(ip_pair__lt = ip_block[-1])
+		ip_filter_lower = Q(ip_pair__gt = ip_block[0])
+		#filter the ip block
+		finds = DNS_names.objects.filter( ip_filter_upper, ip_filter_lower )
+		if block == 0:
+			total_ip_finds = finds
+			if len(finds) == 0:
+				empty_find = True
+			else:
+				empty_find = False
+		else:
+			if len(finds) == 0:
+				if empty_find:
+					empty_find = True	
+			else:
+				if empty_find:
+					total_ip_finds = finds
+					empty_find = False
+				else:
+					total_ip_finds = finds|total_ip_finds
+	#second, find all the dns names that the user can control
+	empty_find = True
+	for expression in range(len(dns_exprs)):
+		dns_filter = Q(machine_name__regex = ('\S' + str(dns_exprs[expression])))
+		finds = DNS_names.objects.filter( dns_filter )
+		if expression == 0:	
+			total_name_finds = finds
+			if len(finds) == 0:
+				empty_find = True
+			else:
+				empty_find = False
+		else:	
+			if len(finds) == 0:
+				if empty_find:
+					empty_find = True	
+			else:
+				if empty_find:
+					total_name_finds = finds
+					empty_find = False
+				else:
+					total_name_finds = finds|total_name_finds
+
+	combined_records = total_name_finds|total_ip_finds
+	#we now have a combimed result- great! we now need to filter these a bit more (assuming enable_filter_type is True)
+	#so, if the type of record is:
+	#bi-directional - two checks on each record is needed | permission for both ip address and machine name
+	#address to name - check only permission for ip address
+	#name to address - check only permisiion for machine name
+	if enable_type_filter:
+		type_filtered_records = list()
+		for record in range(len(combined_records)):
+			has_permission = False
+			empty_find = True
+			dt = combined_records[record].dns_type		#dns type
+			if dt == '1BD':
+				if is_ipaddress_in_netresource(request, combined_records[record].ip_pair ):
+					if is_name_in_netresource(request, combined_records[record].machine_name ):
+						has_permission = True
+			elif dt == '2NA':
+				if is_name_in_netresource(request, combined_records[record].machine_name ):
+					has_permission = True
+			else:
+				if is_ipaddress_in_netresource(request, combined_records[record].ip_pair ):
+					has_permission = True
+			#checked for one of three types and checked whether the above conditions are true
+			#if true, add to overall list to return
+			if has_permission:
+				if record == 0:	
+					type_filtered_records.append(combined_records[record])
+				else:	
+					type_filtered_records.append(combined_records[record])
+		
+		permitted_records = type_filtered_records
+	else:
+		permitted_records = combined_records
+	
+	return permitted_records
+
 #list all ip-name records in the model
 @login_required
 def dns_namepair_listing(request):
 	
-	registered_pairs =  get_permited_records(request)# DNS_names.objects.all()#.order_by("dns_type")
+	registered_pairs =  get_permited_records(request, True)# DNS_names.objects.all()#.order_by("dns_type")
 	#for display purposes
 	for i in range(len(registered_pairs)):
 		registered_pairs[i].ip = str(IPAddress(registered_pairs[i].ip_pair))
