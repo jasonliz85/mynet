@@ -73,9 +73,9 @@
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
-				<th><a href="/dhcp/viewmachine/{{machinelist.id}}"> {{ machinelist.MAC_pair }} </a></th>
+				<th><a href="/dhcp/viewmachine/{{machinelist.id}}"> {{ machinelist.mac_address }} </a></th>
 				<td name="IP">{{ machinelist.ip }}</td>
-				<td>{{ machinelist.PC_pair }}</td>
+				<td>{{ machinelist.host_name }}</td>
 				<td class="nowrap">
 				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 
 				</td>

@@ -9,7 +9,7 @@
 	<form  class = "viewbackform">
 	<div class="fieldwrapper">
 		<label class="styled">MAC Address</label>
-		<div class="thefield">{{machine.MAC_pair}}</div> <br>
+		<div class="thefield">{{machine.mac_address}}</div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">IP Address</label>
@@ -17,19 +17,19 @@
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">PC Name</label>
-		<div class="thefield">{{machine.PC_pair}}</div> <br>
+		<div class="thefield">{{machine.host_name}}</div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Description</label>
-		{% if not machine.description %}
-		<div class="thefield">None</div> <br>
-		{% else %}		
-		<div class="thefield"><textarea readonly="readonly">{{machine.description}}</textarea></div> <br>
-		{% endif %}	
+		<div class="thefield"><textarea readonly="readonly">{% if not machine.description %} none {% else %}{{machine.description}}{% endif %}</textarea></div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Time Created</label>
 		<div class="thefield">{{machine.time_created}}</div> <br>
+	</div>
+	<div class="fieldwrapper">
+		<label class="styled">Time Modified</label>
+		<div class="thefield">{{machine.time_modified}}</div> <br>
 	</div>
 	</form>
 	<p class = "EditDeleteBack"> 
