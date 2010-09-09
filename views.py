@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
-from AccessControl.views import add_permissions_to_session, get_permissions_to_session
+from AccessControl.views import *#add_permissions_to_session, get_permissions_to_session
 
 import datetime
 from netaddr import *

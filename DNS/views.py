@@ -1,10 +1,10 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-
+#import models
 from mynet.DNS.models import *
-
+#import forms
 from mynet.DNS.forms import *
-
+#import views
 from mynet.AccessControl.views import *
 from mynet.views import *
 from mynet.helper_views import *
@@ -98,7 +98,7 @@ def dns_namepair_add(request):
 @login_required
 def dns_namepair_listing(request):
 	
-	registered_pairs =  get_permited_records(request, True)# DNS_name.objects.all()#.order_by("dns_type")
+	registered_pairs =  dns_get_permited_records(request, True)# DNS_name.objects.all()#.order_by("dns_type")
 	#for display purposes, convert ip from integer form to str form (i.e. 3232235521 -> '192.168.0.1')
 	for i in range(len(registered_pairs)):
 		registered_pairs[i].ip = str(IPAddress(registered_pairs[i].ip_address))

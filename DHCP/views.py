@@ -1,10 +1,10 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-
+#import models
 from mynet.DHCP.models import *
-
+#import forms
 from mynet.DHCP.forms import *
-
+#import views
 from mynet.views import *
 from mynet.helper_views import *
 
@@ -22,14 +22,19 @@ def dhcp_page_IP_range_add(request):
 		form = Register_IP_range_Form(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			values = { 	'ip_first' :info['IP_range1'],'ip_last' :info['IP_range2'],
-					'description':info['dscr'] }
-			registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
-			IP_pool_registered  = DHCP_ip_pool.objects.get(id = registeredID)
-			#for display purposes
-			IP_pool_registered.ip1 = str(IPAddress(IP_pool_registered.ip_first))
-			IP_pool_registered.ip2 = str(IPAddress(IP_pool_registered.ip_last))					
-			return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
+			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), True)
+			if can_pass:
+				values = { 	'ip_first' :info['IP_range1'],'ip_last' :info['IP_range2'],
+						'description':info['dscr'] }
+				registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
+				IP_pool_registered  = DHCP_ip_pool.objects.get(id = registeredID)
+				#for display purposes
+				IP_pool_registered.ip1 = str(IPAddress(IP_pool_registered.ip_first))
+				IP_pool_registered.ip2 = str(IPAddress(IP_pool_registered.ip_last))					
+				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
+			else:
+				form = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
+				return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
 	else:
 		form = Register_IP_range_Form(initial = {})
 

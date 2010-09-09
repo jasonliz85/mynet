@@ -18,11 +18,7 @@
 	</div>
 	<div class="fieldwrapper"> 
 		<label class="styled">Description</label>
-		{% if not machine.description %}
-		<div class="thefield">None</div> <br>
-		{% else %}		
-		<div class="thefield"><textarea readonly="readonly">{{machine.description}}</textarea></div> <br>
-		{% endif %}
+		<div class="thefield"><textarea readonly="readonly">{% if not machine.description %} none {% else %}{{machine.description}}{% endif %}</textarea></div> <br>
 	</div>
 	<div class="fieldwrapper">
 		<label class="styled">Time Created</label>

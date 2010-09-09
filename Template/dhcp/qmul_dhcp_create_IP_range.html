@@ -7,6 +7,7 @@
 	<h2><a name="status">Register an IP Range</a></h2>
 	<p>Please enter a valid IP Range below:</p>
 	
+	
 	<form class="feedbackform" action="" method="post">
 	<div class="fieldwrapper">
 		<label class="styled">{{form.IP_range1.label}}</label>
@@ -30,6 +31,11 @@
 				{{form.IP_range2.errors}}
 			{% endif %}
 		{% endif %}
+		{% for c_error in c_errors %}
+		{% if c_error.error%}
+			<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
+		{% endif %}
+		{% endfor %}
 		</p>
 	</div>
 	<div class="fieldwrapper">
