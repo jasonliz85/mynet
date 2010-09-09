@@ -1,59 +1,18 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
+
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
+from mynet.DNS.models import *
+from mynet.DHCP.models import *
+
 from mynet.AccessControl.views import *
+from mynet.helper_views import *
+
 from django.contrib.auth.models import Group, User
 
-import datetime, json
+import datetime
 
-def get_dns_type(value):
-	if value == '1BD':
-		dns_type = 'Bi-directional'	
-	elif value == '2NA':
-		dns_type = 'Name to address'	
-	elif value == '3AN':
-		dns_type = 'Address to name'
-	else: 
-		dns_type = ''
-	return dns_type 
-	
-def get_model_table(val):
-	if val == '1':
-		model_name = DNS_names
-	elif val == '2':
-		model_name = DHCP_ip_pool
-	elif val == '3':
-		model_name = DHCP_machine
-	else:
-		model_name = False
-		print 'Error: get_model_table(), table number not valid'
-		
-	return model_name
-def get_table_name(val):
-	if val == '1':
-		table_name = 'DNS_names'
-	elif val == '2':
-		table_name = 'DHCP_ip_pool'
-	elif val == '3':
-		table_name = 'DHCP_machine'
-	else:
-		table_name = False
-		print 'Error: get_table_name(), table number not valid'
-		
-	return table_name
-def get_table_number(table_name):
-	if table_name == 'DNS_names':
-		table_number = '1'
-	elif table_name == 'DHCP_ip_pool':
-		table_number = '2'
-	elif table_name ==  'DHCP_machine':	
-		table_number = '3'
-	else:
-		print 'Error: get_table_number(), table name not recognised'
-		table_number = False
-		
-	return table_number
 def UndoLogAction(SingleLog, username):
 	
 	record_id = SingleLog.RecordID
@@ -246,7 +205,7 @@ def HistoryView(request, h_id):
 	aft = eval(SingleLog.ValuesAfter)
 	table_no = SingleLog.TableName
 	ChangeLog.append(diff_values(table_no, bef, aft))
-	#regServices = DNS_names.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
+	#regServices = DNS_name.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
 	return render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
 	
 def HistoryView2(request, h_id):
