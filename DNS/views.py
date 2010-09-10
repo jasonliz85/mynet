@@ -194,7 +194,7 @@ def dns_namepair_edit(request, pair_id):
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 			else:
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_typ':info['dns_typ'],'ip_address':info['ip_address'],'dscr':info['dscr']})
-				return render_to_response('qmul_dns_create_namepair.html',{'form':form ,'c_errors': custom_errors })
+				return render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
 	else:
 		regpair = DNS_name.objects.get(id = pair_id)		
 		editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(IPAddress(regpair.ip_address)),'dscr':regpair.description, 'dns_typ': regpair.dns_type})	

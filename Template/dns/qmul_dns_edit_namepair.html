@@ -6,13 +6,19 @@
 
 	<h2><a name="status">Edit IP-Name Pair, ID: {{ip_id}}</a></h2>
 	<p>Please edit the information below.</p>
-    	
+	
+    	{% for c_error in c_errors %}
+		{% if c_error.error%}
+			<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
+		{% endif %}
+	{% endfor %}
 	<form class="feedbackform" action="" method="post">
 	{% for field in form %}
 		<div class="fieldwrapper">
 			<label class="styled">{{field.label}}</label>
 			<div class="thefield">{{field}}</div><br>
-			<p>{% if field.errors %}
+			<p>
+			{% if field.errors %}
 				{{field.errors}}
 			{% endif %}
 			</p>

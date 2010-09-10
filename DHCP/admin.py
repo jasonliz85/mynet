@@ -3,13 +3,13 @@ from mynet.DHCP.models import *
 
 class DHCP_Mach_Admin(admin.ModelAdmin):
 	list_display = ('id','mac_address', 'ip_address', 'host_name')
-	fields = ('mac_address', 'ip_address', 'host_name', 'description', 'is_ipv6')
+	fields = ('mac_address', 'ip_address', 'host_name', 'description', 'is_ipv6', 'time_created', 'time_modified')
 	def format_date(self, obj):
 		return obj.date.strftime('%d %b %Y %H:%M')
 
 class DHCP_Pool_Admin(admin.ModelAdmin):
 	list_display = ('id','ip_first', 'ip_last')
-	fields = ('ip_first', 'ip_last', 'description' )
+	fields = ('ip_first', 'ip_last', 'description', 'is_ipv6', 'time_created', 'time_modified' )
 	def format_date(self, obj):
 		return obj.date.strftime('%d %b %Y %H:%M')
 		

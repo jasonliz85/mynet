@@ -118,16 +118,21 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	has_permission = False
 	custom_errors = list()
 	msg1 = 'Both IP addresses must be within your allowed resource group, please check and try again.'
-	msg2 = ' Starting IP address is in error.'#'You are not allowed to add this \'start IP address\', it is not part of your network resource group.'
-	msg3 = ' Ending IP address is in error.'#'You are not allowed to add this \'end IP address\', it is not part of your network resource group.'
-	msg4 = 'Both IP addresses must be within the same CIDR block.'
+	msg2 = ' The starting IP address is invalid.'#'You are not allowed to add this \'start IP address\', it is not part of your network resource group.'
+	msg3 = ' The ending IP address is invalid.'#'You are not allowed to add this \'end IP address\', it is not part of your network resource group.'
+	msg4 = 'Both IP addresses must be within the same permitted CIDR block.'
+	msg5 = 'You are not allowed to add this IP Address, it is not part of your network resource group.'
 	[check1, ip_block1]  = is_ipaddress_in_netresource(request, ip_address1)
 	
+	#
 	if is_dhcp_pool:
 		[check2, ip_block2]  = is_ipaddress_in_netresource(request, ip_address2)
-	
-	if not check1 or not check2:	
-		print ip_block1, ip_block2
+	else:
+		check2 = True
+		ip_block2 = ip_block1
+		
+	if not check1 or not check2 or not ip_block1 == ip_block2:	
+		#ip pools
 		if not ip_block1 == ip_block2:
 			#custom_errors.append({'error':True, 'message': msg1})
 			if not check1:
@@ -136,6 +141,12 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 				custom_errors.append({'error':True, 'message': msg1 + msg3})
 			else:
 				custom_errors.append({'error':True, 'message': msg4})
+		elif not check1 and not check2:
+			custom_errors.append({'error':True, 'message': msg1})
+		#machine names
+		elif not is_dhcp_pool:
+			custom_errors.append({'error':True, 'message': msg5})
+			
 	else:
 		has_permission = True
 	
@@ -275,12 +286,12 @@ def dhcp_pool_get_permitted_records(request):
 	empty_find = True
 	for block in range(len(ip_blocks)):
 		ip_block = IPNetwork(str(ip_blocks[block]))
-		ip_first_upper = Q(ip_first__lt = int(ip_block[-1]))
-		ip_first_lower = Q(ip_first__gt = int(ip_block[0]))
-		ip_last_upper = Q(ip_last__lt = int(ip_block[-1]))
-		ip_last_lower = Q(ip_last__gt = int(ip_block[0]))
+		ip_first_upper	= Q(ip_first__lt = int(ip_block[-1]))
+		ip_first_lower 	= Q(ip_first__gt = int(ip_block[0]))
+		ip_last_upper 	= Q(ip_last__lt = int(ip_block[-1]))
+		ip_last_lower 	= Q(ip_last__gt = int(ip_block[0]))
 		#filter the ip block
-		finds = DHCP_ip_pool.objects.filter((ip_first_upper & ip_first_lower) & (ip_last_lower, ip_last_upper))
+		finds = DHCP_ip_pool.objects.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) #& (ip_last_lower, ip_last_upper)
 		if block == 0:
 			total_ip_finds = finds
 			if len(finds) == 0:

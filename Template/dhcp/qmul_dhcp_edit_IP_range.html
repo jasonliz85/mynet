@@ -30,6 +30,11 @@
 				{{form.IP_range2.errors}}
 			{% endif %}
 		{% endif %}
+		{% for c_error in c_errors %}
+			{% if c_error.error%}
+				<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
+			{% endif %}
+		{% endfor %}
 		</p>
 	</div>
 	<div class="fieldwrapper">
