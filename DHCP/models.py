@@ -1,38 +1,110 @@
 from django.db import models
-from netaddr import IPAddress
+from netaddr import IPAddress, IPNetwork
+from mynet.AccessControl.models import get_subnet_from_ip
+
+from django.db.models import Q
 
 class MachineManager(models.Manager):
-	def is_unique(self, ip):
+	def is_unique(self, user_obj, ip, mac, mid):
 		'''
-		Checks whether ip address is already in the database. Assumes ip is the integer form
-		of an ip addresses
+		This funtion checks whether the input mac address is unique for the subnet specfied by the input
+		ip address. Returns True if unique, False otherwise. Assumes ip is the integer form of an ip addresses.
 		'''
-		unique = False
-		val = self.filter(ip_address=ip).count()
-		if not val:
-		   	unique = True
-		return unique
+		#Algorithm
+		unique = True
+		unique_error = ''
+		#1. find subnet belonging to ip address	(ip)	
+		subnet = get_subnet_from_ip(user_obj, ip)
+		if not len(subnet):
+			unique = False
+			unique_error = "You do not have permission to add/edit this IP address."
+			return unique, unique_error
+		#2. find all records that are also within this subnet
+		found_records = list() 
+		ip_filter_upper = Q(ip_address__lt = int(subnet[-1]))
+		ip_filter_lower = Q(ip_address__gt = int(subnet[0]))
+		try: 
+			found_records = self.filter(ip_filter_upper, ip_filter_lower).exclude(id = mid)
+		except ValueError:
+			found_records = self.filter(ip_filter_upper, ip_filter_lower)
+		if not len(found_records):
+			return unique, unique_error
+		#3. for each record that was found, check their mac address with this mac address (mac) 
+		for record in found_records:
+			#4. if record mac address is equal to input mac address, not unique
+			if record.mac_address == mac:
+				unique_error = "You cannot use this MAC Address, it has already been used for this subnet."
+				unique = False
+			else:
+				if record.ip_address == ip:
+					unique_error = "You cannot use this IP address, it has already been used for this subnet."
+					unique = False
+							
+		return unique, unique_error
 	
 class IPPoolManager(models.Manager):
-	def is_unique(self, ip_f, ip_l):
+	def is_unique(self, user_obj, ip_f, ip_l):
 		'''
-		Checks whether both first and last ip addresses are already in the database. 
+		This function performs a number of checks and returns true if all checks are true:
+		1. ip first and last must not overlap with other ip pools within the same subnet 	#todo
+		2. ip first and last must not overlap an ipaddress declared as a registered machine 	#todo
+		3. ip first and last is strictly unique for this given subnet				#implemented
 		Assumes ip_f and ip_l are integer forms of ip addresses
 		'''
-		unique = False
-		val = self.filter(ip_first = ip_f).count()
-		if not val:
-		   	val = self.filter(ip_last = ip_l).count()
-		   	if not val:
-		   		unique = True	
-		return unique
+		
+		unique = True
+		unique_error = ''
+		#Get subnet for ip_f and ip_l			
+		subnet1 = get_subnet_from_ip(user_obj, ip_f)
+		subnet2 = get_subnet_from_ip(user_obj, ip_l)
+		if not len(subnet1) or not len(subnet2):
+			unique = False
+			unique_error = "You do not have permission to add/edit this IP address."
+			return unique, unique_error
+		elif not subnet1 == subnet2:
+			unique = False
+			unique_error = "You do not have permission to add/edit this IP address."
+			return unique, unique_error
+		#Get records associated with these addresses. 
+		found_records = list() 
+		ip_first_upper	= Q(ip_first__lt = int(subnet1[-1]))
+		ip_first_lower 	= Q(ip_first__gt = int(subnet1[0]))
+		ip_last_upper 	= Q(ip_last__lt = int(subnet1[-1]))
+		ip_last_lower 	= Q(ip_last__gt = int(subnet1[0]))		
+		try: 
+			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) 
+		except ValueError:
+			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) 
+		if not len(found_records):
+			return unique, unique_error
+		
+		# Now implement check 3
+		for record in found_records:
+			if record.mac_address == mac:
+				unique_error = "You cannot use this MAC Address, it has already been used for this subnet."
+				unique = False
+				break
+			else:
+				if record.ip_address == ip:
+					unique_error = "You cannot use this IP address, it has already been used for this subnet."
+					unique = False
+					break
+							
+		return unique, unique_error
+	
+		#val = self.filter(ip_first = ip_f).count()
+		#if not val:
+		#   	val = self.filter(ip_last = ip_l).count()
+		#   	if not val:
+		#   		unique = True	
+		#return unique
 		
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	mac_address	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address
 	ip_address	= models.IntegerField('IP address')			#DHCP IP address 
 	host_name	= models.CharField('Host name', max_length = 63)	#DHCP Host name
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
-	description 	= models.TextField('Description',blank=True, null=True)	#DHCP machine description of machine (optional)
+	description 	= models.TextField('Description', blank=True, null=True)	#DHCP machine description of machine (optional)
 	time_created 	= models.DateTimeField()				#DHCP machine registration creation time	
 	time_modified	= models.DateTimeField()				#DHCP machine registration modification time	
 	objects 	= MachineManager()

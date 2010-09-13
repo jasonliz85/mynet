@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import Group
-from netaddr import IPAddress
+from netaddr import IPAddress, IPNetwork
 
 # ---- #
 class DNS_expr(models.Model):
@@ -21,7 +21,19 @@ class NetGroup(models.Model):
 	#description 	= models.TextField('Description',blank=True, null=True)	
 	def __unicode__(self):
 		return self.name
-
+def get_subnet_from_ip(user_obj, ip):
+	"""
+	"""
+	subnet = ''
+	if not hasattr(user_obj, '_address_blocks') or True:
+		address_blocks = [] #list containing all address blocks the user is allowed to change
+		for netgroup in get_netgroups_managed_by_user(user_obj):
+			for addressblock in netgroup.address_blocks.all():
+				sn = IPNetwork(str(addressblock))
+				if ip > int(sn[0]) and ip < int(sn[-1]):
+					subnet = sn
+	return subnet
+	
 def get_netgroups_managed_by_user(user_obj):
 	"""
 	Returns a list of NetGroup objects which the user can manage

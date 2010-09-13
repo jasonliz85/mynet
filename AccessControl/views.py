@@ -316,3 +316,4 @@ def dhcp_pool_get_permitted_records(request):
 					
 	return permitted_record
 
+

@@ -225,11 +225,15 @@
 			#			has_permission = True
 			#elif dt == '2NA':
 			#	if is_name_in_netresource(request, combined_records[record].machine_name ):
-			#		has_permission = True
+			#		has_permission = Tr#val = self.filter(ip_address=ip).count()
+		#if not val:
+		#   	unique = Trueue
 			#else:
 			#	if is_ipaddress_in_netresource(request, combined_records[record].ip_pair ):
 			#		has_permission = True
 				
-			#if record == 0:	
-			#	type_filtered_records.append(combined_records[record])
-			#else:	
+	#if record == 0:	
+	#	type_filtered_records.append(combined_records[record])
+	#else:	
+			
+	

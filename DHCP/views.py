@@ -6,10 +6,14 @@ from mynet.DHCP.models import *
 from mynet.DHCP.forms import *
 #import views
 from mynet.views import *
+from mynet.AccessControl.views import *
 from mynet.helper_views import *
 
 from netaddr import *
 import datetime
+
+class mac_custom(mac_unix): pass
+mac_custom.word_fmt = '%.2X'
 
 #################################################################################
 ####################### DHCP IP Pool ############################################
@@ -154,7 +158,8 @@ def dhcp_page_machine_edit(request, m_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
-			if can_pass:
+			[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), m_id)
+			if can_pass and is_unique:
 				valAft = { 	'mac_address' :info['mcID'],'ip_address':info['ipID'],
 						'host_name' :info['pcID'],'description' :info['dscr']	}
 				modID = EditAndLogRecord('DHCP_machine', m_id,  DHCP_machine,request.user.username, valAft)
@@ -163,7 +168,7 @@ def dhcp_page_machine_edit(request, m_id):
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 			else:
 				editform = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
+				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors, 'u_error':unique_error})
 	else:
 		regmachine = DHCP_machine.objects.get(id = m_id)		
 		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(IPAddress(regmachine.ip_address)), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
@@ -172,7 +177,7 @@ def dhcp_page_machine_edit(request, m_id):
 #
 @login_required
 def dhcp_page_machine_delete_multiple(request):	#this function needs renaming!!!!!!!!!!!!!!!!
-	#registeredmachines =  DHCP_machine.objects.all().order_by("ip_address")
+	#registeredmachines =  DHCP_machine.objects.all().order_by("ip_address")	
 	registeredmachines =  dhcp_machine_get_permitted_records(request)# DNS_name.objects.all()#.order_by("dns_type")
 	#for display purposes
 	for i in range(len(registeredmachines)):
@@ -240,7 +245,8 @@ def dhcp_page_machine_add(request):
 		if form.is_valid():
 			info = form.cleaned_data
 			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
-			if can_pass:
+			[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), '')
+			if can_pass and is_unique:
 				values = { 	'mac_address' :info['mcID'],'ip_address' :info['ipID'],
 						'host_name'  :info['pcID'],'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DHCP_machine',  DHCP_machine, request.user.username, values)
@@ -249,7 +255,7 @@ def dhcp_page_machine_add(request):
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': machine_registered})
 			else:
 				form = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors})
+				return render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors, 'u_error':unique_error})
 	else:
 		form = RegisterMachineForm(initial = {})
 		
