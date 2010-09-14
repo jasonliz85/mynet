@@ -43,7 +43,7 @@ class MachineManager(models.Manager):
 		return unique, unique_error
 	
 class IPPoolManager(models.Manager):
-	def is_unique(self, user_obj, ip_f, ip_l):
+	def is_unique(self, user_obj, ip_f, ip_l, mid):
 		'''
 		This function performs a number of checks and returns true if all checks are true:
 		1. ip first and last must not overlap with other ip pools within the same subnet 	#todo
@@ -72,7 +72,7 @@ class IPPoolManager(models.Manager):
 		ip_last_upper 	= Q(ip_last__lt = int(subnet1[-1]))
 		ip_last_lower 	= Q(ip_last__gt = int(subnet1[0]))		
 		try: 
-			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) 
+			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)).exclude(id = mid) 
 		except ValueError:
 			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) 
 		if not len(found_records):
@@ -80,24 +80,20 @@ class IPPoolManager(models.Manager):
 		
 		# Now implement check 3
 		for record in found_records:
-			if record.mac_address == mac:
-				unique_error = "You cannot use this MAC Address, it has already been used for this subnet."
+			if record.ip_first == ip_f and record.ip_last == ip_l:
+				unique_error = "This range had already been created for this subnet."
 				unique = False
 				break
-			else:
-				if record.ip_address == ip:
-					unique_error = "You cannot use this IP address, it has already been used for this subnet."
-					unique = False
-					break
+			elif record.ip_first == ip_f:
+				unique_error = "You cannot use this first IP address, it has already been used for this subnet."
+				unique = False
+				break
+			elif record.ip_last == ip_l:
+				unique_error = "You cannot use this last IP address, it has already been used for this subnet."
+				unique = False
+				break
 							
 		return unique, unique_error
-	
-		#val = self.filter(ip_first = ip_f).count()
-		#if not val:
-		#   	val = self.filter(ip_last = ip_l).count()
-		#   	if not val:
-		#   		unique = True	
-		#return unique
 		
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	mac_address	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address

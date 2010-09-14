@@ -32,10 +32,13 @@
 			{% endif %}
 		{% endif %}
 		{% for c_error in c_errors %}
-		{% if c_error.error%}
-			<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
-		{% endif %}
+			{% if c_error.error%}
+				<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
+			{% endif %}
 		{% endfor %}
+		{% if u_error%}
+			<ul class = "errorlist"><li>{{u_error}}</ul><li>
+		{% endif %}
 		</p>
 	</div>
 	<div class="fieldwrapper">

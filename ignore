@@ -236,4 +236,30 @@
 	#	type_filtered_records.append(combined_records[record])
 	#else:	
 			
+		
+	#val = self.filter(ip_first = ip_f).count()
+	#if not val:
+	#   	val = self.filter(ip_last = ip_l).count()
+	#   	if not val:
+	#   		unique = True	
+	#return unique
+	
+	
+	#if dt == '1BD':
+	#	if not valip and not valnm:
+	#		unique = True
+	#	elif not valip:
+	#		unique_error = msg1
+	#	elif not valnm:
+	#		unique_error = msg2			
+	#elif dt == '2NA':
+	#	if not valnm:
+	# 		unique = True
+	# 	else:
+	#   		unique_error = msg2
+	#else:
+	#	if not valip:
+	#		unique = True
+	#	else:
+	#		unique_error = msg1
 	

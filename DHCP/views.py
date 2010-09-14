@@ -27,7 +27,8 @@ def dhcp_page_IP_range_add(request):
 		if form.is_valid():
 			info = form.cleaned_data
 			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), True)
-			if can_pass:
+			[is_unique, unique_error] = DHCP_ip_pool.objects.is_unique(request.user, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), '')
+			if can_pass and is_unique:
 				values = { 	'ip_first' :info['IP_range1'],'ip_last' :info['IP_range2'],
 						'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
@@ -38,7 +39,7 @@ def dhcp_page_IP_range_add(request):
 				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
 			else:
 				form = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
+				return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors, 'u_error' :unique_error})
 	else:
 		form = Register_IP_range_Form(initial = {})
 
@@ -120,7 +121,8 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), True)
-			if can_pass:
+			[is_unique, unique_error] = DHCP_ip_pool.objects.is_unique(request.user, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), ip_id)
+			if can_pass and is_unique:
 				valAft = { 	'ip_first' :info['IP_range1'], 'ip_last':info['IP_range2'],
 						'description' :info['dscr']	}
 				modID = EditAndLogRecord('DHCP_ip_pool', ip_id,  DHCP_ip_pool,request.user.username, valAft)
@@ -130,7 +132,7 @@ def dhcp_page_IP_range_edit(request, ip_id):
 				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
 			else:
 				editform = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
+				return render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors,'u_error':unique_error})
 	else:
 		regmachine = DHCP_ip_pool.objects.get(id = ip_id)		
 		editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.ip_first)),'IP_range2':str(IPAddress(regmachine.ip_last)),'dscr':regmachine.description})	

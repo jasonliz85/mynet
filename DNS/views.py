@@ -62,8 +62,9 @@ def dns_namepair_add(request):
 		if form.is_valid():
 			info = form.cleaned_data
 			[can_pass, custom_errors] = dns_permission_check(request, int(IPAddress(info['ip_address'])),info['dns_expr'], info['dns_typ'])
+			[is_unique, unique_error] = DNS_name.objects.is_unique(nt(IPAddress(info['ip_address'])),info['dns_expr'],info['dns_typ'],'',True)
 			#check if this form is permitted first
-			if can_pass:
+			if can_pass and is_unique:
 				values = { 	'name' :info['dns_expr'],'dns_typ' :info['dns_typ'],
 						'ip_address' :int(IPAddress(info['ip_address'])),'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DNS_name', DNS_name, request.user.username, values)
@@ -89,7 +90,7 @@ def dns_namepair_add(request):
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': namepair_registered, 'machinelists':regServices})
 			else:
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_typ':info['dns_typ'],'ip_address':info['ip_address'],'dscr':info['dscr']})
-				return render_to_response('qmul_dns_create_namepair.html',{'form':form ,'c_errors': custom_errors })
+				return render_to_response('qmul_dns_create_namepair.html',{'form':form ,'c_errors': custom_errors, 'u_error' :unique_error })
 	else:
 		form = Register_namepair_Form(initial = {})
 	return render_to_response('qmul_dns_create_namepair.html',{'form':form })
@@ -181,7 +182,8 @@ def dns_namepair_edit(request, pair_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			[can_pass, custom_errors] = dns_permission_check(request, int(IPAddress(info['ip_address'])),info['dns_expr'], info['dns_typ'])
-			if can_pass:
+			[is_unique, unique_error] = DNS_name.objects.is_unique(nt(IPAddress(info['ip_address'])),info['dns_expr'],info['dns_typ'],'',True)
+			if can_pass and is_unique:
 				valAft = { 	'name' :info['dns_expr'],'dns_type':info['dns_typ'],
 						'ip_address' :info['ip_address'],'description' :info['dscr']	}
 				modID = EditAndLogRecord('DNS_name', pair_id,  DNS_name,request.user.username, valAft)
@@ -194,7 +196,7 @@ def dns_namepair_edit(request, pair_id):
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 			else:
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_typ':info['dns_typ'],'ip_address':info['ip_address'],'dscr':info['dscr']})
-				return render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
+				return render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors, 'u_error':unique_error })
 	else:
 		regpair = DNS_name.objects.get(id = pair_id)		
 		editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(IPAddress(regpair.ip_address)),'dscr':regpair.description, 'dns_typ': regpair.dns_type})	

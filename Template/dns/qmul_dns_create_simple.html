@@ -21,6 +21,9 @@
 				<ul class = "errorlist"><li>{{c_error.message}}</ul></li>
 			{% endif %}
 		{% endfor %}
+		{% if u_error%}
+			<ul class = "errorlist"><li>{{u_error}}</ul><li>
+		{% endif %}
 		{% for field in form %}		
 		<div class="fieldwrapper">
 			<label class="styled">{{field.label}}</label>
