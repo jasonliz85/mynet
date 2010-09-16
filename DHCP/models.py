@@ -1,99 +1,8 @@
 from django.db import models
+from mynet.DHCP.manager import *
 from netaddr import IPAddress, IPNetwork
-from mynet.AccessControl.models import get_subnet_from_ip
-
+from mynet.AccessControl.views import *# is_ipaddress_in_netresource
 from django.db.models import Q
-
-class MachineManager(models.Manager):
-	def is_unique(self, user_obj, ip, mac, mid):
-		'''
-		This funtion checks whether the input mac address is unique for the subnet specfied by the input
-		ip address. Returns True if unique, False otherwise. Assumes ip is the integer form of an ip addresses.
-		'''
-		#Algorithm
-		unique = True
-		unique_error = ''
-		#1. find subnet belonging to ip address	(ip)	
-		subnet = get_subnet_from_ip(user_obj, ip)
-		if not len(subnet):
-			unique = False
-			unique_error = "You do not have permission to add/edit this IP address."
-			return unique, unique_error
-		#2. find all records that are also within this subnet
-		found_records = list() 
-		ip_filter_upper = Q(ip_address__lt = int(subnet[-1]))
-		ip_filter_lower = Q(ip_address__gt = int(subnet[0]))
-		try: 
-			found_records = self.filter(ip_filter_upper, ip_filter_lower).exclude(id = mid)
-		except ValueError:
-			found_records = self.filter(ip_filter_upper, ip_filter_lower)
-		if not len(found_records):
-			return unique, unique_error
-		#3. for each record that was found, check their mac address with this mac address (mac) 
-		for record in found_records:
-			#4. if record mac address is equal to input mac address, not unique
-			if record.mac_address == mac:
-				unique_error = "You cannot use this MAC Address, it has already been used for this subnet."
-				unique = False
-			else:
-				if record.ip_address == ip:
-					unique_error = "You cannot use this IP address, it has already been used for this subnet."
-					unique = False
-							
-		return unique, unique_error
-	
-class IPPoolManager(models.Manager):
-	def is_unique(self, user_obj, ip_f, ip_l, mid):
-		'''
-		This function performs a number of checks and returns true if all checks are true:
-		1. ip first and last must not overlap with other ip pools within the same subnet 	#todo
-		2. ip first and last must not overlap an ipaddress declared as a registered machine 	#todo
-		3. ip first and last is strictly unique for this given subnet				#implemented
-		Assumes ip_f and ip_l are integer forms of ip addresses
-		'''
-		
-		unique = True
-		unique_error = ''
-		#Get subnet for ip_f and ip_l			
-		subnet1 = get_subnet_from_ip(user_obj, ip_f)
-		subnet2 = get_subnet_from_ip(user_obj, ip_l)
-		if not len(subnet1) or not len(subnet2):
-			unique = False
-			unique_error = "You do not have permission to add/edit this IP address."
-			return unique, unique_error
-		elif not subnet1 == subnet2:
-			unique = False
-			unique_error = "You do not have permission to add/edit this IP address."
-			return unique, unique_error
-		#Get records associated with these addresses. 
-		found_records = list() 
-		ip_first_upper	= Q(ip_first__lt = int(subnet1[-1]))
-		ip_first_lower 	= Q(ip_first__gt = int(subnet1[0]))
-		ip_last_upper 	= Q(ip_last__lt = int(subnet1[-1]))
-		ip_last_lower 	= Q(ip_last__gt = int(subnet1[0]))		
-		try: 
-			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)).exclude(id = mid) 
-		except ValueError:
-			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) 
-		if not len(found_records):
-			return unique, unique_error
-		
-		# Now implement check 3
-		for record in found_records:
-			if record.ip_first == ip_f and record.ip_last == ip_l:
-				unique_error = "This range had already been created for this subnet."
-				unique = False
-				break
-			elif record.ip_first == ip_f:
-				unique_error = "You cannot use this first IP address, it has already been used for this subnet."
-				unique = False
-				break
-			elif record.ip_last == ip_l:
-				unique_error = "You cannot use this last IP address, it has already been used for this subnet."
-				unique = False
-				break
-							
-		return unique, unique_error
 		
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	mac_address	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address
@@ -125,3 +34,46 @@ class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 		return u'%s %s %s' % (str(IPAddress(self.ip_first)), str(IPAddress(self.ip_last)), self.time_created )
 	class Meta:
         	ordering = ['ip_first']
+        	
+def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
+	"""
+	This function checks whether a dhcp address (ipaddress1) can be created based on the user's network resource group.
+	If is_dhcp_pool is True, this function will check if both input ip addresses (ip_address1 and ip_address2) are within
+	the same network resource block. In both cases, if permitted then the function return True.
+	"""
+	has_permission = False
+	custom_errors = list()
+	msg1 = 'Both IP addresses must be within your allowed resource group, please check and try again.'
+	msg2 = ' The starting IP address is invalid.'#'You are not allowed to add this \'start IP address\', it is not part of your network resource group.'
+	msg3 = ' The ending IP address is invalid.'#'You are not allowed to add this \'end IP address\', it is not part of your network resource group.'
+	msg4 = 'Both IP addresses must be within the same permitted CIDR block.'
+	msg5 = 'You are not allowed to add this IP Address, it is not part of your network resource group.'
+	[check1, ip_block1]  = is_ipaddress_in_netresource(request, ip_address1)
+	
+	#
+	if is_dhcp_pool:
+		[check2, ip_block2]  = is_ipaddress_in_netresource(request, ip_address2)
+	else:
+		check2 = True
+		ip_block2 = ip_block1
+		
+	if not check1 or not check2 or not ip_block1 == ip_block2:	
+		#ip pools
+		if not ip_block1 == ip_block2:
+			#custom_errors.append({'error':True, 'message': msg1})
+			if not check1:
+				custom_errors.append({'error':True, 'message': msg1 + msg2})
+			elif not check2:
+				custom_errors.append({'error':True, 'message': msg1 + msg3})
+			else:
+				custom_errors.append({'error':True, 'message': msg4})
+		elif not check1 and not check2:
+			custom_errors.append({'error':True, 'message': msg1})
+		#machine names
+		elif not is_dhcp_pool:
+			custom_errors.append({'error':True, 'message': msg5})
+			
+	else:
+		has_permission = True
+	
+	return has_permission, custom_errors

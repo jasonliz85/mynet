@@ -69,6 +69,8 @@
 			#DeleteRecord.delete()
 			
 			
+			
+			
 			#now = datetime.datetime.today()
 			#mDelete = []
 			#mDelete.append(DHCP_machine.objects.get(id = m_id))	
@@ -263,3 +265,55 @@
 	#	else:
 	#		unique_error = msg1
 	
+	#{% for c_error in c_errors %}
+	#{% if c_error.error%}
+	#	<ul class = "errorlist"><li>{{c_error.message}}</ul></li>
+	#{% endif %}
+	#{% endfor %}
+	#
+	#{% if u_error%}
+	#	<ul class = "errorlist"><li>{{u_error}}</ul></li>
+	#{% endif %}
+	
+	#[can_pass, custom_errors] = dns_permission_check(request, int(IPAddress(info['ip_address'])),info['dns_expr'], info['dns_typ'])
+	#[is_unique, unique_error] = DNS_name.objects.is_unique(int(IPAddress(info['ip_address'])),info['dns_expr'],info['dns_typ'],'',True)
+	
+	
+#	def dns_permission_check(request, ip_address, name, dns_typ):
+#	"""
+#	This function checks the name, ipaddress and dns type to see the record is allowed to be created. There are three check, stated below:
+#		bi-directional - two checks on each record is needed | permission for both ip address and machine name
+#		address to name - check only pefrom mynet.DNS.models import *rmission for ip address
+#		name to address - check only permisiion for machine name
+#	"""
+#	has_permission = False	
+#	custom_errors = ""#list()
+#	errors = ""
+#	msg1 = "You are not allowed to add this "
+#	msg2 = ", it is not part of your network resource group."
+#	[check1, blank] = is_ipaddress_in_netresource(request, ip_address)
+#	check2 = is_name_in_netresource(request, name)
+#	if dns_typ == '1BD':
+#		if check1 == True and check2  == True:
+#			has_permission = True
+#		if not check1:
+#			errors = "IPAddress: " + str(IPAddress(ip_address))
+#		if not check2:
+#			if len(errors) > 0:
+#				errors = errors + " and Machine Name: " + name
+#			else:
+#				errors = "Machine Name: " + name
+#	elif dns_typ == '2NA':
+#		if check2 == True:
+#			has_permission = True
+#		if not check2:
+#			errors = "Machine Name: " + name
+#	else:
+#		if check1 == True:
+#			has_permission = True
+#		if not check1:
+#			errors = "IPAddress: " + str(IPAddress(ip_address))
+#	
+#	custom_errors = msg1 + errors + msg2
+#	return has_permission, custom_errors
+			

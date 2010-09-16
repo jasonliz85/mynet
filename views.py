@@ -1,14 +1,11 @@
-from django.template.loader import get_template
 from django.shortcuts import render_to_response
-from django.template import Context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
-from AccessControl.views import add_permissions_to_session, get_permissions_to_session
+from AccessControl.views import *#add_permissions_to_session, get_permissions_to_session
 
 import datetime
-from netaddr import *
 
 def login(request):
     username = request.POST.get('username', '')
@@ -34,8 +31,6 @@ def home(request):
 	
 	add_permissions_to_session(request)
 	[NetworkResources, IPRanges, DNSExpressions] = get_permissions_to_session(request)
-	
-	#is_ipaddress_in_netresource(request, int(IPAddress('192.0.2.1')))
 
 	return render_to_response('qmul_main.html', {'userInfo': userInfo, 'Groups':Groups, 'NetworkResources':NetworkResources, 'IPRanges':IPRanges,'DNSExpressions':DNSExpressions })
 

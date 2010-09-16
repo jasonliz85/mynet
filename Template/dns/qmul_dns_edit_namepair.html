@@ -7,13 +7,8 @@
 	<h2><a name="status">Edit IP-Name Pair, ID: {{ip_id}}</a></h2>
 	<p>Please edit the information below.</p>
 	
-    	{% for c_error in c_errors %}
-		{% if c_error.error%}
-			<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
-		{% endif %}
-	{% endfor %}
-	{% if u_error%}
-		<ul class = "errorlist"><li>{{u_error}}</ul><li>
+    	{% if c_errors%}
+		<ul class = "errorlist"><li>{{c_errors}}</ul></li>
 	{% endif %}
 	<form class="feedbackform" action="" method="post">
 	{% for field in form %}

@@ -1,15 +1,12 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-#import models
+#-------import models
 from mynet.DHCP.models import *
-#import forms
+#-------import forms
 from mynet.DHCP.forms import *
-#import views
-from mynet.views import *
-from mynet.AccessControl.views import *
+#-------import views
 from mynet.helper_views import *
-
-from netaddr import *
+#from netaddr import *
 import datetime
 
 class mac_custom(mac_unix): pass
@@ -180,7 +177,7 @@ def dhcp_page_machine_edit(request, m_id):
 @login_required
 def dhcp_page_machine_delete_multiple(request):	#this function needs renaming!!!!!!!!!!!!!!!!
 	#registeredmachines =  DHCP_machine.objects.all().order_by("ip_address")	
-	registeredmachines =  dhcp_machine_get_permitted_records(request)# DNS_name.objects.all()#.order_by("dns_type")
+	registeredmachines =  DHCP_machine.objects.get_permitted_records(request)# DNS_name.objects.all()#.order_by("dns_type")
 	#for display purposes
 	for i in range(len(registeredmachines)):
 		registeredmachines[i].ip = str(IPAddress(registeredmachines[i].ip_address))
