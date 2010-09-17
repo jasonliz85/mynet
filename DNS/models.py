@@ -1,10 +1,11 @@
 from django.db import models
 from netaddr import IPAddress
 from mynet.DNS.manager import *
+import NetaddrCustomizations.models
 
 class DNS_name(models.Model):							#DNS NAMING MODEL
 	name 		= models.CharField('DNS name', max_length = 255)	#DNS name regular expression
-	ip_address	= models.IntegerField('IP address')			#DNs ip address pair
+	ip_address	= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP Address')
 	dns_type	= models.CharField('Type', max_length = 3 )		#DNS type
 	description 	= models.TextField('Description', blank=True, null=True)#DNS name description
 	is_ipv6 	= models.BooleanField()					#DNS bool check IP version 6
@@ -17,7 +18,7 @@ class DNS_name(models.Model):							#DNS NAMING MODEL
 		return u'\'name\':\'%s\',\'ip_address\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\''% (self.name, str(IPAddress(self.ip_address)), self.is_ipv6, self.dns_type, self.description)
 	class Meta:
         	ordering = ['ip_address','dns_type']
-        	
+        #ip_address	= models.IntegerField('IP address')			#DNs ip address pair	
         #ipaddress object to string hex 
 	#var1 = '%032x' % IPAddress('').value
 	#string hex to ipaddress object

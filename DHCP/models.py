@@ -3,10 +3,12 @@ from mynet.DHCP.manager import *
 from netaddr import IPAddress, IPNetwork
 #from mynet.AccessControl.views import is_ipaddress_in_netresource
 from django.db.models import Q
+import NetaddrCustomizations.models
 		
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	mac_address	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address
-	ip_address	= models.IntegerField('IP address')			#DHCP IP address 
+	ip_address	= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP Address')
+	#ip_address	= models.IntegerField('IP address')			#DHCP IP address 
 	host_name	= models.CharField('Host name', max_length = 63)	#DHCP Host name
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
 	description 	= models.TextField('Description', blank=True, null=True)	#DHCP machine description of machine (optional)
@@ -21,8 +23,10 @@ class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
         	ordering = ['ip_address']
 
 class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
-	ip_first	= models.IntegerField('IP range from')			#DHCP address range
-	ip_last		= models.IntegerField('IP range to')			#DHCP address range
+	ip_first	= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP range from')
+	ip_last		= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP range to')
+	#ip_first	= models.IntegerField('IP range from')			#DHCP address range
+	#ip_last	= models.IntegerField('IP range to')			#DHCP address range
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
 	description 	= models.TextField('Description',blank=True, null=True)	#DHCP IP pool description
 	time_created 	= models.DateTimeField()				#DHCP time IP pool creation time
