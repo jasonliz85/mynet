@@ -4,9 +4,7 @@ from django.contrib.auth.decorators import login_required
 from mynet.HistoryLog.models import *
 from mynet.DHCP.models import *
 from mynet.DNS.models import *
-
 from mynet.HistoryLog.views import *
-from mynet.views import *
 
 from netaddr import *
 import datetime, difflib
@@ -40,9 +38,9 @@ def get_model_table(val):
 		model_name = DHCP_machine
 	else:
 		model_name = False
-		print 'Error: get_model_table(), table number not valid'
-		
+		print 'Error: get_model_table(), table number not valid'		
 	return model_name
+	
 def get_table_name(val):
 	'''
 	Returns the table name in string given the input number
@@ -55,9 +53,9 @@ def get_table_name(val):
 		table_name = 'DHCP_machine'
 	else:
 		table_name = False
-		print 'Error: get_table_name(), table number not valid'
-		
+		print 'Error: get_table_name(), table number not valid'		
 	return table_name
+	
 def get_table_number(table_name):
 	'''
 	Returns the table number given the string table name
@@ -70,8 +68,7 @@ def get_table_number(table_name):
 		table_number = '3'
 	else:
 		print 'Error: get_table_number(), table name not recognised'
-		table_number = False
-		
+		table_number = False		
 	return table_number
 	
 def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
@@ -79,8 +76,7 @@ def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
 	This function logs an event  a Record in the database and logs the event in the HistoryLog db. It returns 
 	a list of the fields and values that were deleted.
 		values: m_id = unique id of record in db, model_name = name of the table in db
-	"""
-	
+	"""	
 	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
 	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
 	now = datetime.datetime.today()
@@ -96,6 +92,7 @@ def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
 		)	
 	newEvent.save()
 	return 
+	
 def CompareDescriptions(dsrc1, dsrc2):
 	"""
 	This function compares two strings and determines whether the difference between the two is a white space
@@ -200,7 +197,6 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 		LogEvent('E',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, m_id)
 		
 	return mod_record.id
-
 	
 def AddAndLogRecord(m_name_str, model_name, uname, values):
 	"""

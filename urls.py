@@ -20,7 +20,7 @@ urlpatterns = patterns('mynet.views',
 	#####################################################
 urlpatterns += patterns('django.views.static',	
 	#work from qm
-	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/mynet/media'}),
+	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/mynet/Media'}),
 	#work from home
 	#(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jason/Projects/qm_projects/mynet/media'}),
 	(r'^admin/', include(admin.site.urls)),

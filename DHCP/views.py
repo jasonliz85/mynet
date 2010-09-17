@@ -15,7 +15,36 @@ mac_custom.word_fmt = '%.2X'
 #################################################################################
 ####################### DHCP IP Pool ############################################
 #################################################################################
-
+def ParameterChecks(user_object, ip1, ip2, mac, rid, is_ip_pools):
+	"""
+	This function calls is_unique and is_permitted dns test and consolidates errors. Returns True if there are no errors
+	and return False otherwise. If there are errors, error_msg will contain a message relating to the nature of the error
+	Arguments:
+		user_object		= request object
+		ip1			= ip address (in integer format) - if ip_pools, ip address start
+		ip2			= if ip_pools, ip address finish
+		mac			= mac address
+		rid			= if present, the id of the record, usually an integer
+		is_ip_pools		= if true, switches to DHCP_ip_pool model and handles appropriete values
+	"""
+	is_valid = False
+	error_msg = ""
+	if is_ip_pools:
+		[is_valid, error_msg] = dhcp_permission_check(user_object, ip1, ip2, is_ip_pools)
+		
+	else:
+		[is_valid, error_msg] = dhcp_permission_check(user_object, ip1, "", is_ip_pools)
+	
+	if not is_valid:
+		return is_valid, error_msg
+	else:
+		if is_ip_pools:
+			[is_valid, error_msg] = DHCP_ip_pool.objects.is_unique(user_object.user, ip1, ip2, rid)
+		else:
+			[is_valid, error_msg] = DHCP_machine.objects.is_unique(user_object.user, ip1, mac, rid)
+			
+	return is_valid, error_msg
+	
 #Add a IP range to the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_add(request):
@@ -23,9 +52,8 @@ def dhcp_page_IP_range_add(request):
 		form = Register_IP_range_Form(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), True)
-			[is_unique, unique_error] = DHCP_ip_pool.objects.is_unique(request.user, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), '')
-			if can_pass and is_unique:
+			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), "", "", True)
+			if can_pass:
 				values = { 	'ip_first' :info['IP_range1'],'ip_last' :info['IP_range2'],
 						'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
@@ -36,7 +64,7 @@ def dhcp_page_IP_range_add(request):
 				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
 			else:
 				form = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors, 'u_error' :unique_error})
+				return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
 	else:
 		form = Register_IP_range_Form(initial = {})
 
@@ -44,8 +72,7 @@ def dhcp_page_IP_range_add(request):
 #List all IP range records in the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_listing(request):
-	#registered_IP_pools =  DHCP_ip_pool.objects.all().order_by("ip_first")
-	registered_IP_pools = dhcp_pool_get_permitted_records(request)
+	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request)
 	#for display purposes
 	for i in range(len(registered_IP_pools)):
 		registered_IP_pools[i].ip1 = str(IPAddress(registered_IP_pools[i].ip_first))
@@ -117,9 +144,8 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		editform = Register_IP_range_Form(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), True)
-			[is_unique, unique_error] = DHCP_ip_pool.objects.is_unique(request.user, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), ip_id)
-			if can_pass and is_unique:
+			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), "", ip_id, True)
+			if can_pass:
 				valAft = { 	'ip_first' :info['IP_range1'], 'ip_last':info['IP_range2'],
 						'description' :info['dscr']	}
 				modID = EditAndLogRecord('DHCP_ip_pool', ip_id,  DHCP_ip_pool,request.user.username, valAft)
@@ -129,7 +155,7 @@ def dhcp_page_IP_range_edit(request, ip_id):
 				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
 			else:
 				editform = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors,'u_error':unique_error})
+				return render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
 	else:
 		regmachine = DHCP_ip_pool.objects.get(id = ip_id)		
 		editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.ip_first)),'IP_range2':str(IPAddress(regmachine.ip_last)),'dscr':regmachine.description})	
@@ -156,9 +182,10 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = RegisterMachineForm(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
-			[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), m_id)
-			if can_pass and is_unique:
+			#[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
+			#[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), m_id)
+			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['ipID'])), "", str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
+			if can_pass:
 				valAft = { 	'mac_address' :info['mcID'],'ip_address':info['ipID'],
 						'host_name' :info['pcID'],'description' :info['dscr']	}
 				modID = EditAndLogRecord('DHCP_machine', m_id,  DHCP_machine,request.user.username, valAft)
@@ -167,7 +194,7 @@ def dhcp_page_machine_edit(request, m_id):
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 			else:
 				editform = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors, 'u_error':unique_error})
+				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
 	else:
 		regmachine = DHCP_machine.objects.get(id = m_id)		
 		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(IPAddress(regmachine.ip_address)), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
@@ -176,7 +203,6 @@ def dhcp_page_machine_edit(request, m_id):
 #
 @login_required
 def dhcp_page_machine_delete_multiple(request):	#this function needs renaming!!!!!!!!!!!!!!!!
-	#registeredmachines =  DHCP_machine.objects.all().order_by("ip_address")	
 	registeredmachines =  DHCP_machine.objects.get_permitted_records(request)# DNS_name.objects.all()#.order_by("dns_type")
 	#for display purposes
 	for i in range(len(registeredmachines)):
@@ -243,9 +269,10 @@ def dhcp_page_machine_add(request):
 		form = RegisterMachineForm(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
-			[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), '')
-			if can_pass and is_unique:
+			#[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
+			#[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), '')
+			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['ipID'])), "", str(EUI(info['mcID'], dialect=mac_custom)), "", False)
+			if can_pass:
 				values = { 	'mac_address' :info['mcID'],'ip_address' :info['ipID'],
 						'host_name'  :info['pcID'],'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DHCP_machine',  DHCP_machine, request.user.username, values)
@@ -254,7 +281,7 @@ def dhcp_page_machine_add(request):
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': machine_registered})
 			else:
 				form = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors, 'u_error':unique_error})
+				return render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors})
 	else:
 		form = RegisterMachineForm(initial = {})
 		

@@ -17,60 +17,8 @@ import datetime, re
 ############################# Useful Functions ################################
 ###############################################################################
 
-def get_netgroups_managed_by_user(user_obj):
-	"""
-	Returns a list of NetGroup objects which the user can manage
-	"""
-	if not hasattr(user_obj, '_netgroup_cache') or True:
-		netgroup_cache = []
-		#print 'Starting loops'
-		for g in user_obj.groups.all():
-			#print 'Group', g
-			for ng in g.netgroup_set.all():
-				#print 'NetGroup', ng 
-				if ng not in netgroup_cache: 
-					netgroup_cache.append(ng)
-		user_obj._netgroup_cache = netgroup_cache
-	return	user_obj._netgroup_cache
 
-def get_subnet_from_ip(user_obj, ip):
-	"""
-	"""
-	subnet = ''
-	if not hasattr(user_obj, '_address_blocks') or True:
-		address_blocks = [] #list containing all address blocks the user is allowed to change
-		for netgroup in get_netgroups_managed_by_user(user_obj):
-			for addressblock in netgroup.address_blocks.all():
-				sn = IPNetwork(str(addressblock))
-				if ip > int(sn[0]) and ip < int(sn[-1]):
-					subnet = sn
-	return subnet
-	
-def get_dns_patterns_managed_by(user_obj):
-	"""
-	Returns a list of dns pattern objects which the user can manage
-	"""
-	if not hasattr(user_obj, '_dns_patterns') or True:
-		dns_patterns = []
-		for ng in get_netgroups_managed_by_user(user_obj):
-			for dp in ng.dns_patterns.all():
-				if dp not in dns_patterns: dns_patterns.append(dp)
-		user_obj._dns_patterns = dns_patterns
-	return	user_obj._dns_patterns
-def get_address_blocks_managed_by(user_obj):
-	"""
-	Returns a list of IP address block objects which the user can manage
-	"""
-	if not hasattr(user_obj, '_address_blocks') or True:
-		address_blocks = [] #list containing all address blocks the user is allowed to change
-		for netgroup in get_netgroups_managed_by_user(user_obj):
-			for addressblock in netgroup.address_blocks.all():
-				if addressblock not in address_blocks: 
-					address_blocks.append(addressblock)
-					#print address_blocks
-		user_obj._address_blocks = address_blocks
-		#print address_blocks
-	return	user_obj._address_blocks
+
 def add_permissions_to_session(request):
 	"""
 	Add Network Resource Name, IP Blocks (IP Address Ranges), and DNS Expressions to Django session

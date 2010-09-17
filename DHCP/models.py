@@ -1,7 +1,7 @@
 from django.db import models
 from mynet.DHCP.manager import *
 from netaddr import IPAddress, IPNetwork
-from mynet.AccessControl.views import *# is_ipaddress_in_netresource
+#from mynet.AccessControl.views import is_ipaddress_in_netresource
 from django.db.models import Q
 		
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
@@ -42,12 +42,14 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	the same network resource block. In both cases, if permitted then the function return True.
 	"""
 	has_permission = False
-	custom_errors = list()
+	custom_errors = ''#list()
 	msg1 = 'Both IP addresses must be within your allowed resource group, please check and try again.'
-	msg2 = ' The starting IP address is invalid.'#'You are not allowed to add this \'start IP address\', it is not part of your network resource group.'
-	msg3 = ' The ending IP address is invalid.'#'You are not allowed to add this \'end IP address\', it is not part of your network resource group.'
-	msg4 = 'Both IP addresses must be within the same permitted CIDR block.'
+	msg2 = 'The starting IP address, '#'You are not allowed to add this \'start IP address\', it is not part of your network resource group.'
+	msg3 = 'The ending IP address, '#'You are not allowed to add this \'end IP address\', it is not part of your network resource group.'
+	msg4 = ', is not permitted. '
 	msg5 = 'You are not allowed to add this IP Address, it is not part of your network resource group.'
+	msg6 = 'Starting and ending IP addresses are not permitted. '
+	msg7 = 'Starting and ending addresses must be in the same subnet. '
 	[check1, ip_block1]  = is_ipaddress_in_netresource(request, ip_address1)
 	
 	#
@@ -60,20 +62,19 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	if not check1 or not check2 or not ip_block1 == ip_block2:	
 		#ip pools
 		if not ip_block1 == ip_block2:
-			#custom_errors.append({'error':True, 'message': msg1})
 			if not check1:
-				custom_errors.append({'error':True, 'message': msg1 + msg2})
+				custom_errors = msg2 + str(IPAddress(ip_address1)) + msg4 + msg1
 			elif not check2:
-				custom_errors.append({'error':True, 'message': msg1 + msg3})
+				custom_errors = msg3 + str(IPAddress(ip_address2)) + msg4 + msg1
 			else:
-				custom_errors.append({'error':True, 'message': msg4})
+				custom_errors = msg7 + msg1
 		elif not check1 and not check2:
-			custom_errors.append({'error':True, 'message': msg1})
+			custom_errors = msg6 + msg1
 		#machine names
 		elif not is_dhcp_pool:
-			custom_errors.append({'error':True, 'message': msg5})
+			custom_errors = msg5
 			
 	else:
 		has_permission = True
-	
+
 	return has_permission, custom_errors

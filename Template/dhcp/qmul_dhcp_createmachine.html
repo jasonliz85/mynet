@@ -6,13 +6,8 @@
 
 	<h2><a name="status">Machine Registration</a></h2>
 	<p>Enter a MAC address and IP address pair below.</p>
-	{% for c_error in c_errors %}
-		{% if c_error.error%}
-			<ul class = "errorlist"><li>{{c_error.message}}</ul><li>
-		{% endif %}
-	{% endfor %}
-	{% if u_error%}
-		<ul class = "errorlist"><li>{{u_error}}</ul><li>
+	{% if c_errors%}
+		<ul class = "errorlist"><li>{{c_errors}}</ul></li>
 	{% endif %}
 	
 	<form class="feedbackform" action="" method="post">

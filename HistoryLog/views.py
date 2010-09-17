@@ -3,8 +3,6 @@ from django.contrib.auth.decorators import login_required
 
 from mynet.AccessControl.models import *
 from mynet.HistoryLog.models import *
-from mynet.DNS.models import *
-from mynet.DHCP.models import *
 
 from mynet.AccessControl.views import *
 from mynet.helper_views import *

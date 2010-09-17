@@ -2,11 +2,33 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-
-from AccessControl.views import *#add_permissions_to_session, get_permissions_to_session
-
 import datetime
+from AccessControl.models import get_netgroups_managed_by_user, get_address_blocks_managed_by, get_dns_patterns_managed_by#add_permissions_to_session, get_permissions_to_session
 
+
+def add_permissions_to_session(request):
+	"""
+	Add Network Resource Name, IP Blocks (IP Address Ranges), and DNS Expressions to Django session
+	"""
+	#Network Resources	 	
+	request.session['network_resources'] 	= get_netgroups_managed_by_user(request.user)
+	#IP Ranges
+	request.session['ip_blocks'] 		= get_address_blocks_managed_by(request.user)
+	#DNS Expressions	 
+	request.session['dns_expressions'] 	= get_dns_patterns_managed_by(request.user)	
+	
+	return
+	
+def get_permissions_to_session(request):
+	"""
+	returns [Network Resource Name, IP Blocks (IP Address Ranges), DNS Expressions] from the Django session
+	"""
+	net_res = request.session['network_resources']
+	ip_ran  = request.session['ip_blocks']
+	dns_exp = request.session['dns_expressions']
+	
+	return net_res, ip_ran, dns_exp
+	
 def login(request):
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')

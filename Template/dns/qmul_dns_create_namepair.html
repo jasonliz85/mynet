@@ -7,7 +7,7 @@
 	<h2><a name="status">Register an IP-Name Pair</a></h2>
 	<p>Enter a valid IP address and DNS expression below.</p>
 	
-	{% if c_errors.error%}
+	{% if c_errors%}
 		<ul class = "errorlist"><li>{{c_errors}}</ul></li>
 	{% endif %}
 	

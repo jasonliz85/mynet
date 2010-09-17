@@ -46,7 +46,7 @@ MEDIA_URL = ''
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/Media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'wko0telssmkebd^)f&a3jbrooqgt17p@#%sorb&9(b#m4wqf**'
@@ -81,7 +81,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -91,4 +90,5 @@ INSTALLED_APPS = (
     'mynet.DNS',
     'mynet.DHCP',
     'mynet.HistoryLog',
+    'mynet.NetaddrTest',
 )
