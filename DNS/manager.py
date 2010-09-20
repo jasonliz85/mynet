@@ -124,8 +124,8 @@ class NameManager(models.Manager):
 		empty_find = True
 		for block in range(len(ip_blocks)):
 			ip_block = IPNetwork(str(ip_blocks[block]))
-			ip_filter_upper = Q(ip_address__lte = int(ip_block[-1]))
-			ip_filter_lower = Q(ip_address__gte = int(ip_block[0]))
+			ip_filter_upper = Q(ip_address__lte = ip_block[-1])
+			ip_filter_lower = Q(ip_address__gte = ip_block[0])
 			#filter the ip block
 			finds = self.filter( ip_filter_upper, ip_filter_lower )
 			if block == 0:

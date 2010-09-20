@@ -7,7 +7,7 @@ import NetaddrCustomizations.models
 		
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	mac_address	= models.CharField('MAC address', max_length = 40)	#DHCP MAC address
-	ip_address	= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP Address')
+	ip_address	= NetaddrCustomizations.models.NetaddrIPAddressField('IP Address')
 	#ip_address	= models.IntegerField('IP address')			#DHCP IP address 
 	host_name	= models.CharField('Host name', max_length = 63)	#DHCP Host name
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
@@ -23,8 +23,8 @@ class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
         	ordering = ['ip_address', 'is_ipv6']
 
 class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
-	ip_first	= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP range from')
-	ip_last		= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP range to')
+	ip_first	= NetaddrCustomizations.models.NetaddrIPAddressField('IP range from')
+	ip_last		= NetaddrCustomizations.models.NetaddrIPAddressField('IP range to')
 	#ip_first	= models.IntegerField('IP range from')			#DHCP address range
 	#ip_last	= models.IntegerField('IP range to')			#DHCP address range
 	is_ipv6 	= models.BooleanField()					#DHCP bool check IP version 6
@@ -55,7 +55,7 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	msg6 = 'Starting and ending IP addresses are not permitted. '
 	msg7 = 'Starting and ending addresses must be in the same subnet. '
 	[check1, ip_block1]  = is_ipaddress_in_netresource(request, ip_address1)
-	
+	print ip_address1.version
 	#
 	if is_dhcp_pool:
 		[check2, ip_block2]  = is_ipaddress_in_netresource(request, ip_address2)

@@ -142,25 +142,25 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 				tp = '1BD'
 			mod_record.dns_type = values['dns_type']
 			is_modified = bool(1)
-		if not mod_record.ip_address == int(IPAddress(values['ip_address'])):
-			mod_record.ip_address = int(IPAddress(values['ip_address']))
+		if not mod_record.ip_address == values['ip_address']:
+			mod_record.ip_address = values['ip_address']
 			is_modified = bool(1)
-			if (IPAddress(values['ip_address']).version == 6):
+			if (values['ip_address'].version == 6):
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)
 			mod_record.is_ipv6 = ipVersion		
 	elif m_name_str == "DHCP_ip_pool":
-		if not mod_record.ip_first == int(IPAddress(values['ip_first'])):
-			if (IPAddress(values['ip_first']).version == 6):
+		if not mod_record.ip_first == values['ip_first']:
+			if values['ip_first'].version == 6:
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)
 			is_modified = bool(1)
-			mod_record.ip_first = int(IPAddress(values['ip_first']))
+			mod_record.ip_first = values['ip_first']
 			mod_record.is_ipv6 = ipVersion
-		if not mod_record.ip_last == int(IPAddress(values['ip_last'])):
-			mod_record.ip_last = int(IPAddress(values['ip_last']))
+		if not mod_record.ip_last == values['ip_last']:
+			mod_record.ip_last = values['ip_last']
 			is_modified = bool(1)
 		if not mod_record.description == values['description']:
 			if CompareDescriptions(mod_record.description, values['description']):
@@ -170,9 +170,9 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 		if not mod_record.mac_address == str(EUI(values['mac_address'], dialect=mac_custom)):
 			mod_record.mac_address = str(EUI(values['mac_address'], dialect=mac_custom))
 			is_modified = bool(1)
-		if not mod_record.ip_address == int(IPAddress(values['ip_address'])):
-			mod_record.ip_address = int(IPAddress(values['ip_address']))
-			if (IPAddress(values['ip_address']).version == 6):
+		if not mod_record.ip_address == values['ip_address']:
+			mod_record.ip_address = values['ip_address']
+			if values['ip_address'].version == 6:
 				ipVersion = bool(1)
 			else:
 				ipVersion = bool(0)
@@ -218,7 +218,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 		if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
 			tp = '1BD'
 		newRecord = model_name( name	= values['name'],
-					ip_address	= int(IPAddress(values['ip_address'])),
+					ip_address	= values['ip_address'],
 					dns_type	= tp,
 					is_ipv6 	= ipVersion,
 					time_created 	= now,

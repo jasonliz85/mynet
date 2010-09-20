@@ -34,7 +34,7 @@ def ParameterChecks(user_object, ip1, ip2, mac, rid, is_ip_pools):
 		
 	else:
 		[is_valid, error_msg] = dhcp_permission_check(user_object, ip1, "", is_ip_pools)
-	
+
 	if not is_valid:
 		return is_valid, error_msg
 	else:
@@ -269,15 +269,14 @@ def dhcp_page_machine_add(request):
 		form = RegisterMachineForm(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			#[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
-			#[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), '')
-			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['ipID'])), "", str(EUI(info['mcID'], dialect=mac_custom)), "", False)
+			ip = IPAddress(info['ipID'])
+			[can_pass, custom_errors] = ParameterChecks(request, ip, "", str(EUI(info['mcID'], dialect=mac_custom)), "", False)
 			if can_pass:
-				values = { 	'mac_address' :info['mcID'],'ip_address' :info['ipID'],
+				values = { 	'mac_address' :info['mcID'],'ip_address' :ip,
 						'host_name'  :info['pcID'],'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DHCP_machine',  DHCP_machine, request.user.username, values)
 				machine_registered  = DHCP_machine.objects.get(id = registeredID)
-				machine_registered.ip = str(IPAddress(machine_registered.ip_address))
+				machine_registered.ip = str(machine_registered.ip_address)
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': machine_registered})
 			else:
 				form = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })

@@ -68,44 +68,45 @@ def handlePopAdd(request, addForm, field, original_id):
 					return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script> <p>Test to display.</p>' %\
 						(newObject, display )) #._get_pk_val()
 				else:
-					pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(IPAddress(ip_address)),'c_errors': custom_errors}
+					pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(ip_address),'c_errors': custom_errors}
 					return render_to_response("qmul_dns_create_simple.html", pageContext)
 	else:		
 		form = addForm(initial = {})
 	
-	pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(IPAddress(ip_address)) }
+	pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(ip_address) }
 	return render_to_response("qmul_dns_create_simple.html", pageContext)
 
 #Add an IP-name pair to modelquery set
 @login_required
 def dns_namepair_add(request):
 	if request.method == 'POST':
-		form = Register_namepair_Form(request.POST)
+		form = Register_namepair_Form(request.POST) 
 		if form.is_valid():
 			info = form.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['ip_address'])), info['dns_expr'], info['dns_typ'], '', True)
+			ip = IPAddress(info['ip_address'])
+			[can_pass, custom_errors] = ParameterChecks(request, ip, info['dns_expr'], info['dns_typ'], '', True)
 			#check if this form is permitted first
 			if can_pass:
 				values = { 	'name' :info['dns_expr'],'dns_typ' :info['dns_typ'],
-						'ip_address' :int(IPAddress(info['ip_address'])),'description':info['dscr'] }
+						'ip_address' :ip, 'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DNS_name', DNS_name, request.user.username, values)
 				namepair_registered  = DNS_name.objects.get(id = registeredID)
-				namepair_registered.ip = str(IPAddress(namepair_registered.ip_address))
+				namepair_registered.ip = str(namepair_registered.ip_address)
 				add_service = request.POST.getlist('service_add')
 				#if add_service parameter is triggered, will add the item to the model db
 				if add_service:		
 					for item in add_service:
 						service_add = eval(item)
 						values = { 	'name':service_add['dns_expr'],'dns_typ':service_add['dns_typ'],
-								'ip_address':int(IPAddress(service_add['ip_address'])),'description':service_add['dscr'] }
+								'ip_address':IPAddress(service_add['ip_address']),'description':service_add['dscr'] }
 						AddAndLogRecord('DNS_name', DNS_name, request.user.username, values)			
 				#find all other associated services and display them
-				tempFilter = DNS_name.objects.filter(ip_address = int(IPAddress(info['ip_address']))).exclude(id = registeredID)
+				tempFilter = DNS_name.objects.filter(ip_address = ip).exclude(id = registeredID)
 				regServices = list()
 				for i in range(len(tempFilter)):
-					[is_service_permitted, msg] = dns_permission_check(request,int(IPAddress(tempFilter[i].ip_address)), tempFilter[i].name, tempFilter[i].dns_type)
+					[is_service_permitted, msg] = DNS_name.objects.is_permitted(request, tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type, '', True)
 					if is_service_permitted:
-						tempFilter[i].ip = str(IPAddress(tempFilter[i].ip_address))
+						tempFilter[i].ip = str(tempFilter[i].ip_address)
 						regServices.append(tempFilter[i])
 				#render results
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': namepair_registered, 'machinelists':regServices})
@@ -124,7 +125,7 @@ def dns_namepair_listing(request):
 	registered_pairs =  DNS_name.objects.get_permitted_records(request, True)
 	#for display purposes, convert ip from integer form to str form (i.e. 3232235521 -> '192.168.0.1')
 	for i in range(len(registered_pairs)):
-		registered_pairs[i].ip = str(IPAddress(registered_pairs[i].ip_address))
+		registered_pairs[i].ip = str(registered_pairs[i].ip_address)
 		
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
@@ -166,13 +167,13 @@ def dns_namepair_view(request, pair_id):
 	except ValueError:
 		raise Http404()	
 	regpair = DNS_name.objects.get(id = pair_id)
-	regpair.ip = str(IPAddress(regpair.ip_address))
+	regpair.ip = str(regpair.ip_address)
 	tempFilter = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = regpair.id)
 	regServices = list()
 	for i in range(len(tempFilter)):
-		[is_service_permitted, msg] = DNS_name.objects.is_permitted(request,int(IPAddress(tempFilter[i].ip_address)), tempFilter[i].name, tempFilter[i].dns_type)
+		[is_service_permitted, msg] = DNS_name.objects.is_permitted(request,tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type)
 		if is_service_permitted:
-			tempFilter[i].ip = str(IPAddress(tempFilter[i].ip_address))
+			tempFilter[i].ip = str(tempFilter[i].ip_address)
 			regServices.append(tempFilter[i])
 	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists': regServices})
 
@@ -199,18 +200,19 @@ def dns_namepair_edit(request, pair_id):
 		editform = Register_namepair_Form(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
+			ip = IPAddress(info['ip_address'])
 			#[can_pass, custom_errors] = dns_permission_check(request, int(IPAddress(info['ip_address'])),info['dns_expr'], info['dns_typ'])
 			#[is_unique, unique_error] = DNS_name.objects.is_unique(int(IPAddress(info['ip_address'])),info['dns_expr'],info['dns_typ'],'',True)
-			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['ip_address'])), info['dns_expr'], info['dns_typ'], pair_id, True)
+			[can_pass, custom_errors] = ParameterChecks(request, ip, info['dns_expr'], info['dns_typ'], pair_id, True)
 			if can_pass:
 				valAft = { 	'name' :info['dns_expr'],'dns_type':info['dns_typ'],
-						'ip_address' :info['ip_address'],'description' :info['dscr']	}
+						'ip_address' :ip,'description' :info['dscr']	}
 				modID = EditAndLogRecord('DNS_name', pair_id,  DNS_name,request.user.username, valAft)
 				regpair = DNS_name.objects.get(id = modID)
 				regpair.ip = str(IPAddress(regpair.ip_address))
 				regServices = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = modID)
 				for i in range(len(regServices)):
-					regServices[i].ip = str(IPAddress(regServices[i].ip_address))
+					regServices[i].ip = str(regServices[i].ip_address)
 		
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 			else:
@@ -218,5 +220,5 @@ def dns_namepair_edit(request, pair_id):
 				return render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
 	else:
 		regpair = DNS_name.objects.get(id = pair_id)		
-		editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(IPAddress(regpair.ip_address)),'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
+		editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(regpair.ip_address),'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
 	return render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})

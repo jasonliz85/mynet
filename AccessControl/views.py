@@ -45,7 +45,7 @@ def get_permissions_to_session(request):
 def is_ipaddress_in_netresource(request, ip_address):	
 	"""
 	returns true if the input ip address (ip_address) is within the ip blocks specified in the user's session, else returns false. 
-	It assumes the input ip address is in integer form.
+	It assumes the input ip address is of type IPAddress.
 	"""
 	#[blank1, ip_blocks, blank2] = get_permissions_to_session(request)
 	ip_blocks = request.session['ip_blocks']
@@ -55,7 +55,7 @@ def is_ipaddress_in_netresource(request, ip_address):
 	for block in range(len(ip_blocks)):
 		ip_block = IPNetwork(str(ip_blocks[block]))
 		#...check if ip_address is within range
-		if ip_address < int(ip_block[-1]) and ip_address > int(ip_block[0]):
+		if int(ip_address) < int(ip_block[-1]) and int(ip_address) > int(ip_block[0]):
 			has_permission = True			
 			ip_block_str = str(ip_blocks[block])
 			break

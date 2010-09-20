@@ -26,7 +26,7 @@ def is_ipaddress_in_netresource(request, ip_address):
 	for block in range(len(ip_blocks)):
 		ip_block = IPNetwork(str(ip_blocks[block]))
 		#...check if ip_address is within range
-		if ip_address < int(ip_block[-1]) and ip_address > int(ip_block[0]):
+		if int(ip_address) < int(ip_block[-1]) and int(ip_address) > int(ip_block[0]):
 			has_permission = True			
 			ip_block_str = str(ip_blocks[block])
 			break
@@ -82,8 +82,8 @@ class MachineManager(models.Manager):
 		empty_find = True
 		for block in range(len(ip_blocks)):
 			ip_block = IPNetwork(str(ip_blocks[block]))
-			ip_filter_upper = Q(ip_address__lt = int(ip_block[-1]))
-			ip_filter_lower = Q(ip_address__gt = int(ip_block[0]))
+			ip_filter_upper = Q(ip_address__lt = ip_block[-1])
+			ip_filter_lower = Q(ip_address__gt = ip_block[0])
 			#filter the ip block
 			finds = self.filter( ip_filter_upper, ip_filter_lower )
 			if block == 0:
@@ -177,10 +177,10 @@ class IPPoolManager(models.Manager):
 		empty_find = True
 		for block in range(len(ip_blocks)):
 			ip_block = IPNetwork(str(ip_blocks[block]))
-			ip_first_upper	= Q(ip_first__lt = int(ip_block[-1]))
-			ip_first_lower 	= Q(ip_first__gt = int(ip_block[0]))
-			ip_last_upper 	= Q(ip_last__lt = int(ip_block[-1]))
-			ip_last_lower 	= Q(ip_last__gt = int(ip_block[0]))
+			ip_first_upper	= Q(ip_first__lt = ip_block[-1])
+			ip_first_lower 	= Q(ip_first__gt = ip_block[0])
+			ip_last_upper 	= Q(ip_last__lt = ip_block[-1])
+			ip_last_lower 	= Q(ip_last__gt = ip_block[0])
 			#filter the ip block
 			finds = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) #& (ip_last_lower, ip_last_upper)
 			if block == 0:
