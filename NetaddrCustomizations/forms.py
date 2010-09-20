@@ -41,3 +41,22 @@ class NetaddrIPAddressAsIntegerField(forms.Field):
             raise forms.ValidationError(self.error_messages['invalid'])
         return value.value
 
+class NetaddrIPAddressField(forms.Field):
+    """
+    A Django Form Field class to represent IP (sub)networks using the 'netaddr' package
+    """
+
+    default_error_messages = {
+        'invalid': u'Enter a valid IP network',
+    }
+
+    def clean(self, value):
+        super(NetaddrIPNetworkField, self).clean(value)
+        if isinstance(value, netaddr.IPNetwork):
+            return value
+        try:
+            value = netaddr.IPNetwork(value)
+        except:
+            raise forms.ValidationError(self.error_messages['invalid'])
+        return value
+

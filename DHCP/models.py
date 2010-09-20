@@ -20,7 +20,7 @@ class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	def __unicode__(self):
 		return u'%s-%s-%s' % (self.mac_address, str(IPAddress(self.ip_address)), self.host_name )
 	class Meta:
-        	ordering = ['ip_address']
+        	ordering = ['ip_address', 'is_ipv6']
 
 class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	ip_first	= NetaddrCustomizations.models.NetaddrIPAddressAsIntegerField('IP range from')
@@ -37,7 +37,7 @@ class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	def __unicode__(self):
 		return u'%s %s %s' % (str(IPAddress(self.ip_first)), str(IPAddress(self.ip_last)), self.time_created )
 	class Meta:
-        	ordering = ['ip_first']
+        	ordering = ['ip_first', 'is_ipv6']
         	
 def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	"""

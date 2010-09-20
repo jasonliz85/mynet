@@ -65,6 +65,7 @@ def get_address_blocks_managed_by(user_obj):
 
 def get_subnet_from_ip(user_obj, ip):
 	"""
+	Returns a subnet (as a string) that an ip belongs to. Returns an empty string if no subnets can be found.
 	"""
 	subnet = ''
 	if not hasattr(user_obj, '_address_blocks') or True:
@@ -73,6 +74,6 @@ def get_subnet_from_ip(user_obj, ip):
 			for addressblock in netgroup.address_blocks.all():
 				sn = IPNetwork(str(addressblock))
 				if ip > int(sn[0]) and ip < int(sn[-1]):
-					subnet = sn
+					subnet = str(sn)
 	return subnet
 

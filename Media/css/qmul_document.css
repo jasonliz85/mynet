@@ -264,7 +264,7 @@ h1 {  /* headings */
 .feedbackform{ padding: 2%;}
 .viewbackform{ padding: 2%;}
 div.fieldwrapper{ /*field row DIV (includes two columns- Styled label column and 'thefield' column)*/
-	width: 550px; /*width of form rows*/
+	width: 800px; /*width of form rows*/
 	overflow: hidden;
 	padding: 5px 0;
 }
@@ -273,7 +273,7 @@ div.fieldwrapper label.styled{ /* label elements that should be styled (left col
 	float: left;
 	width: 150px; /*width of label (left column)*/
 	text-transform: uppercase;
-	border-bottom: 1px solid #CCCCCC;/*solid black;*/
+	border-bottom: 1px solid #CCCCCC; /*solid black;*/
 	margin-right: 15px; /*spacing with right column*/
 }
 
@@ -281,7 +281,15 @@ div.fieldwrapper div.thefield{ /* DIV that wraps around the actual form fields (
 	float: left;
 	margin-bottom: 10px; /* space following the field */
 }
-
+div.fieldwrapper div.thefield textarea.ipv6{ /* DIV that wraps around the actual form fields (right column within fieldwrapper DIV) */
+	width: 450px;
+	height: 35px;
+	 /*float: left;
+	overflow: auto;
+	width: 800px;
+	margin-left: 0px;
+	margin-bottom: 10px; *//* space following the field */
+}
 div.fieldwrapper div.thefield input[type="text"]{ /* style for INPUT type="text" fields. Has no effect in IE7 or below! */ 	width: 150px;
 }
 div.fieldwrapper div.thefield ul {
@@ -306,7 +314,7 @@ div.fieldwrapper div.thefield input[type="password"]{ /* style for INPUT type="t
 }	
 
 div.fieldwrapper div.thefield textarea{ /* style for TEXTAREA fields. */
-	width: 300px;
+	width: 450px;
 	height: 75px;
 }
 div.fieldwrapper div.thefield select { /* style for TEXTAREA fields. */

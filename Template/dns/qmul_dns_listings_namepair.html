@@ -71,7 +71,7 @@
 		<tbody>
 		{% for machinelist in machinelists %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
-				<td>{% ifchanged machinelist.ip%} {{ machinelist.ip }} {% endifchanged %} </td>
+				<td>{% ifchanged machinelist.ip%} {{ machinelist.ip|lower }} {% endifchanged %} </td>
 				<!td><!{% ifequal machinelist.dns_type '1BD' %} {{ machinelist.ip_pair }} {% endifequal %} </td>
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td align = center> 	

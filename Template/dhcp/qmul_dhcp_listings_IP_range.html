@@ -53,7 +53,11 @@
 				<a>No.</a>
 			</th>
 			<th>
-				<a href="?ot=asc&amp;o=1">IP Address Range</a>
+				<a href="?ot=asc&amp;o=1">IP Pools</a>
+			</th>
+			<th>				
+			</th>
+			<th>				
 			</th>
 			<th> 
 				<a href="?ot=asc&amp;o=3"> IP version </a>
@@ -68,7 +72,9 @@
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
-				<th><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.ip1 }} - {{ machinelist.ip2 }} </a></th>
+				<td><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.ip1|lower }} </a></td>
+				<td><a href="/dhcp/view_IP_range/{{machinelist.id}}"> - </td>
+				<td><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.ip2|lower }} </td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
 				<td class="nowrap">
 				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 

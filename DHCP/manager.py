@@ -50,6 +50,7 @@ class MachineManager(models.Manager):
 			return unique, unique_error
 		#2. find all records that are also within this subnet
 		found_records = list() 
+		subnet = IPNetwork(subnet)
 		ip_filter_upper = Q(ip_address__lt = int(subnet[-1]))
 		ip_filter_lower = Q(ip_address__gt = int(subnet[0]))
 		try: 
@@ -135,6 +136,8 @@ class IPPoolManager(models.Manager):
 			return unique, unique_error
 		#Get records associated with these addresses. 
 		found_records = list() 
+		subnet1 = IPNetwork(subnet1)
+		subnet2 = IPNetwork(subnet2)
 		ip_first_upper	= Q(ip_first__lt = int(subnet1[-1]))
 		ip_first_lower 	= Q(ip_first__gt = int(subnet1[0]))
 		ip_last_upper 	= Q(ip_last__lt = int(subnet1[-1]))
