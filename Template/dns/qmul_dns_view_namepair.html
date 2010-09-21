@@ -83,7 +83,7 @@
 				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 					<td> {{ machinelist.ip}} </td>
 					<td align = center> 	
-						<a href="/dns/view_DNS_pair/{{machinelist.id}}">
+						<a href="/dns/pair/{{machinelist.id}}/view">
 						{% ifequal machinelist.dns_type '1BD' %} 
 							<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional">
 						{% else %} 
@@ -134,9 +134,9 @@
 	
 	
 	<p class = "EditDeleteBack"> 
-		<a href="/dns/edit_DNS_pair/{{machine.id}}"> Edit<a> |
-		<a  href="/dns/delete_DNS_pair/{{machine.id}}" onclick="return confirm('Are you sure you want to delete?');"> Delete<a> |		
-		<a href="/dns/registered_DNS_pairs"> Back<a> 
+		<a href="/dns/pair/{{machine.id}}/edit"> Edit<a> |
+		<a href="/dns/pair/{{machine.id}}/delete" onclick="return confirm('Are you sure you want to delete?');"> Delete<a> |		
+		<a href="/dns/pair/list/default"> Back<a> 
 	</p>
 	      
 		

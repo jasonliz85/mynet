@@ -1,7 +1,7 @@
 #This is the object manager for models.py
 from django.db import models
 from netaddr import *
-from mynet.AccessControl.views import is_ipaddress_in_netresource, is_name_in_netresource, get_permissions_to_session
+from mynet.AccessControl import is_ipaddress_in_netresource, is_name_in_netresource, get_permissions_to_session
 from django.db.models import Q
 
 class NameManager(models.Manager):

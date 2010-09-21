@@ -82,13 +82,13 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.admin',
-    'mynet.AccessControl',
-    'mynet.DNS',
-    'mynet.DHCP',
-    'mynet.HistoryLog',
-    'mynet.NetaddrTest',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.admin',
+	'mynet.AccessControl',
+	'mynet.DNS',
+	'mynet.DHCP',
+	'mynet.HistoryLog',
+	'mynet.NetaddrTest',
 )

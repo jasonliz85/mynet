@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import Group
 from netaddr import IPAddress, IPNetwork
 
+__all__ = ['NetGroup', 'DNS_ipval', 'DNS_expr']
+
 # ---- #
 class DNS_expr(models.Model):
 	expression 	= models.CharField('Expression', max_length = 100, unique=True)	#DNS name regular expression
@@ -22,59 +24,5 @@ class NetGroup(models.Model):
 	def __unicode__(self):
 		return self.name
 		
-def get_netgroups_managed_by_user(user_obj):
-	"""
-	Returns a list of NetGroup objects which the user can manage
-	"""
-	if not hasattr(user_obj, '_netgroup_cache') or True:
-		netgroup_cache = []
-		#print 'Starting loops'
-		for g in user_obj.groups.all():
-			#print 'Group', g
-			for ng in g.netgroup_set.all():
-				#print 'NetGroup', ng 
-				if ng not in netgroup_cache: 
-					netgroup_cache.append(ng)
-		user_obj._netgroup_cache = netgroup_cache
-	return	user_obj._netgroup_cache
-def get_dns_patterns_managed_by(user_obj):
-	"""
-	Returns a list of dns pattern objects which the user can manage
-	"""
-	if not hasattr(user_obj, '_dns_patterns') or True:
-		dns_patterns = []
-		for ng in get_netgroups_managed_by_user(user_obj):
-			for dp in ng.dns_patterns.all():
-				if dp not in dns_patterns: dns_patterns.append(dp)
-		user_obj._dns_patterns = dns_patterns
-	return	user_obj._dns_patterns
-def get_address_blocks_managed_by(user_obj):
-	"""
-	Returns a list of IP address block objects which the user can manage
-	"""
-	if not hasattr(user_obj, '_address_blocks') or True:
-		address_blocks = [] #list containing all address blocks the user is allowed to change
-		for netgroup in get_netgroups_managed_by_user(user_obj):
-			for addressblock in netgroup.address_blocks.all():
-				if addressblock not in address_blocks: 
-					address_blocks.append(addressblock)
-					#print address_blocks
-		user_obj._address_blocks = address_blocks
-		#print address_blocks
-	return	user_obj._address_blocks
 
-def get_subnet_from_ip(user_obj, ip):
-	"""
-	Returns a subnet (as a string) that an ip belongs to. Returns an empty string if no subnets can be found.
-	"""
-	subnet = ''
-	if not hasattr(user_obj, '_address_blocks') or True:
-		address_blocks = [] #list containing all address blocks the user is allowed to change
-		for netgroup in get_netgroups_managed_by_user(user_obj):
-			for addressblock in netgroup.address_blocks.all():
-				sn = IPNetwork(str(addressblock))
-				if int(ip) > int(sn[0]) and int(ip) < int(sn[-1]):
-					subnet = str(sn)
-					
-	return subnet
 

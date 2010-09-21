@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 import datetime
-from AccessControl.models import get_netgroups_managed_by_user, get_address_blocks_managed_by, get_dns_patterns_managed_by#add_permissions_to_session, get_permissions_to_session
+from mynet.AccessControl import get_netgroups_managed_by_user, get_address_blocks_managed_by, get_dns_patterns_managed_by#add_permissions_to_session, get_permissions_to_session
 
 
 def add_permissions_to_session(request):

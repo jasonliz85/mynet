@@ -3,6 +3,8 @@ import netaddr
 
 from django import forms
 
+__all__ = ['NetaddrIPAddressField', 'NetaddrIPAddressAsIntegerField', 'NetaddrIPAddressField']
+
 class NetaddrIPAddressField(forms.Field):
     """
     A Django Form Field class to represent IP addresses using the 'netaddr' package

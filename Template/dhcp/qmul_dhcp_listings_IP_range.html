@@ -72,9 +72,9 @@
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
-				<td><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.ip1|lower }} </a></td>
-				<td><a href="/dhcp/view_IP_range/{{machinelist.id}}"> - </td>
-				<td><a href="/dhcp/view_IP_range/{{machinelist.id}}"> {{ machinelist.ip2|lower }} </td>
+				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> {{ machinelist.ip1|lower }} </a></td>
+				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> - </td>
+				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> {{ machinelist.ip2|lower }} </td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
 				<td class="nowrap">
 				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 

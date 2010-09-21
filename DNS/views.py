@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
 #import models
 from mynet.DNS.models import *
 #import forms
@@ -166,7 +167,11 @@ def dns_namepair_view(request, pair_id):
 		pair_id = int(pair_id)
 	except ValueError:
 		raise Http404()	
-	regpair = DNS_name.objects.get(id = pair_id)
+	try:
+		regpair = DNS_name.objects.get(id = pair_id)
+	except DNS_name.DoesNotExist:
+		return HttpResponseRedirect("/dns/pair/list/default")
+		
 	regpair.ip = str(regpair.ip_address)
 	tempFilter = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = regpair.id)
 	regServices = list()
@@ -219,6 +224,9 @@ def dns_namepair_edit(request, pair_id):
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_typ':info['dns_typ'],'ip_address':info['ip_address'],'dscr':info['dscr']})
 				return render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
 	else:
-		regpair = DNS_name.objects.get(id = pair_id)		
+		try:
+			regpair = DNS_name.objects.get(id = pair_id)		
+		except DNS_name.DoesNotExist:
+			return HttpResponseRedirect("/dns/pair/list/default")	
 		editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(regpair.ip_address),'dscr':regpair.description, 'dns_typ': regpair.dns_type})	
 	return render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})

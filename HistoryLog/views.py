@@ -119,7 +119,7 @@ def MulitpleViewFormat(table_number, val_bef, val_aft):
 		else:
 			hasChanged = '*'
 		#The List that is returned			
-		val = hasChanged + field_name + " : "  + after + "\n"
+		val = hasChanged + str(field_name) + " : "  + str(after) + "\n"
 		result.append(val)
 		
 	return result

@@ -1,7 +1,7 @@
 from django.db import models
 from mynet.DHCP.manager import *
 from netaddr import IPAddress, IPNetwork
-#from mynet.AccessControl.views import is_ipaddress_in_netresource
+from mynet.AccessControl import *#is_ipaddress_in_netresource
 from django.db.models import Q
 import NetaddrCustomizations.models
 		
@@ -16,9 +16,9 @@ class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	time_modified	= models.DateTimeField()				#DHCP machine registration modification time	
 	objects 	= MachineManager()
 	def LogRepresentation(self):
-		return u'{\'mac_address\':\'%s\', \'ip_address\':%s, \'host_name\':\'%s\', \'description\':\'%s\'}' % (self.mac_address, self.ip_address, self.host_name, self.description )
+		return u'{\'mac_address\':\'%s\', \'ip_address\':IPAddress(\'%s\'), \'host_name\':\'%s\', \'description\':\'%s\'}' % (self.mac_address, self.ip_address, self.host_name, self.description )
 	def __unicode__(self):
-		return u'%s-%s-%s' % (self.mac_address, str(IPAddress(self.ip_address)), self.host_name )
+		return u'%s-%s-%s' % (self.mac_address, self.ip_address, self.host_name )
 	class Meta:
         	ordering = ['ip_address', 'is_ipv6']
 
@@ -33,9 +33,9 @@ class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	time_modified	= models.DateTimeField()				#DHCP time IP pool modification time
 	objects		= IPPoolManager()
 	def LogRepresentation(self):
-		return u'{\'ip_first\':%s, \'ip_last\':%s,\'description\':\'%s\'}' % (self.ip_first, self.ip_last,self.description )
+		return u'{\'ip_first\':IPAddress(\'%s\'), \'ip_last\':IPAddress(\'%s\'),\'description\':\'%s\'}' % (self.ip_first, self.ip_last,self.description )
 	def __unicode__(self):
-		return u'%s %s %s' % (str(IPAddress(self.ip_first)), str(IPAddress(self.ip_last)), self.time_created )
+		return u'%s %s %s' % (self.ip_first, self.ip_last, self.time_created )
 	class Meta:
         	ordering = ['ip_first', 'is_ipv6']
         	

@@ -75,7 +75,7 @@
 				<!td><!{% ifequal machinelist.dns_type '1BD' %} {{ machinelist.ip_pair }} {% endifequal %} </td>
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td align = center> 	
-					<a href="/dns/view_DNS_pair/{{machinelist.id}}"> 
+					<a href="/dns/pair/{{machinelist.id}}/view"> 
 					{% ifequal machinelist.dns_type '1BD' %} 
 						<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional">
 					{% else %} 

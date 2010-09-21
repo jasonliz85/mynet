@@ -1,9 +1,12 @@
+
 import netaddr
 
 from django.core import exceptions
 from django.db   import models
 
 import forms
+
+__all__ = ['NetaddrIPAddressField', 'NetaddrIPAddressAsIntegerField', 'NetaddrIPNetworkField']
 
 V4LIMIT = 1L << 32
 
@@ -142,7 +145,7 @@ class NetaddrIPNetworkField(models.Field):
             version = int(value[0])
             value = int(value[2:34], 16)
             prefixlen = int(value[35:38])
-            network = netaddr.IPNetwork(value, version=version, implicit_network = True)
+            network = netaddr.IPNetwork(value, version=version, implicit_prefix=True)
             network.prefixlen = prefixlen
             return network
         except:

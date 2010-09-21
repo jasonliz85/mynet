@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
 #-------import models
 from mynet.DHCP.models import *
 #-------import forms
@@ -116,9 +117,14 @@ def dhcp_page_IP_range_view(request, ip_id):
 		ip_id = int(ip_id)
 	except ValueError:
 		raise Http404()	
-	regpools = DHCP_ip_pool.objects.get(id = ip_id)
-	regpools.ip1 = str(IPAddress(regpools.ip_first))
-	regpools.ip2 = str(IPAddress(regpools.ip_last))
+	
+	try:
+		regpools = DHCP_ip_pool.objects.get(id = ip_id)
+	except DHCP_ip_pool.DoesNotExist:
+		return HttpResponseRedirect("/dhcp/pool/list/default")
+	
+	regpools.ip1 = str(regpools.ip_first)
+	regpools.ip2 = str(regpools.ip_last)
 	return  render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpools})
 
 #Delete a single IP range on the DHCP IP pool model
@@ -131,6 +137,8 @@ def dhcp_page_IP_range_delete(request, ip_id):
 	
 	mDelete = list()
 	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username, 'DHCP_ip_pool', ''))
+	if mDelete == False:
+		return HttpResponseRedirect("/dhcp/pool/list/default")
 	mlength = len(mDelete)
 
 	return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength':mlength})
@@ -146,20 +154,25 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		editform = Register_IP_range_Form(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), "", ip_id, True)
+			ip_f = IPAddress(info['IP_range1'])
+			ip_l = IPAddress(info['IP_range2'])
+			[can_pass, custom_errors] = ParameterChecks(request, ip_f, ip_l, "", ip_id, True)
 			if can_pass:
-				valAft = { 	'ip_first' :info['IP_range1'], 'ip_last':info['IP_range2'],
+				valAft = { 	'ip_first':ip_f, 'ip_last':ip_l,
 						'description' :info['dscr']	}
 				modID = EditAndLogRecord('DHCP_ip_pool', ip_id,  DHCP_ip_pool,request.user.username, valAft)
 				regpool = DHCP_ip_pool.objects.get(id = modID)
-				regpool.ip1 = str(IPAddress(regpool.ip_first))
-				regpool.ip2 = str(IPAddress(regpool.ip_last))
+				regpool.ip1 = str(regpool.ip_first)
+				regpool.ip2 = str(regpool.ip_last)
 				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
 			else:
 				editform = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
 				return render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
 	else:
-		regmachine = DHCP_ip_pool.objects.get(id = ip_id)		
+		try:
+			regmachine = DHCP_ip_pool.objects.get(id = ip_id)	
+		except DHCP_ip_pool.DoesNotExist:
+			return HttpResponseRedirect("/dhcp/pool/list/default")	
 		editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.ip_first)),'IP_range2':str(IPAddress(regmachine.ip_last)),'dscr':regmachine.description})	
 	return render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
 
@@ -197,7 +210,10 @@ def dhcp_page_machine_edit(request, m_id):
 				editform = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
 				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
 	else:
-		regmachine = DHCP_machine.objects.get(id = m_id)		
+		try:
+			regmachine = DHCP_machine.objects.get(id = m_id)		
+		except DHCP_machine.DoesNotExist:
+			return HttpResponseRedirect("/dhcp/machine/list/default")	
 		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(regmachine.ip_address), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
@@ -248,6 +264,8 @@ def dhcp_page_machine_delete_single(request, m_id):
 	
 	mDelete = list()
 	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine', ''))
+	if mDelete == False:
+		return HttpResponseRedirect("/dhcp/machine/list/default")
 	mlength = len(mDelete)
 	
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
@@ -259,6 +277,12 @@ def dhcp_page_machine_view(request, m_id):
 		m_id = int(m_id)
 	except ValueError:
 		raise Http404()	
+	
+	try:
+		regmachine = DHCP_machine.objects.get(id = m_id)
+	except DHCP_machine.DoesNotExist:
+		return HttpResponseRedirect("/dhcp/machine/list/default")
+	
 	regmachine = DHCP_machine.objects.get(id = m_id)
 	regmachine.ip = str(IPAddress(regmachine.ip_address))
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})

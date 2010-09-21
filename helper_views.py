@@ -124,7 +124,11 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 	"""
 	#initialize values
 	is_modified = bool(0)
-	mod_record = model_name.objects.get(id = m_id)
+	try :
+		mod_record = model_name.objects.get(id = m_id)
+	except model_name.DoesNotExist:
+		return False
+		
 	valBef = mod_record.LogRepresentation()
 	t_number = get_table_number(m_name_str)
 	#switch to appropriete model and deal with each slightly differently
@@ -262,7 +266,11 @@ def DeleteAndLogRecord(m_id, Model_Name, uname, table_name, action):
 		values: m_id = unique id of record in db, model_name = name of the table in db, uname =
 	"""
 	t_number = get_table_number(table_name)
-	DeleteRecord = Model_Name.objects.get(id = m_id)
+	try :
+		DeleteRecord = Model_Name.objects.get(id = m_id)
+	except Model_Name.DoesNotExist:
+		return False
+	
 	init_values = DeleteRecord.LogRepresentation() 	#init_values = str(vals[0]) 	#json.dumps(vals[0], sort_keys=True, indent=0) 	
 	final_values = "{}"				#json.dumps("{}", sort_keys=True, indent=0)   returnRecordList.append(DeleteRecord)
 	DeleteRecord.delete()
