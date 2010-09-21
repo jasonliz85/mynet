@@ -22,6 +22,7 @@ def is_ipaddress_in_netresource(request, ip_address):
 	ip_blocks = request.session['ip_blocks']
 	ip_block_str = ''
 	has_permission = False
+	
 	#for each ip address block in all ip address blocks in the list...
 	for block in range(len(ip_blocks)):
 		ip_block = IPNetwork(str(ip_blocks[block]))
@@ -44,6 +45,7 @@ class MachineManager(models.Manager):
 		unique_error = ''
 		#1. find subnet belonging to ip address	(ip)	
 		subnet = get_subnet_from_ip(user_obj, ip)
+		print subnet
 		if not len(subnet):
 			unique = False
 			unique_error = "You do not have permission to add/edit this IP address."
@@ -51,8 +53,8 @@ class MachineManager(models.Manager):
 		#2. find all records that are also within this subnet
 		found_records = list() 
 		subnet = IPNetwork(subnet)
-		ip_filter_upper = Q(ip_address__lt = int(subnet[-1]))
-		ip_filter_lower = Q(ip_address__gt = int(subnet[0]))
+		ip_filter_upper = Q(ip_address__lt = subnet[-1])
+		ip_filter_lower = Q(ip_address__gt = subnet[0])
 		try: 
 			found_records = self.filter(ip_filter_upper, ip_filter_lower).exclude(id = mid)
 		except ValueError:
@@ -138,14 +140,14 @@ class IPPoolManager(models.Manager):
 		found_records = list() 
 		subnet1 = IPNetwork(subnet1)
 		subnet2 = IPNetwork(subnet2)
-		ip_first_upper	= Q(ip_first__lt = int(subnet1[-1]))
-		ip_first_lower 	= Q(ip_first__gt = int(subnet1[0]))
-		ip_last_upper 	= Q(ip_last__lt = int(subnet1[-1]))
-		ip_last_lower 	= Q(ip_last__gt = int(subnet1[0]))		
+		ip_first_upper	= Q(ip_first__lt = subnet1[-1])
+		ip_first_lower 	= Q(ip_first__gt = subnet1[0])
+		ip_last_upper 	= Q(ip_last__lt = subnet1[-1])
+		ip_last_lower 	= Q(ip_last__gt = subnet1[0])		
 		try: 
-			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)).exclude(id = mid) 
+			found_records = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper).exclude(id = mid) 
 		except ValueError:
-			found_records = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) 
+			found_records = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper) 
 		if not len(found_records):
 			return unique, unique_error
 		
@@ -182,7 +184,7 @@ class IPPoolManager(models.Manager):
 			ip_last_upper 	= Q(ip_last__lt = ip_block[-1])
 			ip_last_lower 	= Q(ip_last__gt = ip_block[0])
 			#filter the ip block
-			finds = self.filter((ip_first_upper & ip_first_lower) & (ip_last_lower & ip_last_upper)) #& (ip_last_lower, ip_last_upper)
+			finds = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
 			if block == 0:
 				total_ip_finds = finds
 				if len(finds) == 0:

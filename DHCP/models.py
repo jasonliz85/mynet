@@ -55,7 +55,7 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	msg6 = 'Starting and ending IP addresses are not permitted. '
 	msg7 = 'Starting and ending addresses must be in the same subnet. '
 	[check1, ip_block1]  = is_ipaddress_in_netresource(request, ip_address1)
-	print ip_address1.version
+	
 	#
 	if is_dhcp_pool:
 		[check2, ip_block2]  = is_ipaddress_in_netresource(request, ip_address2)

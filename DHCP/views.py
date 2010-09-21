@@ -52,15 +52,17 @@ def dhcp_page_IP_range_add(request):
 		form = Register_IP_range_Form(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['IP_range1'])), int(IPAddress(info['IP_range2'])), "", "", True)
+			ip_f = IPAddress(info['IP_range1'])
+			ip_l = IPAddress(info['IP_range2'])
+			[can_pass, custom_errors] = ParameterChecks(request, ip_f, ip_l, "", "", True)
 			if can_pass:
-				values = { 	'ip_first' :info['IP_range1'],'ip_last' :info['IP_range2'],
+				values = { 	'ip_first':ip_f, 'ip_last':ip_l,
 						'description':info['dscr'] }
 				registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
 				IP_pool_registered  = DHCP_ip_pool.objects.get(id = registeredID)
 				#for display purposes
-				IP_pool_registered.ip1 = str(IPAddress(IP_pool_registered.ip_first))
-				IP_pool_registered.ip2 = str(IPAddress(IP_pool_registered.ip_last))					
+				IP_pool_registered.ip1 = str(IP_pool_registered.ip_first)
+				IP_pool_registered.ip2 = str(IP_pool_registered.ip_last)					
 				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
 			else:
 				form = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
@@ -182,22 +184,21 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = RegisterMachineForm(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			#[can_pass, custom_errors] = dhcp_permission_check(request, int(IPAddress(info['ipID'])), '', False)
-			#[is_unique, unique_error] = DHCP_machine.objects.is_unique(request.user, int(IPAddress(info['ipID'])), str(EUI(info['mcID'], dialect=mac_custom)), m_id)
-			[can_pass, custom_errors] = ParameterChecks(request, int(IPAddress(info['ipID'])), "", str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
+			ip = IPAddress(info['ipID'])
+			[can_pass, custom_errors] = ParameterChecks(request, ip, "", str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
 			if can_pass:
-				valAft = { 	'mac_address' :info['mcID'],'ip_address':info['ipID'],
+				valAft = { 	'mac_address' :info['mcID'],'ip_address': ip,
 						'host_name' :info['pcID'],'description' :info['dscr']	}
 				modID = EditAndLogRecord('DHCP_machine', m_id,  DHCP_machine,request.user.username, valAft)
 				regmachine = DHCP_machine.objects.get(id = modID)
-				regmachine.ip = IPAddress(regmachine.ip_address)
+				regmachine.ip = regmachine.ip_address
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 			else:
 				editform = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
 				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
 	else:
 		regmachine = DHCP_machine.objects.get(id = m_id)		
-		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(IPAddress(regmachine.ip_address)), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
+		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(regmachine.ip_address), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
 #

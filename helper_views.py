@@ -230,8 +230,8 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 			ipVersion = bool(1)
 		else:
 			ipVersion = bool(0)				
-		newRecord = model_name(	ip_first	= int(IPAddress(values['ip_first'])),
-					ip_last		= int(IPAddress(values['ip_last'])),
+		newRecord = model_name(	ip_first	= values['ip_first'],
+					ip_last		= values['ip_last'],
 					is_ipv6 	= ipVersion,
 					time_created 	= now,					
 					time_modified	= now,
@@ -239,7 +239,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					)
 	elif m_name_str == "DHCP_machine":
 		newRecord = model_name(	mac_address 	= str(EUI(values['mac_address'], dialect=mac_custom)),
-					ip_address  	= int(IPAddress(values['ip_address'])),
+					ip_address  	= values['ip_address'],
 					host_name  	= values['host_name'],
 					is_ipv6  	= ipVersion,
 					time_created 	= now,

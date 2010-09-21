@@ -73,7 +73,8 @@ def get_subnet_from_ip(user_obj, ip):
 		for netgroup in get_netgroups_managed_by_user(user_obj):
 			for addressblock in netgroup.address_blocks.all():
 				sn = IPNetwork(str(addressblock))
-				if ip > int(sn[0]) and ip < int(sn[-1]):
+				if int(ip) > int(sn[0]) and int(ip) < int(sn[-1]):
 					subnet = str(sn)
+					
 	return subnet
 
