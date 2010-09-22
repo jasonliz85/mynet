@@ -78,9 +78,10 @@ def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
 		values: m_id = unique id of record in db, model_name = name of the table in db
 	"""	
 	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
+	print currentNetGroup
 	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
 	now = datetime.datetime.today()
-	newEvent = log( #NetGroupName 		= currentNetGroup,
+	newEvent = log( NetGroupName 		= currentNetGroup,
 			NetUser		 	= currentUser,
 			TableName		= tname,
 			RecordID		= tid,

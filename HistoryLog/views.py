@@ -44,7 +44,7 @@ def NewAndChangedKeys(table_number, val_bef, val_aft):
 		result = "EMPTYDICT"
 		return result
 	else:
-		model_instance = model_name.objects.get(id = 1)
+		model_instance = model_name.objects.all()[0] #get the first record in database
 	if len(val_bef) == 0 or len(val_aft) == 0:
 		if len(val_bef) == 0:
 			val_new = val_aft
@@ -65,7 +65,12 @@ def NewAndChangedKeys(table_number, val_bef, val_aft):
 			try:
 				if val_bef[key] != value:
 					#changes = [val_bef[key], value]#str(val_bef[key] + "  to " + value)
-					changes = (val_bef[key], value)
+					if key == 'dns_type':
+						after = get_dns_type(val_bef[key])	
+						before = get_dns_type(value)	
+						changes = (before, after)
+					else:
+						changes = (val_bef[key], value)
 					result.append(changes)
 			except KeyError:
 				result.append(key)
@@ -75,7 +80,7 @@ def MulitpleViewFormat(table_number, val_bef, val_aft):
 	This function compares two python dictionaries and returns the differences as a list of twos strings in the following 
 	format: [Before Values, After Values]
 	Before Values: "IP Address: a1.b1.c1.d1 \n MAC Address: aa.bb.cc.dd.ee.ff \n ...etc"
-	Before After: "IP Address: a2.b2.c2.d2 \n MAC Address: aa.bb.cc.dd.ee.ff \n ...etc
+	After Values:  "IP Address: a2.b2.c2.d2 \n MAC Address: aa.bb.cc.dd.ee.ff \n ...etc
 	"""
 	#get the name of the model that has been logged
 	model_name = get_model_table(table_number)
@@ -83,7 +88,7 @@ def MulitpleViewFormat(table_number, val_bef, val_aft):
 		result = "EMPTYDICT"
 		return result
 	else:
-		model_instance = model_name.objects.get(id = 1)
+		model_instance = model_name.objects.all()[0]
 	result = list()	
 	#check for empty values
 	if len(val_aft) == 0:
@@ -91,7 +96,7 @@ def MulitpleViewFormat(table_number, val_bef, val_aft):
 	else:
 		val_not_empty = val_aft
 	#go through bef and aft values and format as a list	
-
+      	
 	for (key, value) in val_not_empty.iteritems():
 		field_name  = model_instance._meta.get_field(key).verbose_name
 		#check if before values are empty
@@ -136,7 +141,7 @@ def diff_values(table_number, val_bef, val_aft):
 		result = "EMPTYDICT"
 		return result
 	else:
-		model_instance = model_name.objects.get(id = 1)
+		model_instance = model_name.objects.all()[0] 
 	result = list()	
 	#check for empty values
 	if len(val_aft) == 0:
@@ -186,7 +191,7 @@ def HistoryList(request):
 		aft = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
 		table_no = log_values[i]['TableName']
 		changed_list.append(NewAndChangedKeys(table_no,bef,aft))
-	
+		
 	return render_to_response('qmul_history_listings.html', {'historyLogs':historyLogs, 'netgroupno':1, 'changed_list':changed_list})
 	
 @login_required
@@ -195,7 +200,10 @@ def HistoryView(request, h_id):
 		h_id = int(h_id)
 	except ValueError:
 		raise Http404()	
-	SingleLog = log.objects.get(id = h_id)
+	try:
+		SingleLog = log.objects.get(id = h_id)
+	except log.DoesNotExist:
+		return HttpResponseRedirect("/history")
 	
 	#prepare before and after values for display
 	ChangeLog = list()
@@ -211,7 +219,11 @@ def HistoryView2(request, h_id):
 		h_id = int(h_id)
 	except ValueError:
 		raise Http404()	
-	SingleLog = log.objects.get(id = h_id)
+	try:
+		SingleLog = log.objects.get(id = h_id)
+	except log.DoesNotExist:
+		return HttpResponseRedirect("/history")
+		
 	Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
 	ChangeLog = list()
 	for i in range(len(Logs)):
@@ -230,7 +242,13 @@ def HistoryUndoAction(request, h_id):
 	except ValueError:
 		raise Http404()
 	historyRecords = list()
-	historyRecords.append(log.objects.get(id = h_id))
+	try:
+		SingleLog = log.objects.get(id = h_id)
+	except log.DoesNotExist:
+		return HttpResponseRedirect("/history")
+		
+	historyRecords.append(SingleLog)
+	
 	val = historyRecords[0]
 	if UndoLogAction(val, request.user.username):
 		Message = 'This log was succesfully restored.'
@@ -238,5 +256,6 @@ def HistoryUndoAction(request, h_id):
 		Message = 'There was a problem restoring this action.'
 	
 	hlength = len(historyRecords)
+	
 	return render_to_response('qmul_history_undo.html', {'historyRecords':historyRecords, 'Message':Message, 'hlength':hlength}) 
 	

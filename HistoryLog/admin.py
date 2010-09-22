@@ -4,7 +4,7 @@ from mynet.HistoryLog.models import *
 
 class Log_Admin(admin.ModelAdmin):
 	list_display = ('TimeOccured', 'NetUser',  'ActionType')
-	fields = ('TimeOccured',  'NetUser',  'ActionType', 'ValuesBefore', 'ValuesAfter', 'TableName', 'RecordID')
+	fields = ('TimeOccured',  'NetUser',  'ActionType', 'ValuesBefore', 'ValuesAfter', 'TableName', 'RecordID', 'NetGroupName')
 	def format_TimeOccured(self, obj):
 		return obj.TimeOccured.strftime('%d %b %Y %H:%M')
 

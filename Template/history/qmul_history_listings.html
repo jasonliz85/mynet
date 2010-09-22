@@ -47,7 +47,7 @@
 		{% for historyLog in historyLogs %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<th><a href="/history/{{historyLog.id}}/view/single"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></th>
+				<td><a href="/history/{{historyLog.id}}/view/single"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></td>
 				<td align = center>
 					{{ historyLog.NetUser }}
 				</td>
@@ -69,27 +69,27 @@
 								{% if not forloop.last %},{% endif %}
 							{% endfor %}
 						{% else %}
-							{% ifequal historyLog.ActionType 'D' %}
-								{% for names, values in list  %}
-									{{ names }}:{{ values }}
-									{% if not forloop.last %},{% endif %}
-								{% endfor %}
-								{#{ list|truncatewords:"2" }#}
-							{% else %}
-								<table class = "innertable">
-									<tr width = "50%" align = left  >
-									<td> Before </td>
-									<td> After </td>
-									</tr>
-									{% for changes in list  %}
-									<tr >
-										{% for change in changes  %}
-										<td> +{% ifequal change '' %} none {% else %} {{ change }} {% endifequal %} </td>
-										{% endfor %}
-									</tr>
-									{% endfor %}									
-								</table>
-							{% endifequal %}
+						{% ifequal historyLog.ActionType 'D' %}
+							{% for names, values in list  %}
+								{{ names }}:{{ values }}
+								{% if not forloop.last %},{% endif %}
+							{% endfor %}
+							{#{ list|truncatewords:"2" }#}
+						{% else %}
+							<table class = "innertable">
+								<tr width = "50%" align = left  >
+								<td> Before </td>
+								<td> After </td>
+								</tr>
+								{% for changes in list  %}
+								<tr >
+									{% for change in changes  %}
+									<td> +{% ifequal change '' %} none {% else %} {{ change }} {% endifequal %} </td>
+									{% endfor %}
+								</tr>
+								{% endfor %}									
+							</table>
+						{% endifequal %}
 						{% endifequal %}
 					{% endifequal %}
 				{% endfor %} 
