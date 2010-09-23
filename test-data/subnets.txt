@@ -1,0 +1,424 @@
+VLAN | Address/Mask	       | Description					| Owner
+-----+-------------------------+------------------------------------------------+------
+     | 0.0.0.0/0               |						|
+     | 2001:630::/32           | JANET						|
+     | 2001:630:11::/48        | QMUL						|
+     | 2001:630:11:E000::/52   | Experimental IPv6 address range		|
+     | 2001:630:11:EA00::/56   | DMP's experimental IPv6 address range		|
+     | 2001:630:11:EB00::/56   | SAB's experimental IPv6 address range		|
+     | 2001:630:11:F000::/52   | IPv6 equivalent of IPv4 138.37.0.0/16		|
+     | 10.0.0.0/8	       | 10.x.y.1 NAT-ed to 138.38.x.y                  |
+     | 10.0.0.0/24	       | DNAT-ed service capture on firewall/routers    | 
+     | 10.0.0.255/24           | Reserved for future use                        |
+     | 138.37.0.0/16           | QMUL						|
+     | 138.37.0.0/24           | Individual "spot" IP numbers			|
+     | 138.37.0.1/32           | netaccess (captive portal) (was QMStudsLogin)	| network@qmul.ac.uk
+     | 138.37.0.2/32           | Multicast PIM RP (Rendezvous Point)		|
+     | 138.37.0.4/32	       | a.ns						| network@qmul.ac.uk
+     | 138.37.0.5/32	       | b.ns						| network@qmul.ac.uk
+     | 138.37.0.6/32           | IPv6 tunnel end-point				| network@qmul.ac.uk
+     | 138.37.0.7/32	       | chord: generic src addr for radius to DCS	| network@qmul.ac.uk
+     | 138.37.0.10/32          | DMPs tunnel end-point				| network@qmul.ac.uk
+     | 138.37.0.11/32          | fwauthd addesss for 210			| network@qmul.ac.uk
+     | 138.37.0.13/32	       | Address for NAT-ing 192.168.3.0/24 DHCP dynamic booted clients on subnet 3
+     | 138.37.0.14/32          | #FREE# was NATed addr to access maths-core-sw1	| network@qmul.ac.uk
+     | 138.37.0.15/32          | NATed addr for risky subnets & HP PCM		| network@qmul.ac.uk
+     | 138.37.0.20/32          | FRouter "merrimac"				| network@qmul.ac.uk
+     | 138.37.0.24/32          | FRouter "artichoke"				| network@qmul.ac.uk
+     | 138.37.0.28/32          | FRouter "kite"					| Richard Grint
+     | 138.37.0.32/29          | dynamically routed to EECS			| Keith Clarke
+     | 138.37.0.40/32          | FRouter "octopus"				| Raymond Lam
+     | 138.37.0.88/29          | statically routed to DCS			| Keith Clarke
+     | 138.37.0.100/32         |						|
+     | 138.37.0.123/32         |						|
+     | 138.37.0.172/32         | OpsManager					|
+     | 138.37.0.173/32         | Mobile Manager					|
+     | 138.37.0.174/32         | (reserved for another Mitel service)		|
+     | 138.37.0.175/32         | (reserved for another Mitel service)		|
+     | 138.37.0.176/32         | Asterix SIP gateway				|
+     | 138.37.0.201/32         | FRouter "appleberry"				| network@qmul.ac.uk
+     | 138.37.0.202/32         | FRouter "blueberry"				| network@qmul.ac.uk
+     | 138.37.0.203/32         | FRouter "cranberry"				| network@qmul.ac.uk
+     | 138.37.0.204/32         | FRouter "dewberry"				| network@qmul.ac.uk
+     | 138.37.0.205/32         | FRouter "elderberry"				| network@qmul.ac.uk
+     | 138.37.0.206/32         | FRouter "feaberry"				| network@qmul.ac.uk
+     | 138.37.0.207/32         | FRouter "gooseberry"				| network@qmul.ac.uk
+     | 138.37.0.208/32         | FRouter "huckleberry"				| network@qmul.ac.uk
+     | 138.37.0.209/32         | FRouter "inkberry"				| network@qmul.ac.uk
+     | 138.37.0.210/32         | FRouter "juneberry"				| network@qmul.ac.uk
+     | 138.37.0.211/32         | FRouter "keriberry"				| network@qmul.ac.uk
+     | 138.37.0.212/32         | FRouter "loganberry"				| network@qmul.ac.uk
+     | 138.37.0.213/32         | FRouter "mulberry"				| network@qmul.ac.uk
+     | 138.37.0.214/32         | FRouter "naseberry"				| network@qmul.ac.uk
+     | 138.37.0.215/32         | FRouter "olallieberry"				| network@qmul.ac.uk
+     | 138.37.0.216/32         | FRouter "partridgeberry"			| network@qmul.ac.uk
+     | 138.37.0.217/32         | FRouter "queensberry"				| network@qmul.ac.uk
+     | 138.37.0.218/32         | FRouter "raspberry"				| network@qmul.ac.uk
+     | 138.37.0.219/32         | FRouter "strawberry"				| network@qmul.ac.uk
+     | 138.37.0.220/32         | FRouter "tayberry"				| network@qmul.ac.uk
+     | 138.37.0.223/32         | FRouter "whortleberry"				| network@qmul.ac.uk
+     | 138.37.0.224/32         | FRouter "xayaberry"				| network@qmul.ac.uk
+     | 138.37.0.225/32         | FRouter "youngberry"				| network@qmul.ac.uk
+     | 138.37.0.226/32         | FRouter "zedberry"				| network@qmul.ac.uk
+     | 138.37.0.248/32         | Cisco 7206 "qmw-gigabit-router"		| network@qmul.ac.uk
+     | 138.37.0.249/32         | Cisco 2514 "dialup-cisco"			| network@qmul.ac.uk
+     | 138.37.0.253/32         | "ntp1"						| network@qmul.ac.uk
+     | 138.37.0.254/32         | "ntp0"						| network@qmul.ac.uk
+   1 | 138.37.1.0/24           | Layer 2 (Ethernet Switch) management		| network@qmul.ac.uk
+     | 138.37.2.0/24           | Intermediate backbone subnets: policed as /28s	| network@qmul.ac.uk
+ 950 | 138.37.2.16/28          | Intermediate backbone subnet: Admin		| network@qmul.ac.uk
+  32 | 138.37.2.32/28          | Intermediate backbone subnet: EECS		| network@qmul.ac.uk
+ 215 | 138.37.2.160/28         | Intermediate backbone subnet: ex-CRUK		| network@qmul.ac.uk
+     | 138.37.2.176/28         | Intermediate backbone subnet: remote via VPN	| network@qmul.ac.uk
+ 913 | 138.37.2.192/28         | Intermediate backbone subnet: transit via VPN	| network@qmul.ac.uk
+ 912 | 138.37.2.208/28         | Intermediate backbone subnet: IPSecVPN TEPs	| network@qmul.ac.uk
+ 911 | 138.37.2.224/28         | Intermediate backbone subnet: SmallMTU		| network@qmul.ac.uk
+ 910 | 138.37.2.240/28         | Intermediate backbone subnet: Aruba		| network@qmul.ac.uk
+   3 | 138.37.3.0/24           | Main College backbone subnet			| network@qmul.ac.uk
+   3 | 138.37.3.0/27           | Main College backbone subrange: Servers and Services	| network@qmul.ac.uk
+   3 | 138.37.3.32/27          | Main College backbone subrange: Spare		| network@qmul.ac.uk
+   3 | 138.37.3.64/27          | Main College backbone subrange: Spare		| network@qmul.ac.uk
+   3 | 138.37.3.96/27          | Main College backbone subrange: Spare		| network@qmul.ac.uk
+   3 | 138.37.3.128/27         | Main College backbone subrange: Router installation	| network@qmul.ac.uk
+   3 | 138.37.3.160/27         | Main College backbone subrange: IPX Routers	| T.A.Hogg@qmul.ac.uk
+   3 | 138.37.3.192/26         | Main College backbone subrange: IP Routers	| network@qmul.ac.uk
+   3 | 2001:630:11:F030::/64   | Main College backbone subnet			| network@qmul.ac.uk
+   4 | 138.37.4.0/24           | "Odds and Sods" subnet				| T.S.Jandu@qmul.ac.uk
+   5 | 138.37.5.0/24           | Novell Servers for Academic service		| T.A.Hogg@qmul.ac.uk
+   6 | 138.37.6.0/23           | Central (UNIX) Servers				| Martin Evans
+   8 | 138.37.8.0/24           | Computing Services departmental subnet		| network@qmul.ac.uk
+   8 | 2001:630:11:F080::/64   | Computing Services departmental subnet		| network@qmul.ac.uk
+     | 138.37.10.0/25          | David Pick's experimental network at home	| D.M.Pick@qmul.ac.uk
+     | 138.37.10.128/26        | David Pick's experimental network at home	| D.M.Pick@qmul.ac.uk
+  10 | 138.37.10.192/27        | David Pick's experimental network at work	| D.M.Pick@qmul.ac.uk
+  10 | 2001:630:11:F0A0::/64   | David Pick's experimental network at work	| D.M.Pick@qmul.ac.uk
+     | 138.37.10.224/29        | David Pick's experimental network at work	| D.M.Pick@qmul.ac.uk
+     | 138.37.10.232/29        | David Pick's experimental network at work	| D.M.Pick@qmul.ac.uk
+     | 138.37.10.240/30        | Simon Boggis' point-to-point tunnel		| SAB
+     | 138.37.10.244/30        | David Pick's point-to-point tunnel		| D.M.Pick@qmul.ac.uk
+     | 138.37.10.248/30        | David Pick's point-to-point tunnel		| D.M.Pick@qmul.ac.uk
+     | 138.37.10.252/30        | David Pick's point-to-point tunnel		| D.M.Pick@qmul.ac.uk
+     | 138.37.11.0/24          | Dial-up users					| network@qmul.ac.uk
+  12 | 138.37.12.0/27          | Telephone charging system(s)			| T.S.Jandu@qmul.ac.uk
+  13 | 138.37.13.192/26        | Medical College libraries
+  14 | 138.37.14.0/24          | Mile End Library departmental subnet
+  15 | 138.37.15.0/24          | Mile End Library servers
+  16 | 138.37.16.0/24          | Admin
+  17 | 138.37.17.0/24          | Admin Laptops
+  18 | 138.37.18.0/24          | Admin (Finance)
+  19 | 138.37.19.0/24          | Admin
+  24 | 138.37.24.0/22          | Admin
+???? | 138.37.28.0/22          | Platform services                              | Richard Grint
+ 966 | 138.37.30.xx/xx	       | Platform services: Enrollment PCs              | Richard Grint
+     | 2001:630:11:F200::/60   | Elec Eng					| Kok Ho Huen
+     | 138.37.32.0/21          | Elec Eng					| Kok Ho Huen
+     | 138.37.32.0/24          |
+     | 2001:630:11:F202::/64   |
+     | 138.37.33.0/24          |
+     | 138.37.34.0/26          |
+     | 138.37.35.0/24          |
+     | 138.37.36.0/23          |
+     | 138.37.38.0/24          |
+     | 2001:630:11:F208::/64   |
+     | 138.37.39.128/25        |
+     | 138.37.40.0/22          | School of Engineering				| Raymond Lam
+  42 | 138.37.40.0/24          |
+     | 138.37.41.0/24          |
+  42 | 138.37.42.0/23          |
+     | 138.37.44.0/22          | Materials Engineering				| Steve Wicks
+  44 | 138.37.44.0/23          | Materials Engineering				| Steve Wicks
+  46 | 138.37.46.0/24          | IRC in Biomaterials
+  47 | 138.37.47.0/24          | Servers in Materials Engineering &c
+     | 138.37.48.0/22          | Physics					| Terry Arter
+  48 | 138.37.48.0/24          |
+  48 | 138.37.50.0/23          |
+     | 138.37.52.0/22          | Chemistry					| Roger Nix
+  52 | 138.37.52.0/24          | Chemistry					| Roger Nix
+     | 138.37.56.0/22          | Biology					| Christian Mareschaux
+  56 | 138.37.56.0/24          | Biology					| Christian Mareschaux
+  60 | 138.37.60.0/24          | IRC in Biomaterials
+     | 138.37.61.0/26          | Biology at FBA in Dorset			| network@qmul.ac.uk
+     | 138.37.62.0/24          | Auth? subnet: CCLS Library at IALS		| network@qmul.ac.uk
+  63 | 138.37.63.0/24          | Students Union
+  64 | 138.37.64.0/24          | Law
+  65 | 138.37.65.0/24          | CCLS
+  66 | 138.37.66.0/23          | Arts						| Brian Place
+  76 | 138.37.72.0/24          | BMS
+  76 | 138.37.76.0/23          | BMS
+     | 138.37.80.0/21          | Maths						| Robert Horton
+     | 138.37.80.0/24          |
+     | 138.37.84.0/24          |
+     | 138.37.85.0/24          |
+     | 138.37.86.0/24          |
+     | 138.37.87.0/27          |
+     | 138.37.87.128/28        |
+  87 | 138.37.87.240/28        |
+ 5xx |                         | Computer Science - 00 <= xx <= 49
+     | 138.37.88.0/21          | Computer Science				| Keith Clarke
+     | 138.37.88.0/24          |
+     | 138.37.89.0/24          |
+     | 138.37.90.0/24          |
+     | 138.37.93.0/24          |
+     | 138.37.94.0/24          |
+     | 138.37.95.128/27        |
+     | 138.37.95.192/29        |
+     | 138.37.95.216/29        |
+     | 138.37.95.240/29        |
+  95 | 138.37.95.248/29        |
+     | 138.37.96.0/22          | Social Sciences
+  96 | 138.37.96.0/24          | Geography					| Margaret Buckley
+  98 | 138.37.98.0/24          | Economics					| Margaret Buckley
+  99 | 138.37.99.0/24          | Business School				| Roland Miller
+     | 138.37.100.0/22         | Student Service				| T.A.Hogg@qmul.ac.uk
+     | 2001:630:11:F640::/64   | Student Service				| T.A.Hogg@qmul.ac.uk
+ 100 | 138.37.100.0/24         | Student Service backbone			| T.A.Hogg@qmul.ac.uk
+     | 138.37.101.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+ 102 | 138.37.102.0/26         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.102.64/26        | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.102.128/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.102.192/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.103.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.104.0/21         | Student Service				| T.A.Hogg@qmul.ac.uk
+     | 138.37.104.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.105.0/25         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.105.128/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.105.192/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.106.0/26         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.106.64/26        | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.106.128/25       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.107.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.108.0/25         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.108.128/25       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.109.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.110.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.111.0/24         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.112.0/21         | Student Service				| T.A.Hogg@qmul.ac.uk
+     | 138.37.112.240/28       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.113.0/25         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.113.128/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.114.0/25         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.114.128/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.114.192/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.115.0/26         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.115.64/26        | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.115.192/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.116.0/26         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.116.128/26       | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.117.0/25         | Student Service "Laboratory"			| T.A.Hogg@qmul.ac.uk
+     | 138.37.118.0/24         | Student Service Management			| T.A.Hogg@qmul.ac.uk
+     | 138.37.119.0/25         | Student Service "Laboratory"
+ 600 |                         | Student Service
+  V  |                         | Student Service
+ 649 |                         | Student Service
+ 128 | 138.37.128.0/20         | Whitechapel					| D.R.Meeks@qmul.ac.uk
+ 144 | 138.37.144.0/20         | West Smithfield				| B.P.Littlechild@qmul.ac.uk
+ 160 | 138.37.160.0/20         | Charterhouse Square				| B.P.Littlechild@qmul.ac.uk
+ 588 | 138.37.176.0/20         | "eduroam": QMUL wired    users at Mile End	| network@qmul.ac.uk
+ 300 | 138.37.192.0/26         | Staff Development				| T.A.Hogg@qmul.ac.uk
+ 301 | 138.37.192.64/26        | Staff Development - Echo360 Lecture Capture	| E.McDonnell@qmul.ac.uk
+ 303 | 138.37.192.192/26       | Admin "Appliances"				| network@qmul.ac.uk
+ 304 | 138.37.193.0/26         | Odds and Sods					| network@qmul.ac.uk
+ 305 | 138.37.193.64/26        | Chip-and-PIN authorisation devices		| network@qmul.ac.uk
+ 306 | 138.37.193.128/26       | Reprographics &c				| network@qmul.ac.uk
+ 307 | 138.37.193.192/26       | SIS Training Facility				| network@qmul.ac.uk
+ 308 | 138.37.194.0/25         | Language Learning Unit (LLU)			| T.A.Hogg@qmul.ac.u
+ 310 | 138.37.194.128/26       | Disability and Dislexia Service (DDS)		| T.A.Hogg@qmul.ac.u
+ 196 | 138.37.196.0/24         | Corporate Affairs				| T.A.Hogg@qmul.ac.uk
+     | 138.37.199.0/24         | DEPM(Wolfson)					| Tee Wu
+     | 138.37.199.0/29         | DEPM(Wolfson) - VPN server(s) - external	| Tee Wu
+     | 138.37.199.16/28        | DEPM(Wolfson) - VPN server(s) - internal	| Tee Wu
+     | 138.37.199.32/27        | DEPM(Wolfson) - Terminal & Web servers		| Tee Wu
+     | 138.37.199.64/26        | DEPM(Wolfson) - Backend Database Servers	| Tee Wu
+     | 138.37.199.128/25       | DEPM(Wolfson) - Clients			| Tee Wu
+ 200 | 138.37.200.0/24         | "Special Events" subnet			| network@qmul.ac.uk
+ 202 | 138.37.202.0/23         | Auth. subnet at Whitechapel			| D.R.Meeks@qmul.ac.uk
+ 206 | 138.37.206.0/23         | Auth. subnet at Charterhouse Square		| B.P.Littlechild@qmul.ac.uk
+     | 138.37.208.0/30         | P2P link to firewall from Trust network
+???? | 138.37.208.120/29       | Link to Azzuri classroom system		| Stephen Moore
+VLAN | 138.37.208.184/29       | Link to DEPM internal firewall/routers		| Mr Wu
+ 401 | 138.37.209.16/28        | Borromei Bank Project in Arts			| Brian Place
+ 403 | 138.37.209.48/28        | BUSMAN firewall
+ 404 | 138.37.209.64/28        | CCLS sub-backbone				| Aqib
+ 405 | 138.37.209.80/28        | CCLS servers					| Aqib
+ 407 | 138.37.209.112/28       | Student "Radio" Station			| 
+ 666 | 138.37.209.128/28       | BSU (no, not *that* BSU, the other one)	| network@qmul.ac.uk
+ 417 | 138.37.209.160/27       | MDL Student Lab with biometric sensors		| Stephen Moore
+ 418 | 138.37.209.192/27       | Aruba Controllers for remote APs		| network@qmul.ac.uk
+ 419 | 138.37.209.224/27       | AV video-conferencing CODECs			| network@qmul.ac.uk
+     | 138.37.210.0/24         | Externally managed Arbitary Servers		| 
+ 420 | 138.37.210.0/29         | Short-term special events (QM Impact)		| network@qmul.ac.uk
+ 421 | 138.37.210.8/29         | CCRS Tills control PC				| 
+     | 138.37.210.16/29        | Externally managed Arbitary Servers		| 
+ 423 | 138.37.210.24/29        | AV Lecture Room controls control PC		| 
+ 424 | 138.37.210.32/29        | IDS Servers					| network@qmul.ac.uk
+ 425 | 138.37.210.40/29        | Network Control Servers			| network@qmul.ac.uk
+     | 138.37.210.48/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.56/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.64/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.72/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.80/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.88/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.96/29        | Externally managed Arbitary Servers		| 
+     | 138.37.210.104/29       | Externally managed Arbitary Servers		| 
+     | 138.37.210.112/29       | Externally managed Arbitary Servers		| 
+     | 138.37.210.120/29       | Externally managed Arbitary Servers		| 
+ 436 | 138.37.210.128/29       | Externally managed Arbitary Servers		| 
+ 437 | 138.37.210.136/29       | Externally managed Arbitary Servers		| 
+ 438 | 138.37.210.144/29       | Externally managed Arbitary Servers		| 
+ 439 | 138.37.210.152/29       | Externally managed Arbitary Servers		| 
+ 440 | 138.37.210.160/29       | Externally managed Arbitary Servers		| 
+ 441 | 138.37.210.168/29       | Externally managed Arbitary Servers		| 
+ 442 | 138.37.210.176/29       | Externally managed Arbitary Servers		| 
+ 443 | 138.37.210.184/29       | Externally managed Arbitary Servers		| 
+     | 138.37.210.192/29       | Externally managed Arbitary Servers		| 
+     | 138.37.210.200/29       | Externally managed Arbitary Servers		| 
+     | 138.37.210.208/28       | ex-CRUK "DMZ" with externally-accessed servers	| 
+     | 138.37.210.208/29       | \- subsumed in preceeding /28
+     | 138.37.210.216/29       | \- subsumed in preceeding /28
+     | 138.37.210.224/28       | ex-CRUK "DMZ" with externally-accessed servers	| 
+     | 138.37.210.224/29       | \- subsumed in preceeding /28
+     | 138.37.210.232/29       | \- subsumed in preceeding /28
+     | 138.37.210.240/29       | Externally managed Arbitary Servers		| 
+ 300 | 138.37.210.248/29       | Externally managed ESD Servers			| 
+ 211 | 138.37.211.0/24         | Externally managed Central Servers		| Martin Evans
+ 211 | 138.37.211.0/29         | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.8/29         | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.16/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.24/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.32/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.40/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.48/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.56/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.64/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.72/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.80/29        | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.88/29        | Network Supporting Virtualized Servers		| Martin Evans
+ 211 | 138.37.211.96/28        | J.Ray playground for testing new services	| Martin Evans
+ 211 | 138.37.211.96/29        | \- subsumed in preceeding /28
+ 211 | 138.37.211.104/29       | \- subsumed in preceeding /28
+ 211 | 138.37.211.112/29       | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.120/29       | English and Drama (Isobel Rivers)		| Martin Evans
+ 211 | 138.37.211.128/28       | Externally managed SBCS Servers 		| Martin Evans
+ 211 | 138.37.211.128/29       | \- subsumed in preceeding /28
+ 211 | 138.37.211.136/29       | \- subsumed in preceeding /28
+ 211 | 138.37.211.144/29       | WebHelpDesk Server on Xen platform		| Martin Evans
+ 211 | 138.37.211.152/29       | Laws machine(s)                                | Martin Evans
+ 211 | 138.37.211.160/27       | Webservers of various sorts
+ 211 | 138.37.211.160/29       | \- subsumed in preceeding /27
+ 211 | 138.37.211.168/29       | \- subsumed in preceeding /27
+ 211 | 138.37.211.176/29       | \- subsumed in preceeding /27
+ 211 | 138.37.211.184/29       | \- subsumed in preceeding /27
+ 211 | 138.37.211.192/28       | Unix compute servers
+ 211 | 138.37.211.192/29       | \- subsumed in preceeding /28
+ 211 | 138.37.211.200/29       | \- subsumed in preceeding /28
+ 211 | 138.37.211.208/29       | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.216/29       | "Centre of the Cell" Servers			| Martin Evans
+ 211 | 138.37.211.224/29       | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.232/29       | Press-and-Pubs CMS Servers			| Martin Evans
+ 211 | 138.37.211.240/29       | Externally managed Central Service		| Martin Evans
+ 211 | 138.37.211.248/29       | General user UNIX Computing Service		| Martin Evans
+ 212 | 138.37.212.0/22         | ex-CRUK at Cherterhouse Square			| network@qmul.ac.uk
+ 224 | 138.37.224.0/21         | Auth. subnet: "Public" Radio			| network@qmul.ac.uk
+     | 138.37.232.0/22         | "eduroam": Reserved for QMUL wireless users at Mile End	| network@qmul.ac.uk
+ 589 | 138.37.236.0/22         | "eduroam": QMUL wireless users at Mile End	| network@qmul.ac.uk
+     | 138.37.240.0/20         | Auth. subnets					| network@qmul.ac.uk
+ 240 | 138.37.240.0/24         | Auth. subnet: Special version *without* individual /30s
+ 241 | 138.37.241.0/24         | Auth. subnet: Fielden House
+ 242 | 138.37.242.0/24         | Auth. subnet: Pooley House (East)
+ 243 | 138.37.243.0/24         | Auth. subnet: Pooley House (West)
+ 244 | 138.37.244.0/24         | Auth. subnet: Maurice Court
+ 245 | 138.37.245.0/24         | Auth. subnet: Creed Court & Lynden House
+ 246 | 138.37.246.0/24         | Auth. subnet: Beaumont Court
+ 247 | 138.37.247.0/24         | Auth. subnet: Sir Christopher France & Lindop Houses
+ 248 | 138.37.248.0/24         | Auth. subnet: Maynard & Varey Houses
+ 249 | 138.37.249.0/24         | Auth. subnet: Hatton, Chapman, Chesney, Lodge, & Selincourt Houses
+ 250 | 138.37.250.0/24         | Auth. subnet: Stocks Court
+ 251 | 138.37.251.0/24         | Auth. subnet: Ifor Evans Place & Albert Stern House
+ 252 | 138.37.252.0/24         | Auth. subnet: not to be used "live" - reserved for merging
+ 253 | 138.37.253.0/24         | Auth. subnet: "Public" Wired points in Seminar Rooms &c
+ 254 | 138.37.254.0/23         | Auth. subnet: was "Public" Radio, now reserved for merging BUT still used at LIF
+ 255 |                         | Print Budget query connection for the Front Desk
+     | 161.23.0.0/16           | QMUL						| network@qmul.ac.uk
+ ??? | 161.23.0.0/22           | Various uses paralleling 138.37.0.0/22         | network@qmul.ac.uk
+ 866 | 161.23.6.0/25           | Alternatively routed equivalent(ish) for VLAN 6
+ 131 | 161.23.131.0/28         | #FREE# was once Pathological Society at Whitechapel
+ ??? | 161.23.160.0/28         | *FREE* was once a Linking subnet to BioBank Firewall/VPN device
+ 598 | 161.23.176.0/20         | "eduroam": non-QMUL wired    users at Mile End	| network@qmul.ac.uk
+ 599 | 161.23.248.0/21         | "eduroam": non-QMUL wireless users at Mile End	| network@qmul.ac.uk
+   7 | 172.21.1.0/24           | "Lock Control" Security network		| T.S.Jandu@qmul.ac.uk
+ 902 | 172.21.2.0/24           | CCTV Security network				| network@qmul.ac.uk
+ 903 | 172.21.3.0/24           | Help Point network				| network@qmul.ac.uk
+ 904 | 172.21.4.0/24           | Info Point network				| network@qmul.ac.uk
+2110 | 172.21.192.0/22         | Aruba AP network - Mile End			| network@qmul.ac.uk
+2111 | 172.21.196.0/22         | Aruba AP network - Whitechapel			| network@qmul.ac.uk
+2112 | 172.21.200.0/22         | Aruba AP network				| network@qmul.ac.uk
+2113 | 172.21.204.0/22         | Aruba AP network				| network@qmul.ac.uk
+2114 | 172.21.208.0/22         | Aruba AP network				| network@qmul.ac.uk
+2115 | 172.21.212.0/22         | Aruba AP network				| network@qmul.ac.uk
+2116 | 172.21.216.0/22         | Aruba AP network				| network@qmul.ac.uk
+2117 | 172.21.220.0/22         | Aruba AP network				| network@qmul.ac.uk
+2118 | 172.21.224.0/22         | Aruba AP network				| network@qmul.ac.uk
+2119 | 172.21.228.0/22         | Aruba AP network				| network@qmul.ac.uk
+2120 | 172.21.232.0/22         | Aruba AP network				| network@qmul.ac.uk
+2121 | 172.21.236.0/22         | Aruba AP network				| network@qmul.ac.uk
+2122 | 172.21.240.0/22         | Aruba AP network				| network@qmul.ac.uk
+2123 | 172.21.244.0/22         | Aruba AP network				| network@qmul.ac.uk
+2124 | 172.21.248.0/22         | Aruba AP network				| network@qmul.ac.uk
+2125 | 172.21.252.0/22         | Aruba AP network				| network@qmul.ac.uk
+ 999 | 172.22.0.0/16           | Network infrastructure management network	| network@qmul.ac.uk
+     | 172.22.0.0/20           | Network infrastructure - reserved for expansion| network@qmul.ac.uk
+     | 172.22.0.0/24           | Network infrastructure - routers		| network@qmul.ac.uk
+     | 172.22.1.0/24           | Network infrastructure - core switches		| network@qmul.ac.uk
+     | 172.22.2.0/23           | Network infrastructure - building switches	| network@qmul.ac.uk
+     | 172.22.4.0/22           | Network infrastructure - other switches	| network@qmul.ac.uk
+     | 172.22.16.0/22          | Network infrastructure - Radio Access Points	| network@qmul.ac.uk
+     | 172.22.96.0/20          | Network infrastructure - reserved for expansion| network@qmul.ac.uk
+     | 172.22.111.0/24         | Network infrastructure - environment monitoring| network@qmul.ac.uk
+     | 172.22.112.0/20         | Network infrastructure - reserved for expansion| network@qmul.ac.uk
+     | 172.22.127.0/24         | Network infrastructure - UPSs (work down)	| network@qmul.ac.uk
+ 924 | 172.24.0.0/16           | Telephone network control devices		| DMP / SAB / TSJ
+ 925 | 172.25.0.0/16           | Telephones at Mile End (Me 001)		| DMP / SAB / TSJ
+ 926 | 172.26.0.0/16           | Telephones at Charterhouse Square (Chs001)	| DMP / SAB / TSJ
+ 927 | 172.27.0.0/16           | Telephones at Whitechapel (Wht001)		| DMP / SAB / TSJ
+ 928 | 172.28.0.0/16           | Telephones at Mile End (Me002)			| DMP / SAB / TSJ
+ 929 | 172.29.0.0/16           | Telephones at Lincons Inn Field (Lif001)	| DMP / SAB / TSJ
+     | 192.168.1.0/24          | Must NEVER be routed, not even inside QM:	| 
+     |                         | it is too often used by the default		| 
+     |                         | configuration on "Consumer" equipment		| 
+     |                         | But it can be used for point-to-point links or	| 
+     |                         | other similar purposes as link-local addresses	| 
+     | 192.168.2.0/24          | Serial-over-LAN shadow of 138.37.2.0/24	| network@qmul.ac.uk
+     | 192.168.3.0/24          | Serial-over-LAN shadow of 138.37.3.0/24	| network@qmul.ac.uk
+ 998 | 192.168.4.0/24          | Remote traffic "mirroring" via HP switches	| network@qmul.ac.uk
+ 256 | 192.168.5.0/24          | Building Management systems			| TSJ
+ 706 | 192.168.6.0/23          | Central (UNIX) Servers Management              | Martin Evans
+     | 192.168.10.0/24         | Network Infrastructure VPN Tunnels
+ 721 | 192.168.16.0/24         | CCRS Tills
+ 963 | 192.168.28.0/24	       | Platform services: OOB mgmt: net infrastructure| Richard Grint
+ 964 | 192.168.29.0/24	       | Platform services: VMWare ESX Virtual hosts    | Richard Grint
+ 965 | 192.168.30.0/24	       | Platform services: OOB mgmt: servers           | Richard Grint
+     | 192.168.40.0/24         | Engineering 101 Lab in Engineering mode	| Alem Million
+     | 192.168.41.0/24         | W.207 Lab in Engineering mode			| Alem Million
+ 801 | 192.168.81.0/24         | Emergency ADSL line in WB9
+ 802 | 192.168.82.0/24         | Emergency ADSL line in Library
+ 803 | 192.168.83.0/24         | Emergency ADSL line at Chsq
+2111 | 192.168.254.0/24        | Emergency ADSL line at Chsq
+     | 194.36.8.0/22           | HEP "special" address space			| Alex Martin
+ 840 | 194.36.8.0/24           | permanently routed via primary uplink		| network@qmul.ac.uk
+ 841 | 194.36.9.0/24           | permanently routed via resilient uplink	| network@qmul.ac.uk
+ 194 | 194.36.10.0/24          | SRIF Machine Room				| Alex Martin
+  V
+ 842 | 194.36.10.0/24          | SRIF Machine Room				| Alex Martin
+   6 | 194.36.11.0/24          | HTDig scanner and routing email to hotmail.com (soon to be permanently routed via SRIF uplink)	| Martin Evans
+  V
+ 843 | 194.36.11.0/24          | HTDig scanner (soon to be permanently routed via SRIF uplink)	| Martin Evans
+     | 194.83.100.236/30       | deceased LMN link at 1Gbit/s			| network@qmul.ac.uk
+     | 194.83.101.56/30        | deceased LMN link at 100Mbit/s			| network@qmul.ac.uk
+ 811 | 194.83.102.12/30        | Cienna channel 1 on lambda 1 LMN/JANET Uplink
+ 812 | 194.83.102.36/30        | Cienna channel 2 on lambda 1 LMN/JANET Uplink (SRIF)
+ 81x |                         | Cienna channel on lambda 1 channel x - 0 <= x <= 9
+ 82x |                         | Cienna channel on lambda 2 channel x - 0 <= x <= 9
+ 83x |                         | Other Uplink or external cross-link
+ 831 | 194.83.102.156/30       | LMN/JANET Uplink at Charterhouse for "Resilience"
+ 55x |                         | RHT Trust - 0 <= x <= 9			| network@qmul.ac.uk
+ 

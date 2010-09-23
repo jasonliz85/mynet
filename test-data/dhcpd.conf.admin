@@ -1,0 +1,5910 @@
+option domain-name "admin.qmul.ac.uk";
+
+shared-network MISUmainNet { authoritative;
+
+subnet 138.37.16.0 netmask 255.255.255.0 {
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.16.255;
+  option routers 138.37.16.254;
+  option ntp-servers 138.37.16.254;
+  option domain-name-servers 138.37.16.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  use-host-decl-names on; # send hostname in dhcp config to client
+}
+
+subnet 138.37.20.0 netmask 255.255.255.0 {
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.20.255;
+  option routers 138.37.20.254;
+  option ntp-servers 138.37.20.254;
+  option domain-name-servers 138.37.20.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  use-host-decl-names on; # send hostname in dhcp config to client
+}
+
+}
+
+subnet 138.37.17.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.17.255;
+  option routers 138.37.17.254;
+  option ntp-servers 138.37.17.254;
+  option domain-name-servers 138.37.17.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.24.4;
+  option slp-service-scope true "qm-adm";
+  use-host-decl-names on; # send hostname in dhcp config to client
+}
+
+subnet 138.37.18.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.18.255;
+  option routers 138.37.18.254;
+  option ntp-servers 138.37.18.254;
+  option domain-name-servers 138.37.18.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.24.4;
+  option slp-service-scope true "qm-adm";
+  use-host-decl-names on; # send hostname in dhcp config to client
+  #server-name "qmmis5";
+  filename "dinic.sys";
+  next-server 138.37.24.5;
+}
+
+subnet 138.37.19.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.19.255;
+  option routers 138.37.19.254;
+  option ntp-servers 138.37.19.254;
+  option domain-name-servers 138.37.19.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.24.4;
+  option slp-service-scope true "qm-adm";
+  use-host-decl-names on; # send hostname in dhcp config to client
+  #server-name "qmmis5";
+  filename "dinic.sys";
+  next-server 138.37.24.5;
+}
+
+subnet 138.37.24.0 netmask 255.255.252.0 { authoritative;
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.252.0;
+  option broadcast-address 138.37.27.255;
+  option routers 138.37.27.254;
+  option ntp-servers 138.37.27.254;
+  option domain-name-servers 138.37.27.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.24.4;
+  option slp-service-scope true "qm-adm";
+  use-host-decl-names on; # send hostname in dhcp config to client
+}
+
+shared-network AdminAppliances { authoritative;
+
+subnet 138.37.192.192 netmask 255.255.255.192 {
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.192;
+  option broadcast-address 138.37.192.255;
+  option routers 138.37.192.254;
+  option ntp-servers 138.37.192.254;
+  option domain-name-servers 138.37.192.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+}
+
+subnet 10.192.192.0 netmask 255.255.255.252 {
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.252;
+  option broadcast-address 10.192.192.3;
+  option routers 10.192.192.2;
+  option ntp-servers 10.192.192.2;
+  option domain-name-servers 138.37.192.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+}
+
+subnet 10.192.193.0 netmask 255.255.255.252 {
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.252;
+  option broadcast-address 10.192.193.3;
+  option routers 10.192.193.2;
+  option ntp-servers 10.192.193.2;
+  option domain-name-servers 138.37.192.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.24.4;
+  option slp-service-scope true "qm-adm";
+}
+
+}
+
+subnet 138.37.194.0 netmask 255.255.255.128 { authoritative;
+  option domain-name "llu.qmul.ac.uk";
+  option subnet-mask 255.255.255.128;
+  option broadcast-address 138.37.194.127;
+  option routers 138.37.194.126;
+  option ntp-servers 138.37.194.126;
+  option domain-name-servers 138.37.194.126;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.5.3;
+  option slp-service-scope true "qm-gen";
+  use-host-decl-names on; # send hostname in dhcp config to client
+  #server-name "qmwadm1";
+  filename "dinic.sys";
+  next-server 138.37.196.252;
+}
+
+subnet 138.37.194.128 netmask 255.255.255.192 { authoritative;
+  option domain-name "dds.qmul.ac.uk";
+  option subnet-mask 255.255.255.192;
+  option broadcast-address 138.37.194.191;
+  option routers 138.37.194.190;
+  option ntp-servers 138.37.194.190;
+  option domain-name-servers 138.37.194.190;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  option slp-directory-agent true 138.37.5.3;
+  option slp-service-scope true "qm-gen";
+  use-host-decl-names on; # send hostname in dhcp config to client
+  #server-name "qmwadm1";
+  filename "dinic.sys";
+  next-server 138.37.196.252;
+}
+
+
+subnet 172.21.2.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "admin.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 172.21.2.255;
+  option routers 172.21.2.254;
+  option ntp-servers 172.21.2.254;
+  option domain-name-servers 172.21.2.254;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+}
+
+host SecurityLodgeServer1 {
+	hardware ethernet 00:30:48:86:76:5a;
+	fixed-address 172.21.2.1;
+}
+
+host SecurityLodgeServer2 {
+	hardware ethernet 00:30:48:86:76:62;
+	fixed-address 172.21.2.2;
+}
+
+host SecurityLodgeServer3 {
+	hardware ethernet 00:30:48:86:76:9a;
+	fixed-address 172.21.2.3;
+}
+
+host SecurityLodgePC {
+	hardware ethernet 00:1c:c0:be:3f:3c;
+	fixed-address 172.21.2.33;
+}
+
+host WhitechapelSecurityPC {
+	hardware ethernet 00:1c:c0:07:92:6e;
+	fixed-address 172.21.2.34;
+}
+
+host CharterhouseSecurityPC {
+	hardware ethernet 00:1c:c0:07:83:36;
+	fixed-address 172.21.2.35;
+}
+
+host BusinessMasterAppliancePC {
+	hardware ethernet 00:16:76:be:91:da;
+	fixed-address 10.192.193.1;
+}
+
+##host BacsBox {
+##	hardware ethernet 00:a0:92:45:43:70;
+##	fixed-address 138.37.16.3;
+##}
+##
+
+#
+#host MISU-16-006 {
+#	hardware ethernet 00:02:b3:4d:20:8f;
+#	fixed-address 138.37.16.6;
+#}
+
+#host www {
+#hardware ethernet 00:a0:c9:d4:45:7f;
+#fixed-address 138.37.16.97;
+#}
+
+#host MISU-16-104 {
+#	hardware ethernet 00:e0:29:28:72:82;
+#	fixed-address 138.37.16.104;
+#}
+
+#host Access1 {
+#	hardware ethernet 00:c0:7b:55:a6:09;
+#	fixed-address 138.37.16.143;
+#}
+#
+#host Access2 {
+#	hardware ethernet 00:c0:7b:55:a6:09;
+#	fixed-address 138.37.16.144;
+#}
+#
+
+#host MISU-16-170 {
+#	hardware ethernet 00:01:02:e2:dd:47;
+#	fixed-address 138.37.16.170;
+#}
+
+#host RSBOlaptop1 {
+#	hardware ethernet 00:00:39:ca:54:cf;
+#	fixed-address 138.37.27.212, 138.37.16.180;
+#}
+#
+#host MISU16991_laptop {
+#	hardware ethernet 00:00:39:d5:54:cf;
+#	fixed-address 138.37.25.58, 138.37.27.214, 138.37.16.182;
+#}
+#
+
+##host MISU-16-185 {
+##	hardware ethernet 00:03:47:c3:2c:83;
+##	fiXed-address 138.37.16.185;
+##}
+##
+
+#
+#host MISU-16-203-G3PubWebOlderMac-temp-moved-24.61 {
+#	hardware ethernet 00:50:e4:a0:15:08;
+#	fixed-address 138.37.16.203;
+#}
+
+##host MISU-16-215 {
+##	hardware ethernet 00:03:47:c3:2c:83;
+##	fixed-address 138.37.16.215;
+##}
+##
+
+#host artichoke-xl0 {
+#	hardware ethernet 00:01:03:d6:87:47;
+#	fixed-address 138.37.16.254;
+#}
+#
+##host BacsBox {
+##	hardware ethernet 00:03:47:75:31:7b;
+##	fixed-address 138.37.18.1;
+##}
+##
+
+#host MIS16456XP {
+#hardware ethernet 00:03:FF:2A:33:9A;
+#fixed-address 138.37.20.74;
+#}
+
+#host CS-Heikki-16456-3 {
+#hardware ethernet 00:03:47:2A:33:9A;
+#fixed-address 138.37.20.73;
+#}
+
+#
+#host MIS15146 933 rsbo  {
+#	hardware ethernet 00:03:47:a3:bb:75;
+#	fixed-address 138.37.18.100;
+#}
+
+#host MISU-18-151-was14193-p350-osborne-currie-fin {
+##	hardware ethernet 00:e0:29:26:b7:5c;
+##	fixed-address 138.37.18.151;
+#}
+
+#host enrol-26-251 {
+#hardware ethernet 00:50:da:42:57:c0;
+#fixed-address 138.37.26.251;
+#}
+
+#host artichoke-fxp1 {
+#	hardware ethernet 00:03:47:3b:20:00;
+#	fixed-address 138.37.27.254;
+#}
+#
+#host MIS15112-laptop {
+#	hardware ethernet 00:00:86:5c:9d:5c;
+#	fixed-address 138.37.24.133;
+#}
+
+#host artichoke-fxp2 {
+#	hardware ethernet 00:03:47:3b:20:01;
+#	fixed-address 138.37.28.126;
+#}
+#
+
+#host artichoke-vlan30 {
+#	hardware ethernet 00:03:47:3b:20:00;
+#	fixed-address 138.37.30.254;
+#}
+#
+
+#host artichoke-vlan31 {
+#	hardware ethernet 00:03:47:3b:20:00;
+#	fixed-address 138.37.31.254;
+#}
+#
+
+#host MIS14034 {
+#	hardware ethernet 00:E0:29:26:B9:19;
+#	 fixed-address 138.37.18.6, 138.37.20.60;
+#}
+
+# 0000.747a.288c has pinched 138.37.24.84 - turns out to be hr7-pr
+
+#
+#D
+#host MIS16984 {
+#	hardware ethernet 00:03:47:2a:33:5d;
+#	fixed-address 138.37.18.50;
+#}
+
+#host MIS15728 {
+#	hardware ethernet 00:01:02:14:6C:90;
+#	fixed-address 138.37.20.223;
+#}
+
+#NB next ws has 2 cards in
+
+#host quickworks-2 {
+#hardware ethernet 00:03:47:75:31:7c;
+#fixed-address 138.37.25.91,138.37.16.32;
+#}
+
+#host QM-SQL-TEST1-problem-alreadyusedby-nomac {
+#	hardware ethernet 00:00:00:00:00:00;
+#	fixed-address 138.37.20.193;
+#}
+
+#host MISprinterCHS1 {
+#hardware ethernet 00:01:E6:57:C6:49;
+#fixed-address 138.37.27.124;
+#}
+
+#host MIS-PrintServer {
+#hardware ethernet 00:00:E8:A2:DB:4C;
+#fixed-address 138.37.24.147;
+# - now free as shut down}
+
+#host MIS---free-clashed {
+#hardware ethernet 00:00:00:24:01:51;
+#fixed-address 138.37.24.151;
+#}
+
+#host QMMIS4 {
+#hardware ethernet 00:90:27:14:87:CA;
+#fixed-address 138.37.24.4;
+#}
+
+#host Belkin_038535 {
+#hardware ethernet 00:02:72:03:85:35;
+#fixed-address 138.37.27.241, 138.37.16.240;
+#}
+
+#host enrol3-16198 {
+#hardware ethernet 00:11:11:25:8A:08;
+#fixed-address 138.37.26.194;
+#}
+
+#host OccHealth-SG46001148-HPPs-J1642b-IJ-CP1700S-tempip {
+#hardware ethernet 00:0e:7f:33:6f:b5;
+#fixed-address 138.37.20.228;
+#}
+
+host reg-hp9000-ps {
+	hardware ethernet 00:01:e6:76:20:bf;
+	fixed-address 138.37.16.5;
+}
+
+host MIS16884 {
+	hardware ethernet 00:08:74:ae:42:cb;
+	fixed-address 138.37.16.145;
+}
+
+host MIS6133 {
+	hardware ethernet 00:07:e9:3c:08:ce;
+	fixed-address 138.37.16.166;
+}
+
+host cs-tsg2 {
+	hardware ethernet 00:1c:7e:54:b1:b6;
+	fixed-address 138.37.17.17, 138.37.24.18;
+}
+
+host cs-tsg1 {
+	hardware ethernet 00:0a:e4:2b:17:1c;
+	fixed-address 138.37.17.18;
+}
+
+host ieu-21841 {
+	hardware ethernet 00:0e:7b:ef:fc:69;
+	fixed-address 138.37.17.19;
+}
+
+host ootp-UM {
+	hardware ethernet 00:11:24:75:9e:d4;
+	fixed-address 138.37.17.21;
+}
+
+host extrel-18919NRelph {
+	hardware ethernet 00:0e:7b:4c:0c:dc;
+	fixed-address 138.37.17.22;
+}
+
+host ootp-21264 {
+	hardware ethernet 00:0e:7b:d5:a6:94;
+	fixed-address 138.37.17.23;
+}
+
+host extrel-21290 {
+	hardware ethernet 00:0e:7b:bf:1d:9e;
+	fixed-address 138.37.17.24;
+}
+
+host hr-16752 {
+	hardware ethernet 00:00:39:6a:62:f3;
+	fixed-address 138.37.17.25;
+}
+
+host ootp-MS {
+	hardware ethernet 00:14:51:09:b4:60;
+	fixed-address 138.37.17.27;
+}
+
+host ieu-21212 {
+	hardware ethernet 00:0e:7b:80:20:df;
+	fixed-address 138.37.17.28;
+}
+
+host fin-21215 {
+	hardware ethernet 00:a0:d1:3c:9f:b7;
+	fixed-address 138.37.17.29;
+}
+
+host ieu-21213 {
+	hardware ethernet 00:0e:7b:78:53:e4;
+	fixed-address 138.37.17.30;
+}
+
+host est-15771 {
+	hardware ethernet 08:00:46:bf:fe:fa;
+	fixed-address 138.37.17.32;
+}
+
+host ootp-UM2 {
+	hardware ethernet 00:16:cb:d1:ea:b7;
+	fixed-address 138.37.17.33;
+}
+
+host acs-16698 {
+	hardware ethernet 00:08:0d:47:5e:33;
+	fixed-address 138.37.17.35;
+}
+
+host extrel-21305 {
+	hardware ethernet 00:16:d4:23:b2:d1;
+	fixed-address 138.37.17.36;
+}
+
+host reg-21443 {
+	hardware ethernet 00:0e:7b:48:d5:98;
+	fixed-address 138.37.17.37;
+}
+
+host ootp-peo1 {
+	hardware ethernet 00:17:f2:c8:d9:3e;
+	fixed-address 138.37.17.38;
+}
+
+host ootp-peo2 {
+	hardware ethernet 00:0a:95:8b:59:78;
+	fixed-address 138.37.17.39;
+}
+
+host reg-21278 {
+	hardware ethernet 00:15:b7:fa:0e:5e;
+	fixed-address 138.37.17.40;
+}
+
+host extrel-21077 {
+	hardware ethernet 00:15:b7:fc:94:59;
+	fixed-address 138.37.17.42;
+}
+
+host ccrs-21462 {
+	hardware ethernet 00:15:b7:c5:2b:56;
+	fixed-address 138.37.17.43;
+}
+
+host est-21304 {
+	hardware ethernet 00:15:b7:e7:74:5d;
+	fixed-address 138.37.17.44;
+}
+
+host ieu-21338 {
+	hardware ethernet 00:15:b7:d1:bd:58;
+	fixed-address 138.37.17.45;
+}
+
+host ieu-20116 {
+	hardware ethernet 00:0e:7b:a2:6c:69;
+	fixed-address 138.37.17.46;
+}
+
+host ccrs-21268 {
+	hardware ethernet 00:0e:7b:e9:5a:e4;
+	fixed-address 138.37.17.47;
+}
+
+host cs-21409 {
+	hardware ethernet 00:15:b7:b9:1d:51;
+	fixed-address 138.37.17.49;
+}
+
+host hr-21279 {
+	hardware ethernet 00:15:b7:86:6e:57;
+	fixed-address 138.37.17.50;
+}
+
+host ieu-21315 {
+	hardware ethernet 00:a0:d1:63:54:ec;
+	fixed-address 138.37.17.51;
+}
+
+host reg-21441 {
+	hardware ethernet 00:15:b7:1d:fa:57;
+	fixed-address 138.37.17.52;
+}
+
+host ootp-21429 {
+	hardware ethernet 00:16:36:f4:9b:1f;
+	fixed-address 138.37.17.53;
+}
+
+host ieu-21331 {
+	hardware ethernet 00:15:b7:a5:9d:54;
+	fixed-address 138.37.17.54;
+}
+
+host ieu-21421 {
+	hardware ethernet 00:15:b7:ca:41:5e;
+	fixed-address 138.37.17.56;
+}
+
+host smd-21258 {
+	hardware ethernet 00:13:a9:8d:cf:56;
+	fixed-address 138.37.17.57;
+}
+
+host extrel-21313 {
+	hardware ethernet 00:16:36:f3:90:1a;
+	fixed-address 138.37.17.59;
+}
+
+host ieu-21410 {
+	hardware ethernet 00:15:b7:d0:41:5e;
+	fixed-address 138.37.17.61;
+}
+
+host hr-21229 {
+	hardware ethernet 00:15:b7:cb:36:57;
+	fixed-address 138.37.17.62;
+}
+
+host hr-18262 {
+	hardware ethernet 00:0e:7b:4b:2b:2c;
+	fixed-address 138.37.17.63;
+}
+
+host hr-18294 {
+	hardware ethernet 00:c0:9f:8f:bf:64;
+	fixed-address 138.37.17.64;
+}
+
+host est-21908 {
+	hardware ethernet 00:15:b7:5c:22:69;
+	fixed-address 138.37.17.65;
+}
+
+host ieu-21442 {
+	hardware ethernet 00:15:b7:30:8d:6b;
+	fixed-address 138.37.17.66;
+}
+
+host acs-21324 {
+	hardware ethernet 00:15:b7:47:55:60;
+	fixed-address 138.37.17.67;
+}
+
+host ieu-16205 {
+	hardware ethernet 00:08:0d:9f:dd:67;
+	fixed-address 138.37.17.68;
+}
+
+host ieu-18648 {
+	hardware ethernet 00:0e:7b:e5:88:22;
+	fixed-address 138.37.17.69;
+}
+
+host ieu-20101 {
+	hardware ethernet 00:15:b7:e2:b4:eb;
+	fixed-address 138.37.17.70;
+}
+
+host ieu-20102 {
+	hardware ethernet 00:15:b7:7a:b3:eb;
+	fixed-address 138.37.17.71;
+}
+
+host fin-20103 {
+	hardware ethernet 00:15:b7:d4:b4:eb;
+	fixed-address 138.37.17.72;
+}
+
+host hr-18728 {
+	hardware ethernet 00:0e:7b:df:ed:65;
+	fixed-address 138.37.17.73;
+}
+
+host reg-19433 {
+	hardware ethernet 00:1b:24:82:75:67;
+	fixed-address 138.37.17.75;
+}
+
+host ieu-19434 {
+	hardware ethernet 00:15:b7:c0:31:ef;
+	fixed-address 138.37.17.76;
+}
+
+host ieu-19435 {
+	hardware ethernet 00:15:b7:a1:64:f1;
+	fixed-address 138.37.17.77;
+}
+
+host careers-19436 {
+	hardware ethernet 00:1b:24:98:cc:32;
+	fixed-address 138.37.17.78;
+}
+
+host fin-21216 {
+	hardware ethernet 00:a0:d1:3d:29:b3;
+	fixed-address 138.37.17.80;
+}
+
+host smd-19605 {
+	hardware ethernet 00:15:b7:98:e4:f3;
+	fixed-address 138.37.17.81;
+}
+
+host est-20145 {
+	hardware ethernet 00:1b:38:ae:74:80;
+	fixed-address 138.37.17.82;
+}
+
+host ieu-18946 {
+	hardware ethernet 08:00:46:dc:3b:37;
+	fixed-address 138.37.17.83;
+}
+
+host est-19405 {
+	hardware ethernet 00:15:b7:e8:e9:f3;
+	fixed-address 138.37.17.85;
+}
+
+host ieu-19846 {
+	hardware ethernet 00:50:b6:41:c6:b2;
+	fixed-address 138.37.17.86;
+}
+
+host extrel-19408 {
+	hardware ethernet 00:15:b7:89:4d:f2;
+	fixed-address 138.37.17.87;
+}
+
+host cs-21113 {
+	hardware ethernet 00:c0:9f:b4:a9:5d;
+	fixed-address 138.37.17.88;
+}
+
+host ootp-19415 {
+	hardware ethernet 00:1f:5b:e7:a4:fa;
+	fixed-address 138.37.17.89;
+}
+
+host fin-20014 {
+	hardware ethernet 00:1c:7e:42:82:27;
+	fixed-address 138.37.17.90;
+}
+
+host ieu-20016 {
+	hardware ethernet 00:1a:80:5b:8d:da;
+	fixed-address 138.37.17.91;
+}
+
+host ieu-18152 {
+	hardware ethernet 00:0e:7b:b3:d1:6a;
+	fixed-address 138.37.17.92;
+}
+
+host ieu-20018 {
+	hardware ethernet 00:1a:80:d3:da:0a;
+	fixed-address 138.37.17.93;
+}
+
+host ieu-20015 {
+	hardware ethernet 00:1a:80:d3:8b:96;
+	fixed-address 138.37.17.94;
+}
+
+host cs-19226 {
+	hardware ethernet 00:1c:7e:49:bd:a3;
+	fixed-address 138.37.17.95;
+}
+
+host est-20129 {
+	hardware ethernet 00:1c:7e:7c:23:25;
+	fixed-address 138.37.17.96;
+}
+
+host est-21927 {
+	hardware ethernet 00:1c:7e:0a:24:25;
+	fixed-address 138.37.17.97;
+}
+
+host ccrs-19231 {
+	hardware ethernet 00:1f:f3:54:15:0b;
+	fixed-address 138.37.17.98;
+}
+
+host admis-20130 {
+	hardware ethernet 00:1c:7e:14:b2:23;
+	fixed-address 138.37.17.99;
+}
+
+host ieu-19121 {
+	hardware ethernet 00:1a:80:d5:81:e2;
+	fixed-address 138.37.17.100;
+}
+
+host ieu-19133 {
+	hardware ethernet 00:1c:7e:15:e5:a4;
+	fixed-address 138.37.17.101;
+}
+
+host est-19130 {
+	hardware ethernet 00:1c:7e:e2:d4:a5;
+	fixed-address 138.37.17.103;
+}
+
+host reg-21318 {
+	hardware ethernet 00:1c:7e:cd:d0:a5;
+	fixed-address 138.37.17.104;
+}
+
+host reg-20132 {
+	hardware ethernet 00:1c:7e:a2:d0:a5;
+	fixed-address 138.37.17.105;
+}
+
+host ieu-19132 {
+	hardware ethernet 00:1c:7e:13:e5:a4;
+	fixed-address 138.37.17.106;
+}
+
+host ootp-20137 {
+	hardware ethernet 00:1c:7e:d0:0c:25;
+	fixed-address 138.37.17.107;
+}
+
+host ieu-20135 {
+	hardware ethernet 00:1a:80:d7:9d:f5;
+	fixed-address 138.37.17.108;
+}
+
+host ieu-18732 {
+	hardware ethernet 00:0e:7b:fa:84:67;
+	fixed-address 138.37.17.109;
+}
+
+host hr-20136 {
+	hardware ethernet 00:1c:7e:9d:88:a5;
+	fixed-address 138.37.17.110;
+}
+
+host extrel-21083 {
+	hardware ethernet 00:1c:7e:44:42:ac;
+	fixed-address 138.37.17.111;
+}
+
+host acs-21943 {
+	hardware ethernet 00:15:b7:48:bf:ed;
+	fixed-address 138.37.17.112;
+}
+
+host reg-20039 {
+	hardware ethernet 00:1e:68:87:e0:5a;
+	fixed-address 138.37.17.113;
+}
+
+host ieu-20144 {
+	hardware ethernet 00:1c:7e:53:5e:ae;
+	fixed-address 138.37.17.114;
+}
+
+host ieu-19129 {
+	hardware ethernet 00:1c:7e:b0:5e:ae;
+	fixed-address 138.37.17.115;
+}
+
+host ieu-19125 {
+	hardware ethernet 00:1c:7e:e6:9e:ad;
+	fixed-address 138.37.17.116;
+}
+
+host fin-30352 {
+	hardware ethernet 00:1c:7e:7c:92:ad;
+	fixed-address 138.37.17.117;
+}
+
+host fin-30358 {
+	hardware ethernet 00:23:8b:25:13:a3;
+	fixed-address 138.37.17.118;
+}
+
+host fin-30387 {
+	hardware ethernet 00:23:8b:36:73:0a;
+	fixed-address 138.37.17.119;
+}
+
+host est-30404 {
+	hardware ethernet 00:1c:7e:51:18:a5;
+	fixed-address 138.37.17.121;
+}
+
+host scs-30405 {
+	hardware ethernet 00:1c:7e:4e:fb:a5;
+	fixed-address 138.37.17.122;
+}
+
+host scs-30406 {
+	hardware ethernet 00:1c:7e:cc:9c:a4;
+	fixed-address 138.37.17.123;
+}
+
+host fin-30384 {
+	hardware ethernet 00:1c:7e:f8:90:ad;
+	fixed-address 138.37.17.124;
+}
+
+host est-30408 {
+	hardware ethernet 00:1e:33:92:88:78;
+	fixed-address 138.37.17.125;
+}
+
+host est-30409 {
+	hardware ethernet 00:1e:33:be:3e:62;
+	fixed-address 138.37.17.126;
+}
+
+host est-30410 {
+	hardware ethernet 00:1e:33:bb:75:86;
+	fixed-address 138.37.17.127;
+}
+
+host est-30411 {
+	hardware ethernet 00:1e:33:bb:75:17;
+	fixed-address 138.37.17.128;
+}
+
+host est-30412 {
+	hardware ethernet 00:1e:33:dc:53:50;
+	fixed-address 138.37.17.129;
+}
+
+host stuoff-30418 {
+	hardware ethernet 00:23:8b:ac:17:85;
+	fixed-address 138.37.17.130;
+}
+
+host fin-30433 {
+	hardware ethernet 00:1c:7e:d3:7d:b3;
+	fixed-address 138.37.17.131;
+}
+
+host fin-30434 {
+	hardware ethernet 00:1c:7e:03:05:b3;
+	fixed-address 138.37.17.132;
+}
+
+host ieu-30440 {
+	hardware ethernet 00:23:18:be:62:4a;
+	fixed-address 138.37.17.133;
+}
+
+host ootp-30443 {
+	hardware ethernet 00:23:18:0d:8e:4a;
+	fixed-address 138.37.17.134;
+}
+
+host scs-30588 {
+	hardware ethernet 00:23:18:93:39:48;
+	fixed-address 138.37.17.135;
+}
+
+host fin-rd-30601 {
+	hardware ethernet 00:1e:33:df:ef:99;
+	fixed-address 138.37.17.136;
+}
+
+host scs-30602 {
+	hardware ethernet 00:23:18:4e:3a:48;
+	fixed-address 138.37.17.137;
+}
+
+host ieu-30606 {
+	hardware ethernet 00:23:18:6c:ac:4d;
+	fixed-address 138.37.17.138;
+}
+
+host fin-30411 {
+	hardware ethernet 00:23:18:f1:e4:54;
+	fixed-address 138.37.17.139;
+}
+
+host ootp-30593 {
+	hardware ethernet d4:9a:20:ef:30:84;
+	fixed-address 138.37.17.142;
+}
+
+host ieu-30760 {
+	hardware ethernet 00:26:22:46:0f:f1;
+	fixed-address 138.37.17.143;
+}
+
+host ieu-30761 {
+	hardware ethernet 00:26:22:43:bc:b4;
+	fixed-address 138.37.17.144;
+}
+
+host fin-30776 {
+	hardware ethernet 00:23:18:d4:54:4b;
+	fixed-address 138.37.17.145;
+}
+
+host cs-16717 {
+	hardware ethernet 00:08:0d:d7:85:04;
+	fixed-address 138.37.17.146;
+}
+
+host ieu-30786 {
+	hardware ethernet 00:23:18:63:54:4b;
+	fixed-address 138.37.17.147;
+}
+
+host smd-30800 {
+	hardware ethernet 00:23:18:a4:71:5a;
+	fixed-address 138.37.17.149;
+}
+
+host reg-30801 {
+	hardware ethernet 00:23:54:fe:fd:7c;
+	fixed-address 138.37.17.150;
+}
+
+host ieu-30811 {
+	hardware ethernet 00:1c:7e:89:70:b9;
+	fixed-address 138.37.17.151;
+}
+
+host ieu-30803 {
+	hardware ethernet 00:23:18:99:1f:44;
+	fixed-address 138.37.17.152;
+}
+
+host ieu-30817 {
+	hardware ethernet 00:23:18:06:1f:44;
+	fixed-address 138.37.17.153;
+}
+
+host scs-21815 {
+	hardware ethernet 00:0e:7b:6b:78:77;
+	fixed-address 138.37.17.154;
+}
+
+host ieu-30805 {
+	hardware ethernet 00:23:18:15:6f:7e;
+	fixed-address 138.37.17.155;
+}
+
+host ootp-30920 {
+	hardware ethernet 00:23:18:7f:68:7f;
+	fixed-address 138.37.17.156;
+}
+
+host ootp-30927 {
+	hardware ethernet 7c:6d:62:8c:1a:32;
+	fixed-address 138.37.17.157;
+}
+
+host hr-30742 {
+	hardware ethernet 00:23:18:f6:88:7f;
+	fixed-address 138.37.17.158;
+}
+
+host ootp-30973 {
+	hardware ethernet 00:23:18:ab:4b:5b;
+	fixed-address 138.37.17.159;
+}
+
+host ootp-30974 {
+	hardware ethernet 00:23:18:c5:ca:7d;
+	fixed-address 138.37.17.160;
+}
+
+host ieu-32009 {
+	hardware ethernet 00:23:18:5a:d0:86;
+	fixed-address 138.37.17.161;
+}
+
+host ieu-32010 {
+	hardware ethernet 00:23:18:96:7a:85;
+	fixed-address 138.37.17.162;
+}
+
+host fin34-pr {
+	hardware ethernet 00:00:74:f3:6a:38;
+	fixed-address 138.37.18.1, 138.37.24.19;
+}
+
+host fin12-ps {
+	hardware ethernet 00:23:7d:87:5a:b8;
+	fixed-address 138.37.18.2;
+}
+
+host fin-16676 {
+	hardware ethernet 00:0c:6e:76:06:48;
+	fixed-address 138.37.18.15;
+}
+
+host fin-15764 {
+	hardware ethernet 00:0c:6e:92:98:6f;
+	fixed-address 138.37.18.21;
+}
+
+host fin-16242 {
+	hardware ethernet 00:07:e9:3c:0a:c7;
+	fixed-address 138.37.18.22;
+}
+
+host fin-16116 {
+	hardware ethernet 00:0c:f1:6c:21:cd;
+	fixed-address 138.37.18.23;
+}
+
+host MIS16118 {
+	hardware ethernet 00:0c:f1:ae:3f:1d;
+	fixed-address 138.37.18.25;
+}
+
+host fin-21197 {
+	hardware ethernet 00:90:27:42:10:37;
+	fixed-address 138.37.18.27;
+}
+
+host fin-16175 {
+	hardware ethernet 00:0c:f1:ae:3d:48;
+	fixed-address 138.37.18.28;
+}
+
+host fin-21221 {
+	hardware ethernet 00:16:76:b0:89:c7;
+	fixed-address 138.37.18.29;
+}
+
+host fin-16486 {
+	hardware ethernet 00:03:47:fb:b3:1b;
+	fixed-address 138.37.18.30;
+}
+
+host fin-16179 {
+	hardware ethernet 00:11:11:24:45:8d;
+	fixed-address 138.37.18.31;
+}
+
+host fin-16173 {
+	hardware ethernet 00:11:11:25:8a:13;
+	fixed-address 138.37.18.32;
+}
+
+host fin-15449 {
+	hardware ethernet 00:03:47:9c:54:cb;
+	fixed-address 138.37.18.33;
+}
+
+host fin-21312 {
+	hardware ethernet 00:19:d1:81:83:62;
+	fixed-address 138.37.18.34;
+}
+
+host fin-18611 {
+	hardware ethernet 00:11:11:9f:ef:5b;
+	fixed-address 138.37.18.35;
+}
+
+host fin-18614 {
+	hardware ethernet 00:11:11:9f:ea:65;
+	fixed-address 138.37.18.36;
+}
+
+host fin-18703 {
+	hardware ethernet 00:11:11:2f:6c:0f;
+	fixed-address 138.37.18.37;
+}
+
+host fin-21194 {
+	hardware ethernet 00:13:20:61:0b:0a;
+	fixed-address 138.37.18.39;
+}
+
+host fin-21848-lt {
+	hardware ethernet 00:c0:9f:ec:ef:f4;
+	fixed-address 138.37.18.42;
+}
+
+host fin-20150 {
+	hardware ethernet 00:19:d1:9a:2f:9e;
+	fixed-address 138.37.18.44;
+}
+
+host fin-21915 {
+	hardware ethernet 00:13:20:94:f2:90;
+	fixed-address 138.37.18.45;
+}
+
+host fin-21831 {
+	hardware ethernet 00:13:20:94:f2:3e;
+	fixed-address 138.37.18.46;
+}
+
+host MIS16117 {
+	hardware ethernet 00:07:e9:3c:05:27;
+	fixed-address 138.37.18.50;
+}
+
+host fin-18655 {
+	hardware ethernet 00:13:20:61:b6:88;
+	fixed-address 138.37.18.51;
+}
+
+host fin-21209 {
+	hardware ethernet 00:16:76:88:1a:c2;
+	fixed-address 138.37.18.52;
+}
+
+host fin-21289 {
+	hardware ethernet 00:16:76:40:98:db;
+	fixed-address 138.37.18.53;
+}
+
+host fin-19404 {
+	hardware ethernet 00:19:d1:9a:43:ad;
+	fixed-address 138.37.18.54;
+}
+
+host fin-21387 {
+	hardware ethernet 00:16:76:50:a0:2b;
+	fixed-address 138.37.18.55;
+}
+
+host fin-21473 {
+	hardware ethernet 00:19:d1:9a:e8:d7;
+	fixed-address 138.37.18.56;
+}
+
+host fin-18681 {
+	hardware ethernet 00:13:20:61:b4:86;
+	fixed-address 138.37.18.59;
+}
+
+host fin-18680 {
+	hardware ethernet 00:13:20:61:b5:e7;
+	fixed-address 138.37.18.60;
+}
+
+host fin-21935 {
+	hardware ethernet 00:16:76:44:01:5d;
+	fixed-address 138.37.18.61;
+}
+
+host fin-21449 {
+	hardware ethernet 00:16:76:a8:90:ed;
+	fixed-address 138.37.18.62;
+}
+
+host fin-21382 {
+	hardware ethernet 00:1c:c0:07:41:47;
+	fixed-address 138.37.18.63;
+}
+
+host fin-19114 {
+	hardware ethernet 00:1c:c0:2c:2d:50;
+	fixed-address 138.37.18.64;
+}
+
+host fin-19115 {
+	hardware ethernet 00:1c:c0:2c:22:9f;
+	fixed-address 138.37.18.65;
+}
+
+host fin-19023 {
+	hardware ethernet 00:1c:c0:77:9b:4b;
+	fixed-address 138.37.18.66;
+}
+
+host fin-19024 {
+	hardware ethernet 00:1c:c0:77:9b:43;
+	fixed-address 138.37.18.67;
+}
+
+host fin-19025 {
+	hardware ethernet 00:1c:c0:77:9b:49;
+	fixed-address 138.37.18.68;
+}
+
+host fin-19026 {
+	hardware ethernet 00:1c:c0:77:9b:07;
+	fixed-address 138.37.18.69;
+}
+
+host fin-19027 {
+	hardware ethernet 00:1c:c0:77:91:0a;
+	fixed-address 138.37.18.70;
+}
+
+host fin-19028 {
+	hardware ethernet 00:1c:c0:77:99:9d;
+	fixed-address 138.37.18.71;
+}
+
+host fin-19030 {
+	hardware ethernet 00:1c:c0:77:55:09;
+	fixed-address 138.37.18.72;
+}
+
+host fin-19033 {
+	hardware ethernet 00:1c:c0:77:49:d8;
+	fixed-address 138.37.18.73;
+}
+
+host fin-19034 {
+	hardware ethernet 00:1c:c0:77:51:c8;
+	fixed-address 138.37.18.74;
+}
+
+host fin-19041 {
+	hardware ethernet 00:1c:c0:77:54:f3;
+	fixed-address 138.37.18.75;
+}
+
+host fin-19042 {
+	hardware ethernet 00:1c:c0:77:55:37;
+	fixed-address 138.37.18.76;
+}
+
+host fin-21250 {
+	hardware ethernet 00:1c:c0:77:58:8f;
+	fixed-address 138.37.18.77;
+}
+
+host fin-21253 {
+	hardware ethernet 00:1c:c0:77:49:1a;
+	fixed-address 138.37.18.78;
+}
+
+host fin-21254 {
+	hardware ethernet 00:1c:c0:77:55:6d;
+	fixed-address 138.37.18.79;
+}
+
+host fin-21812 {
+	hardware ethernet 00:1c:c0:77:55:4e;
+	fixed-address 138.37.18.80;
+}
+
+host fin-21813 {
+	hardware ethernet 00:1c:c0:77:55:13;
+	fixed-address 138.37.18.81;
+}
+
+host fin-20037 {
+	hardware ethernet 00:1c:c0:77:49:e5;
+	fixed-address 138.37.18.82;
+}
+
+host fin-20038 {
+	hardware ethernet 00:1c:c0:77:4b:69;
+	fixed-address 138.37.18.83;
+}
+
+host fin-21439 {
+	hardware ethernet 00:16:76:a8:97:d3;
+	fixed-address 138.37.18.84;
+}
+
+host fin-21435 {
+	hardware ethernet 00:19:d1:26:4c:6a;
+	fixed-address 138.37.18.85;
+}
+
+host fin-21846 {
+	hardware ethernet 00:16:76:44:a6:b4;
+	fixed-address 138.37.18.86;
+}
+
+host fin-20036 {
+	hardware ethernet 00:1c:c0:77:55:41;
+	fixed-address 138.37.18.87;
+}
+
+host fin-20048 {
+	hardware ethernet 00:1c:c0:82:15:4e;
+	fixed-address 138.37.18.88;
+}
+
+host fin-30943 {
+	hardware ethernet 70:71:bc:43:7a:0a;
+	fixed-address 138.37.18.89;
+}
+
+host fin9-pr {
+	hardware ethernet 00:0e:7f:43:00:ba;
+	fixed-address 138.37.18.91;
+}
+
+host fin-18714 {
+	hardware ethernet 00:11:11:ed:83:6b;
+	fixed-address 138.37.18.98, 138.37.27.33;
+}
+
+host fin-16215 {
+	hardware ethernet 00:0c:f1:6c:1f:d7;
+	fixed-address 138.37.18.99;
+}
+
+host fin-21187 {
+	hardware ethernet 00:13:20:73:a7:3f;
+	fixed-address 138.37.18.100;
+}
+
+host fin-19421 {
+	hardware ethernet 00:1c:c0:16:ae:15;
+	fixed-address 138.37.18.101;
+}
+
+host MIS16213 {
+	hardware ethernet 00:0c:f1:6c:20:a8;
+	fixed-address 138.37.18.102;
+}
+
+host fin-cash1-ps {
+	hardware ethernet 08:00:09:e5:12:16;
+	fixed-address 138.37.18.107;
+}
+
+host fin5-ps {
+	hardware ethernet 00:10:83:a2:51:a0;
+	fixed-address 138.37.18.108;
+}
+
+host fin6-ps {
+	hardware ethernet 00:10:83:07:74:ca;
+	fixed-address 138.37.18.111;
+}
+
+host MIS16219 {
+	hardware ethernet 00:07:e9:3c:05:aa;
+	fixed-address 138.37.18.112;
+}
+
+host fin-16171 {
+	hardware ethernet 00:11:11:24:45:6c;
+	fixed-address 138.37.18.115;
+}
+
+host fin-21433 {
+	hardware ethernet 00:19:d1:5e:90:f5;
+	fixed-address 138.37.18.116;
+}
+
+host fin-21306 {
+	hardware ethernet 00:19:d1:5e:84:3f;
+	fixed-address 138.37.18.117;
+}
+
+host fin-21919 {
+	hardware ethernet 00:19:d1:5e:94:f0;
+	fixed-address 138.37.18.118;
+}
+
+host fin-21376 {
+	hardware ethernet 00:19:d1:81:83:6f;
+	fixed-address 138.37.18.119;
+}
+
+host fin-21472 {
+	hardware ethernet 00:19:d1:9a:28:72;
+	fixed-address 138.37.18.120;
+}
+
+host fin-19448 {
+	hardware ethernet 00:1c:c0:16:c9:6b;
+	fixed-address 138.37.18.121;
+}
+
+host fin-19417 {
+	hardware ethernet 00:1c:c0:16:ca:72;
+	fixed-address 138.37.18.122;
+}
+
+host fin-19418 {
+	hardware ethernet 00:1c:c0:2c:2c:79;
+	fixed-address 138.37.18.123;
+}
+
+host fin-19449 {
+	hardware ethernet 00:19:d1:e5:fa:ec;
+	fixed-address 138.37.18.124;
+}
+
+host fin-30002 {
+	hardware ethernet 00:1c:c0:77:48:52;
+	fixed-address 138.37.18.125;
+}
+
+host fin-30003 {
+	hardware ethernet 00:1c:c0:82:07:71;
+	fixed-address 138.37.18.126;
+}
+
+host fin-30483 {
+	hardware ethernet 00:1c:c0:bf:1c:d6;
+	fixed-address 138.37.18.127;
+}
+
+host fin-30489 {
+	hardware ethernet 00:1c:c0:bf:1d:02;
+	fixed-address 138.37.18.128;
+}
+
+host fin-30494 {
+	hardware ethernet 00:1c:c0:be:c9:bc;
+	fixed-address 138.37.18.129;
+}
+
+host fin-30495 {
+	hardware ethernet 00:1c:c0:bf:1b:f6;
+	fixed-address 138.37.18.130;
+}
+
+host fin-receipt3-pr {
+	hardware ethernet 00:00:48:04:33:c6;
+	fixed-address 138.37.18.138;
+}
+
+host fin-receipt4-pr {
+	hardware ethernet 00:00:48:04:34:27;
+	fixed-address 138.37.18.139;
+}
+
+host fin-receipt1-pr {
+	hardware ethernet 00:02:b3:0f:19:f4;
+	fixed-address 138.37.18.141;
+}
+
+host fin-receipt2-pr {
+	hardware ethernet 00:00:48:04:12:7e;
+	fixed-address 138.37.18.148;
+}
+
+host fin-receipt6-pr {
+	hardware ethernet 00:00:48:6b:0c:1c;
+	fixed-address 138.37.18.149;
+}
+
+host fin-21357 {
+	hardware ethernet 00:1c:c0:77:4b:7b;
+	fixed-address 138.37.18.151;
+}
+
+host fin11-ps {
+	hardware ethernet 00:30:c1:d4:ac:10;
+	fixed-address 138.37.18.153;
+}
+
+host fin-21386 {
+	hardware ethernet 00:1c:c0:2c:4f:e7;
+	fixed-address 138.37.18.160;
+}
+
+host fin-16877 {
+	hardware ethernet 00:07:e9:bf:77:02;
+	fixed-address 138.37.18.161;
+}
+
+host fin-20022 {
+	hardware ethernet 00:1c:c0:ad:01:eb;
+	fixed-address 138.37.18.163;
+}
+
+host fin-18618 {
+	hardware ethernet 00:11:11:9f:e2:a2;
+	fixed-address 138.37.18.164;
+}
+
+host fin-20033 {
+	hardware ethernet 00:1c:c0:77:47:3b;
+	fixed-address 138.37.18.165;
+}
+
+host MIS16224 {
+	hardware ethernet 00:07:e9:3c:0a:bd;
+	fixed-address 138.37.18.166;
+}
+
+host fin-30716 {
+	hardware ethernet 00:1c:c0:cb:e0:45;
+	fixed-address 138.37.18.167;
+}
+
+host fin-30723 {
+	hardware ethernet 00:1c:c0:cb:eb:91;
+	fixed-address 138.37.18.168;
+}
+
+host MIS16243 {
+	hardware ethernet 00:07:e9:3c:09:d1;
+	fixed-address 138.37.18.169;
+}
+
+host fin13-ps {
+	hardware ethernet 00:00:74:ad:44:21;
+	fixed-address 138.37.18.170;
+}
+
+host fin-30727 {
+	hardware ethernet 00:1c:c0:cb:fd:39;
+	fixed-address 138.37.18.173;
+}
+
+host fin-16212 {
+	hardware ethernet 00:07:e9:3c:0a:61;
+	fixed-address 138.37.18.174;
+}
+
+host fin-21816 {
+	hardware ethernet 00:13:20:94:f5:09;
+	fixed-address 138.37.18.175;
+}
+
+host fin-21909 {
+	hardware ethernet 00:13:20:94:f5:24;
+	fixed-address 138.37.18.176;
+}
+
+host fin-21326 {
+	hardware ethernet 00:16:76:b0:8d:21;
+	fixed-address 138.37.18.177;
+}
+
+host fin-15460 {
+	hardware ethernet 00:1c:c0:2c:54:e5;
+	fixed-address 138.37.18.178;
+}
+
+host fin-15461 {
+	hardware ethernet 00:1c:c0:2c:4d:1b;
+	fixed-address 138.37.18.179;
+}
+
+host fin-15462 {
+	hardware ethernet 00:1c:c0:2c:2c:fe;
+	fixed-address 138.37.18.180;
+}
+
+host fin-19430 {
+	hardware ethernet 00:1c:c0:07:3b:bc;
+	fixed-address 138.37.18.181;
+}
+
+host fin-19148 {
+	hardware ethernet 00:1c:c0:41:14:2b;
+	fixed-address 138.37.18.182;
+}
+
+host fin-21365 {
+	hardware ethernet 00:1c:c0:77:4a:6f;
+	fixed-address 138.37.18.183;
+}
+
+host fin-19046 {
+	hardware ethernet 00:1c:c0:77:48:dd;
+	fixed-address 138.37.18.184;
+}
+
+host fin-30065 {
+	hardware ethernet 00:1c:c0:82:07:4f;
+	fixed-address 138.37.18.185;
+}
+
+host fin-30066 {
+	hardware ethernet 00:1c:c0:82:07:59;
+	fixed-address 138.37.18.186;
+}
+
+host fin-30067 {
+	hardware ethernet 00:1c:c0:82:15:50;
+	fixed-address 138.37.18.187;
+}
+
+host fin-30068 {
+	hardware ethernet 00:1c:c0:82:07:3f;
+	fixed-address 138.37.18.188;
+}
+
+host fin-30074 {
+	hardware ethernet 00:1c:c0:82:07:5d;
+	fixed-address 138.37.18.189;
+}
+
+host fin-30617 {
+	hardware ethernet 00:1c:c0:be:ba:be;
+	fixed-address 138.37.18.190;
+}
+
+host fin-30619 {
+	hardware ethernet 00:1c:c0:be:b5:08;
+	fixed-address 138.37.18.191;
+}
+
+host fin-30620 {
+	hardware ethernet 00:1c:c0:be:b4:f6;
+	fixed-address 138.37.18.192;
+}
+
+host fin-30622 {
+	hardware ethernet 00:1c:c0:be:ba:c4;
+	fixed-address 138.37.18.193;
+}
+
+host fin-30623 {
+	hardware ethernet 00:1c:c0:be:b4:e4;
+	fixed-address 138.37.18.194;
+}
+
+host fin-30624 {
+	hardware ethernet 00:1c:c0:be:b4:98;
+	fixed-address 138.37.18.195;
+}
+
+host fin-30625 {
+	hardware ethernet 00:1c:c0:be:ba:cc;
+	fixed-address 138.37.18.196;
+}
+
+host fin-30626 {
+	hardware ethernet 00:1c:c0:be:b5:0e;
+	fixed-address 138.37.18.197;
+}
+
+host fin-30627 {
+	hardware ethernet 00:1c:c0:be:b4:fc;
+	fixed-address 138.37.18.198;
+}
+
+host fin-30628 {
+	hardware ethernet 00:1c:c0:be:6d:4f;
+	fixed-address 138.37.18.199;
+}
+
+host fin-30629 {
+	hardware ethernet 00:1c:c0:be:ba:bc;
+	fixed-address 138.37.18.200;
+}
+
+host fin-30630 {
+	hardware ethernet 00:1c:c0:be:b6:c6;
+	fixed-address 138.37.18.201;
+}
+
+host fin-30632 {
+	hardware ethernet 00:1c:c0:be:b4:f4;
+	fixed-address 138.37.18.202;
+}
+
+host fin-30633 {
+	hardware ethernet 00:1c:c0:be:6d:57;
+	fixed-address 138.37.18.203;
+}
+
+host fin-30634 {
+	hardware ethernet 00:1c:c0:be:b4:f2;
+	fixed-address 138.37.18.204;
+}
+
+host fin-30635 {
+	hardware ethernet 00:1c:c0:be:b4:de;
+	fixed-address 138.37.18.205;
+}
+
+host fin-30636 {
+	hardware ethernet 00:1c:c0:be:ac:18;
+	fixed-address 138.37.18.206;
+}
+
+host cb12-19427 {
+	hardware ethernet 00:1c:c0:16:c8:5e;
+	fixed-address 138.37.18.224;
+}
+
+host cb12-19426 {
+	hardware ethernet 00:1c:c0:2e:6d:90;
+	fixed-address 138.37.18.225;
+}
+
+host cb12-19425 {
+	hardware ethernet 00:1c:c0:16:ae:7c;
+	fixed-address 138.37.18.226;
+}
+
+host cb12-19428 {
+	hardware ethernet 00:1c:c0:16:ae:39;
+	fixed-address 138.37.18.227;
+}
+
+host cb12-19444 {
+	hardware ethernet 00:1c:c0:2c:63:06;
+	fixed-address 138.37.18.228;
+}
+
+host cb12-19416 {
+	hardware ethernet 00:1c:c0:2c:10:a3;
+	fixed-address 138.37.18.229;
+}
+
+host fin-19219 {
+	hardware ethernet 00:1c:c0:16:c8:82;
+	fixed-address 138.37.18.230;
+}
+
+host fin-30774 {
+	hardware ethernet 00:1c:c0:cb:f9:2d;
+	fixed-address 138.37.18.231;
+}
+
+host fin-30775 {
+	hardware ethernet 00:1c:c0:cb:fd:43;
+	fixed-address 138.37.18.232;
+}
+
+host fin14-pr {
+	hardware ethernet 00:13:21:c0:e0:6a;
+	fixed-address 138.37.18.252;
+}
+
+host fin3-pr {
+	hardware ethernet 00:10:83:06:50:44;
+	fixed-address 138.37.18.253;
+}
+
+host enr-16031 {
+	hardware ethernet 00:0f:b0:04:9d:48;
+	fixed-address 138.37.19.1;
+}
+
+host enr-21265 {
+	hardware ethernet 00:0f:b0:05:86:8f;
+	fixed-address 138.37.19.2;
+}
+
+host enr-16041 {
+	hardware ethernet 00:0f:b0:04:9d:2d;
+	fixed-address 138.37.19.3;
+}
+
+host enr-16035 {
+	hardware ethernet 00:0f:b0:04:99:cc;
+	fixed-address 138.37.19.4;
+}
+
+host enr-16177 {
+	hardware ethernet 00:0f:b0:04:ba:b0;
+	fixed-address 138.37.19.5;
+}
+
+host enr-16028 {
+	hardware ethernet 00:0f:b0:05:88:0d;
+	fixed-address 138.37.19.6;
+}
+
+host enr-16040 {
+	hardware ethernet 00:0f:b0:05:88:0a;
+	fixed-address 138.37.19.7;
+}
+
+host enr-16032 {
+	hardware ethernet 00:0f:b0:03:9a:fd;
+	fixed-address 138.37.19.8;
+}
+
+host enr-16199 {
+	hardware ethernet 00:0f:b0:05:88:37;
+	fixed-address 138.37.19.9;
+}
+
+host enr-21940 {
+	hardware ethernet 00:0f:b0:04:98:e8;
+	fixed-address 138.37.19.10;
+}
+
+host enr-21947 {
+	hardware ethernet 00:0f:b0:04:98:a4;
+	fixed-address 138.37.19.11;
+}
+
+host enr-16159 {
+	hardware ethernet 00:0f:b0:05:88:30;
+	fixed-address 138.37.19.12;
+}
+
+host enr-16033 {
+	hardware ethernet 00:0f:b0:05:88:0c;
+	fixed-address 138.37.19.13;
+}
+
+host enr-16047 {
+	hardware ethernet 00:0f:b0:04:9d:20;
+	fixed-address 138.37.19.14;
+}
+
+host enr-16027 {
+	hardware ethernet 00:0f:b0:05:67:c3;
+	fixed-address 138.37.19.15;
+}
+
+host enr-16034 {
+	hardware ethernet 00:0f:b0:03:9a:f1;
+	fixed-address 138.37.19.16;
+}
+
+host enr-16166 {
+	hardware ethernet 00:0f:b0:04:ba:83;
+	fixed-address 138.37.19.17;
+}
+
+host enr-wht-19134 {
+	hardware ethernet 00:1e:68:8c:50:8f;
+	fixed-address 138.37.19.20;
+}
+
+host enr-wht-19135 {
+	hardware ethernet 00:1e:68:8c:4f:ab;
+	fixed-address 138.37.19.21;
+}
+
+host enr-wht-19136 {
+	hardware ethernet 00:1e:68:8c:50:50;
+	fixed-address 138.37.19.22;
+}
+
+host enr-wht-19137 {
+	hardware ethernet 00:1e:68:8c:50:9c;
+	fixed-address 138.37.19.23;
+}
+
+host enr-wht-19138 {
+	hardware ethernet 00:1e:68:8c:4f:ea;
+	fixed-address 138.37.19.24;
+}
+
+host enr-19101 {
+	hardware ethernet 00:1c:c0:2c:34:5b;
+	fixed-address 138.37.19.32;
+}
+
+host enr-19104 {
+	hardware ethernet 00:1c:c0:2c:50:0f;
+	fixed-address 138.37.19.35;
+}
+
+host enr-19105 {
+	hardware ethernet 00:1c:c0:41:11:a2;
+	fixed-address 138.37.19.36;
+}
+
+host enr-19106 {
+	hardware ethernet 00:1c:c0:2c:55:07;
+	fixed-address 138.37.19.37;
+}
+
+host enr-19110 {
+	hardware ethernet 00:1c:c0:41:14:82;
+	fixed-address 138.37.19.41;
+}
+
+host enr-19001 {
+	hardware ethernet 00:1e:68:8c:50:f8;
+	fixed-address 138.37.19.48;
+}
+
+host enr-19002 {
+	hardware ethernet 00:1e:68:6e:e0:de;
+	fixed-address 138.37.19.49;
+}
+
+host enr-19003 {
+	hardware ethernet 00:1e:68:7d:4c:9e;
+	fixed-address 138.37.19.50;
+}
+
+host enr-19004 {
+	hardware ethernet 00:1e:68:8c:50:b8;
+	fixed-address 138.37.19.51;
+}
+
+host enr-19005 {
+	hardware ethernet 00:1e:68:8c:4f:f8;
+	fixed-address 138.37.19.52, 138.37.17.140;
+}
+
+host enr-19006 {
+	hardware ethernet 00:1e:68:7d:4c:32;
+	fixed-address 138.37.19.53;
+}
+
+host enr-19007 {
+	hardware ethernet 00:1e:68:8c:50:ba;
+	fixed-address 138.37.19.54;
+}
+
+host enr-19008 {
+	hardware ethernet 00:1e:68:8c:50:87;
+	fixed-address 138.37.19.55;
+}
+
+host enr-19009 {
+	hardware ethernet 00:1e:68:8c:50:ac;
+	fixed-address 138.37.19.56;
+}
+
+host enr-19010 {
+	hardware ethernet 00:1e:68:8c:50:3f;
+	fixed-address 138.37.19.57;
+}
+
+host enr-19011 {
+	hardware ethernet 00:1e:68:7d:4e:2e;
+	fixed-address 138.37.19.58;
+}
+
+host enr-19012 {
+	hardware ethernet 00:1e:68:8c:4f:be;
+	fixed-address 138.37.19.59;
+}
+
+host enr-19013 {
+	hardware ethernet 00:1e:68:8c:50:ab;
+	fixed-address 138.37.19.60;
+}
+
+host enr-19014 {
+	hardware ethernet 00:1e:68:8c:50:00;
+	fixed-address 138.37.19.61, 138.37.17.141;
+}
+
+host enr-19015 {
+	hardware ethernet 00:1e:68:8c:50:1b;
+	fixed-address 138.37.19.62;
+}
+
+host enr-19016 {
+	hardware ethernet 00:1e:68:8c:4f:df;
+	fixed-address 138.37.19.63;
+}
+
+host enr-19017 {
+	hardware ethernet 00:1e:68:7d:4d:2d;
+	fixed-address 138.37.19.64;
+}
+
+host enr-19018 {
+	hardware ethernet 00:1e:68:8c:4f:aa;
+	fixed-address 138.37.19.65;
+}
+
+host enr-19019 {
+	hardware ethernet 00:1e:68:a8:fc:bd;
+	fixed-address 138.37.19.66;
+}
+
+host enr-19139 {
+	hardware ethernet 00:1e:68:8c:4f:4c;
+	fixed-address 138.37.19.67;
+}
+
+host enr-30788 {
+	hardware ethernet 00:1c:c0:cb:fd:25;
+	fixed-address 138.37.19.68;
+}
+
+host enr-30912 {
+	hardware ethernet 00:27:0e:0b:20:77;
+	fixed-address 138.37.19.69;
+}
+
+host enr-30913 {
+	hardware ethernet 00:27:0e:0b:10:4b;
+	fixed-address 138.37.19.70;
+}
+
+host enr-30914 {
+	hardware ethernet 00:27:0e:0b:23:05;
+	fixed-address 138.37.19.71;
+}
+
+host enr-30915 {
+	hardware ethernet 00:27:0e:0b:41:23;
+	fixed-address 138.37.19.72;
+}
+
+host enr-30916 {
+	hardware ethernet 00:27:0e:0b:21:89;
+	fixed-address 138.37.19.73;
+}
+
+host enr-30911 {
+	hardware ethernet 00:27:0e:0b:41:16;
+	fixed-address 138.37.19.74;
+}
+
+host enr-30988 {
+	hardware ethernet 70:5a:b6:81:51:16;
+	fixed-address 138.37.19.76;
+}
+
+host enr-30983 {
+	hardware ethernet 70:5a:b6:81:ba:89;
+	fixed-address 138.37.19.77;
+}
+
+host enr-30984 {
+	hardware ethernet 70:5a:b6:81:50:da;
+	fixed-address 138.37.19.78;
+}
+
+host enr-30985 {
+	hardware ethernet 70:5a:b6:81:56:f6;
+	fixed-address 138.37.19.79;
+}
+
+host enr-30986 {
+	hardware ethernet 70:5a:b6:81:54:13;
+	fixed-address 138.37.19.80;
+}
+
+host enr-30987 {
+	hardware ethernet 70:5a:b6:82:52:9d;
+	fixed-address 138.37.19.81;
+}
+
+host enr1 {
+	hardware ethernet 00:24:54:74:d1:86;
+	fixed-address 138.37.19.96;
+}
+
+host enr2 {
+	hardware ethernet 00:24:54:74:cc:c3;
+	fixed-address 138.37.19.97;
+}
+
+host enr3 {
+	hardware ethernet 00:24:54:74:d2:fa;
+	fixed-address 138.37.19.98;
+}
+
+host enr4 {
+	hardware ethernet 00:24:54:72:b2:b6;
+	fixed-address 138.37.19.99;
+}
+
+host enr5 {
+	hardware ethernet 00:24:54:70:d8:14;
+	fixed-address 138.37.19.100;
+}
+
+host epimetheus1 {
+	hardware ethernet 00:15:17:b9:e4:d9;
+	fixed-address 138.37.24.10;
+}
+
+host epimetheus2 {
+	hardware ethernet 00:15:17:b9:d2:cd;
+	fixed-address 138.37.24.11;
+}
+
+host menoetius {
+	hardware ethernet 00:15:17:b9:d3:6d;
+	fixed-address 138.37.24.12;
+}
+
+host menoetiusus2 {
+	hardware ethernet 00:15:17:b1:0f:09;
+	fixed-address 138.37.24.13;
+}
+
+host CS-tanh1 {
+	hardware ethernet 00:00:94:c7:65:fc;
+	fixed-address 138.37.24.17;
+}
+
+host cs-30812 {
+	hardware ethernet 00:27:0e:0b:21:65;
+	fixed-address 138.37.24.32, 138.37.194.5;
+}
+
+host cs-18708 {
+	hardware ethernet 00:11:11:ed:86:57;
+	fixed-address 138.37.24.33;
+}
+
+host 1927150-MP {
+	hardware ethernet 00:19:d1:7f:53:80;
+	fixed-address 138.37.24.34;
+}
+
+host 2003188-5CB {
+	hardware ethernet 00:1c:c0:c2:a4:60;
+	fixed-address 138.37.24.35;
+}
+
+host 2003189-5CB {
+	hardware ethernet 00:1c:c0:c2:a4:36;
+	fixed-address 138.37.24.36;
+}
+
+host cs-30904 {
+	hardware ethernet 00:27:0e:0b:41:10;
+	fixed-address 138.37.24.37, 138.37.19.75;
+}
+
+host hr-30336 {
+	hardware ethernet 00:1c:c0:82:15:64;
+	fixed-address 138.37.24.44;
+}
+
+host hr-30337 {
+	hardware ethernet 00:1c:c0:82:15:42;
+	fixed-address 138.37.24.45;
+}
+
+host hr-30338 {
+	hardware ethernet 00:1c:c0:82:15:3e;
+	fixed-address 138.37.24.46;
+}
+
+host hr-30339 {
+	hardware ethernet 00:1c:c0:82:15:22;
+	fixed-address 138.37.24.47;
+}
+
+host hr11-pr {
+	hardware ethernet 00:00:74:e5:8b:88;
+	fixed-address 138.37.24.48;
+}
+
+host hr9-pr {
+	hardware ethernet 00:00:74:e2:96:a6;
+	fixed-address 138.37.24.49;
+}
+
+host hr7-pr {
+	hardware ethernet 00:1e:0b:19:8b:33;
+	fixed-address 138.37.24.50;
+}
+
+host hr-16710 {
+	hardware ethernet 00:00:39:a4:f7:f3;
+	fixed-address 138.37.24.52;
+}
+
+host hr-21340 {
+	hardware ethernet 00:16:76:b0:81:75;
+	fixed-address 138.37.24.53;
+}
+
+host hr-21314 {
+	hardware ethernet 00:19:d1:5f:4f:ce;
+	fixed-address 138.37.24.54;
+}
+
+host hr-21359 {
+	hardware ethernet 00:1c:c0:2c:51:e0;
+	fixed-address 138.37.24.55;
+}
+
+host hr-21833 {
+	hardware ethernet 00:1c:c0:41:12:32;
+	fixed-address 138.37.24.56;
+}
+
+host hr-30413 {
+	hardware ethernet 00:1c:c0:82:14:f8;
+	fixed-address 138.37.24.57;
+}
+
+host hr-21298 {
+	hardware ethernet 00:19:d1:5f:53:5d;
+	fixed-address 138.37.24.58;
+}
+
+host hr-19233 {
+	hardware ethernet 00:1c:c0:07:92:1b;
+	fixed-address 138.37.24.59;
+}
+
+host hr-16483 {
+	hardware ethernet 00:03:47:fb:b3:d3;
+	fixed-address 138.37.24.60;
+}
+
+host hr-30944 {
+	hardware ethernet 70:71:bc:18:ac:16;
+	fixed-address 138.37.24.61;
+}
+
+host hr-30945 {
+	hardware ethernet 70:71:bc:43:7a:35;
+	fixed-address 138.37.24.62;
+}
+
+host hr-32011 {
+	hardware ethernet 00:00:74:da:ec:6a;
+	fixed-address 138.37.24.63;
+}
+
+host hr1-pr {
+	hardware ethernet 00:01:e6:61:f1:fb;
+	fixed-address 138.37.24.64;
+}
+
+host hr-18644 {
+	hardware ethernet 00:0e:7b:8b:ef:5f;
+	fixed-address 138.37.24.65;
+}
+
+host hr-30982 {
+	hardware ethernet 70:71:bc:43:6d:c1;
+	fixed-address 138.37.24.66;
+}
+
+host hr-21413 {
+	hardware ethernet 00:16:76:be:92:27;
+	fixed-address 138.37.24.67;
+}
+
+host hr-30401 {
+	hardware ethernet 00:1c:c0:82:12:86;
+	fixed-address 138.37.24.68;
+}
+
+host hr-30402 {
+	hardware ethernet 00:1c:c0:82:12:7e;
+	fixed-address 138.37.24.69;
+}
+
+host hr-30403 {
+	hardware ethernet 00:1c:c0:82:12:2a;
+	fixed-address 138.37.24.70;
+}
+
+host hr-21233 {
+	hardware ethernet 00:16:76:44:a4:96;
+	fixed-address 138.37.24.71;
+}
+
+host hr-21234 {
+	hardware ethernet 00:16:76:44:a4:2d;
+	fixed-address 138.37.24.72;
+}
+
+host hr-21239 {
+	hardware ethernet 00:16:76:85:71:db;
+	fixed-address 138.37.24.73;
+}
+
+host MIS16477 {
+	hardware ethernet 00:03:47:2a:33:41;
+	fixed-address 138.37.24.74;
+}
+
+host hr-19220 {
+	hardware ethernet 00:1c:c0:2c:22:06;
+	fixed-address 138.37.24.75;
+}
+
+host hr-19212 {
+	hardware ethernet 00:1c:c0:2c:2c:3f;
+	fixed-address 138.37.24.76;
+}
+
+host hr-18172 {
+	hardware ethernet 00:11:11:65:82:96;
+	fixed-address 138.37.24.77;
+}
+
+host MIS15793-prn {
+	hardware ethernet 08:00:09:bb:30:a2;
+	fixed-address 138.37.24.78;
+}
+
+host hr-21223 {
+	hardware ethernet 00:16:76:50:c4:65;
+	fixed-address 138.37.24.79;
+}
+
+host hr2-pr {
+	hardware ethernet 00:01:e6:24:fd:c4;
+	fixed-address 138.37.24.80;
+}
+
+host MIS16500-prn {
+	hardware ethernet 00:01:e6:77:3b:4d;
+	fixed-address 138.37.24.81;
+}
+
+host hr-18171 {
+	hardware ethernet 00:11:11:40:af:00;
+	fixed-address 138.37.24.82;
+}
+
+host hr-21256 {
+	hardware ethernet 00:16:76:a8:83:12;
+	fixed-address 138.37.24.84;
+}
+
+host MIS16699-prn {
+	hardware ethernet 00:01:e6:a1:31:06;
+	fixed-address 138.37.24.85;
+}
+
+host hr-18179 {
+	hardware ethernet 00:11:11:65:83:81;
+	fixed-address 138.37.24.86;
+}
+
+host hr10-pr {
+	hardware ethernet 00:21:5a:97:d3:de;
+	fixed-address 138.37.24.87;
+}
+
+host hr-18178 {
+	hardware ethernet 00:11:11:65:82:9c;
+	fixed-address 138.37.24.88;
+}
+
+host hr-19207 {
+	hardware ethernet 00:1c:c0:07:ff:80;
+	fixed-address 138.37.24.89;
+}
+
+host hr-30484 {
+	hardware ethernet 00:1c:c0:bf:1b:f0;
+	fixed-address 138.37.24.90;
+}
+
+host hr-30492 {
+	hardware ethernet 00:1c:c0:be:c9:f8;
+	fixed-address 138.37.24.91;
+}
+
+host hr-30488 {
+	hardware ethernet 00:1c:c0:bf:1c:5c;
+	fixed-address 138.37.24.92;
+}
+
+host hr-30491 {
+	hardware ethernet 00:1c:c0:bf:1c:fc;
+	fixed-address 138.37.24.93;
+}
+
+host hr-30487 {
+	hardware ethernet 00:1c:c0:be:a9:19;
+	fixed-address 138.37.24.94;
+}
+
+host hr-30490 {
+	hardware ethernet 00:1c:c0:be:a7:05;
+	fixed-address 138.37.24.95;
+}
+
+host hr-20114 {
+	hardware ethernet 00:19:d1:9a:2d:00;
+	fixed-address 138.37.24.96;
+}
+
+host hr-20113 {
+	hardware ethernet 00:19:d1:9a:2c:c6;
+	fixed-address 138.37.24.97;
+}
+
+host hr-20112 {
+	hardware ethernet 00:19:d1:9a:2c:9d;
+	fixed-address 138.37.24.98;
+}
+
+host hr-20111 {
+	hardware ethernet 00:19:d1:9a:29:12;
+	fixed-address 138.37.24.99;
+}
+
+host hr-20110 {
+	hardware ethernet 00:19:d1:95:6e:4a;
+	fixed-address 138.37.24.100;
+}
+
+host hr-20109 {
+	hardware ethernet 00:19:d1:9a:29:52;
+	fixed-address 138.37.24.101;
+}
+
+host hr-20108 {
+	hardware ethernet 00:19:d1:9a:29:81;
+	fixed-address 138.37.24.102;
+}
+
+host hr-20107 {
+	hardware ethernet 00:19:d1:8a:3b:b5;
+	fixed-address 138.37.24.103;
+}
+
+host hr-20106 {
+	hardware ethernet 00:19:d1:9a:2f:ab;
+	fixed-address 138.37.24.104;
+}
+
+host hr-20105 {
+	hardware ethernet 00:19:d1:7f:f7:65;
+	fixed-address 138.37.24.105;
+}
+
+host hr-20104 {
+	hardware ethernet 00:19:d1:9a:28:91;
+	fixed-address 138.37.24.106;
+}
+
+host hr-30485 {
+	hardware ethernet 00:1c:c0:be:c2:82;
+	fixed-address 138.37.24.107;
+}
+
+host hr-30486 {
+	hardware ethernet 00:1c:c0:ad:7b:31;
+	fixed-address 138.37.24.108;
+}
+
+host hr-21245 {
+	hardware ethernet 00:16:76:b0:75:a9;
+	fixed-address 138.37.24.109;
+}
+
+host hr-18175 {
+	hardware ethernet 00:11:11:40:af:68;
+	fixed-address 138.37.24.110;
+}
+
+host hr-18164 {
+	hardware ethernet 00:11:11:65:83:9f;
+	fixed-address 138.37.24.113;
+}
+
+host hr-18165 {
+	hardware ethernet 00:11:11:65:83:8b;
+	fixed-address 138.37.24.114;
+}
+
+host hr-18166 {
+	hardware ethernet 00:11:11:65:83:12;
+	fixed-address 138.37.24.115;
+}
+
+host hr-21822 {
+	hardware ethernet 00:c0:9f:f9:59:88;
+	fixed-address 138.37.24.116;
+}
+
+host hr-21827 {
+	hardware ethernet 00:13:20:94:f5:1b;
+	fixed-address 138.37.24.117;
+}
+
+host hr-21824 {
+	hardware ethernet 00:13:20:94:f3:57;
+	fixed-address 138.37.24.118;
+}
+
+host hr-21237 {
+	hardware ethernet 00:16:76:88:23:dc;
+	fixed-address 138.37.24.119;
+}
+
+host hr-21450 {
+	hardware ethernet 00:16:76:b0:83:2c;
+	fixed-address 138.37.24.120;
+}
+
+host hr-30789 {
+	hardware ethernet 00:1c:c0:cb:eb:31;
+	fixed-address 138.37.24.121;
+}
+
+host hr-21448 {
+	hardware ethernet 00:16:76:b0:8d:2e;
+	fixed-address 138.37.24.122;
+}
+
+host hr-21406 {
+	hardware ethernet 00:16:76:b0:80:f8;
+	fixed-address 138.37.24.123;
+}
+
+host hr-21238 {
+	hardware ethernet 00:16:76:b0:82:ab;
+	fixed-address 138.37.24.124;
+}
+
+host hr-21244 {
+	hardware ethernet 00:19:d1:a4:16:c6;
+	fixed-address 138.37.24.125;
+}
+
+host hr-16156 {
+	hardware ethernet 00:11:11:25:89:1d;
+	fixed-address 138.37.24.126;
+}
+
+host hr-16176 {
+	hardware ethernet 00:0c:f1:ae:3e:c8;
+	fixed-address 138.37.24.127;
+}
+
+host hr-16200 {
+	hardware ethernet 00:11:11:25:89:ee;
+	fixed-address 138.37.24.128;
+}
+
+host cs-19118 {
+	hardware ethernet 00:1c:c0:2c:20:2f;
+	fixed-address 138.37.24.130;
+}
+
+host CSSLJ5-pr {
+	hardware ethernet 00:30:6e:c8:c0:38;
+	fixed-address 138.37.24.137, 138.37.19.82;
+}
+
+host MIS16906 {
+	hardware ethernet 00:07:e9:96:7a:b0;
+	fixed-address 138.37.24.139;
+}
+
+host cs-21476 {
+	hardware ethernet 00:19:d1:9a:37:3a;
+	fixed-address 138.37.24.140;
+}
+
+host cs-18944 {
+	hardware ethernet 00:11:11:24:45:d5;
+	fixed-address 138.37.24.141;
+}
+
+host cs-21232 {
+	hardware ethernet 00:16:76:6a:63:84;
+	fixed-address 138.37.24.158, 138.37.19.45;
+}
+
+host bsu-21363 {
+	hardware ethernet 00:e0:29:0f:5d:e3;
+	fixed-address 138.37.24.160, 138.37.16.31;
+}
+
+host bsu-16484 {
+	hardware ethernet 00:16:76:21:29:ac;
+	fixed-address 138.37.24.161;
+}
+
+host bsu-16850 {
+	hardware ethernet 00:16:76:09:25:a3;
+	fixed-address 138.37.24.162;
+}
+
+host bsu-16456 {
+	hardware ethernet 00:03:ff:29:33:9a;
+	fixed-address 138.37.24.163;
+}
+
+host bsu-20147 {
+	hardware ethernet 00:1c:c0:07:92:3a;
+	fixed-address 138.37.24.164;
+}
+
+host bsu-18167 {
+	hardware ethernet 00:11:11:40:af:0a;
+	fixed-address 138.37.24.165, 138.37.16.238;
+}
+
+host bsu-16454 {
+	hardware ethernet 00:03:47:fb:b3:d7;
+	fixed-address 138.37.24.166, 138.37.16.239;
+}
+
+host bsu-19248 {
+	hardware ethernet 00:1c:c0:cc:2a:13;
+	fixed-address 138.37.24.167;
+}
+
+host bsu-15112 {
+	hardware ethernet 00:00:86:5c:9d:5c;
+	fixed-address 138.37.24.168;
+}
+
+host bsu-30445 {
+	hardware ethernet 00:1c:c0:be:40:e7;
+	fixed-address 138.37.24.169;
+}
+
+host bsu-30498 {
+	hardware ethernet 00:1c:c0:bf:1c:bc;
+	fixed-address 138.37.24.170;
+}
+
+host bsu-21204 {
+	hardware ethernet 00:16:76:50:db:0a;
+	fixed-address 138.37.24.171;
+}
+
+host bsu-30724 {
+	hardware ethernet 00:1c:c0:cb:e0:77;
+	fixed-address 138.37.24.172;
+}
+
+host bsu-pr {
+	hardware ethernet 00:23:7d:87:26:aa;
+	fixed-address 138.37.24.175;
+}
+
+host ccrs-16861 {
+	hardware ethernet 00:e0:18:bf:c1:b1;
+	fixed-address 138.37.24.181;
+}
+
+host reg-19107 {
+	hardware ethernet 00:1c:c0:41:14:51;
+	fixed-address 138.37.24.182;
+}
+
+host scs-30437 {
+	hardware ethernet 00:25:4b:cf:12:04;
+	fixed-address 138.37.24.183;
+}
+
+host scs-30438 {
+	hardware ethernet 00:25:4b:cf:02:34;
+	fixed-address 138.37.24.184;
+}
+
+host ccrs-16867 {
+	hardware ethernet 00:e0:18:e2:29:78;
+	fixed-address 138.37.24.185;
+}
+
+host ccrs-16865 {
+	hardware ethernet 00:e0:18:e2:2a:bd;
+	fixed-address 138.37.24.186;
+}
+
+host scs-30441 {
+	hardware ethernet 00:1c:c0:be:3a:9d;
+	fixed-address 138.37.24.187;
+}
+
+host ccrs-18711 {
+	hardware ethernet 00:11:11:ed:83:a6;
+	fixed-address 138.37.24.188;
+}
+
+host ccrs-15412 {
+	hardware ethernet 00:03:47:a2:bd:50;
+	fixed-address 138.37.24.189;
+}
+
+host ccrs-21948 {
+	hardware ethernet 00:16:76:be:93:75;
+	fixed-address 138.37.24.190;
+}
+
+host ccrs-18712 {
+	hardware ethernet 00:11:11:ed:86:28;
+	fixed-address 138.37.24.191;
+}
+
+host ccrs-16887 {
+	hardware ethernet 00:e0:18:97:10:17;
+	fixed-address 138.37.24.192;
+}
+
+host ccrs-19214 {
+	hardware ethernet 00:1c:c0:14:f5:fd;
+	fixed-address 138.37.24.193;
+}
+
+host ccrs-16102 {
+	hardware ethernet 00:08:0d:a7:d7:d2;
+	fixed-address 138.37.24.194;
+}
+
+host ccrs-15428 {
+	hardware ethernet 00:01:e6:61:0e:cf;
+	fixed-address 138.37.24.195;
+}
+
+host ccrs-18601 {
+	hardware ethernet 00:11:11:9f:e1:76;
+	fixed-address 138.37.24.196;
+}
+
+host MIS16776-prn {
+	hardware ethernet 00:01:e6:60:eb:0f;
+	fixed-address 138.37.24.197;
+}
+
+host ccrs-21344 {
+	hardware ethernet 00:19:d1:3d:9d:7c;
+	fixed-address 138.37.24.198;
+}
+
+host ccrs-21345 {
+	hardware ethernet 00:19:d1:3d:9d:14;
+	fixed-address 138.37.24.199;
+}
+
+host ccrs-18163 {
+	hardware ethernet 00:11:11:40:af:57;
+	fixed-address 138.37.24.200;
+}
+
+host ccrs-18643 {
+	hardware ethernet 00:07:e9:3b:a6:7d;
+	fixed-address 138.37.24.201;
+}
+
+host ccrs-16669 {
+	hardware ethernet 00:0c:6e:76:04:d8;
+	fixed-address 138.37.24.202;
+}
+
+host ccrs-21451 {
+	hardware ethernet 00:13:20:95:ee:ab;
+	fixed-address 138.37.24.203;
+}
+
+host ccrs-19215 {
+	hardware ethernet 00:1c:c0:16:c8:72;
+	fixed-address 138.37.24.204;
+}
+
+host ccrs-16646 {
+	hardware ethernet 00:0c:6e:75:ff:12;
+	fixed-address 138.37.24.205;
+}
+
+host ccrs-16210 {
+	hardware ethernet 00:07:e9:3c:0a:91;
+	fixed-address 138.37.24.206;
+}
+
+host ccrs-21193 {
+	hardware ethernet 00:13:20:61:0a:85;
+	fixed-address 138.37.24.207;
+}
+
+host ccrs-21475 {
+	hardware ethernet 00:19:d1:9a:c7:5d;
+	fixed-address 138.37.24.208;
+}
+
+host ccrs-16044 {
+	hardware ethernet 00:0c:f1:ae:3e:e4;
+	fixed-address 138.37.24.209;
+}
+
+host ccrs-15432 {
+	hardware ethernet 00:03:47:a1:4e:c2;
+	fixed-address 138.37.24.210;
+}
+
+host ccrs-16476 {
+	hardware ethernet 00:03:47:2a:33:93;
+	fixed-address 138.37.24.211;
+}
+
+host ccrs-16745 {
+	hardware ethernet 00:e0:18:e2:2e:cd;
+	fixed-address 138.37.24.212;
+}
+
+host ccrs-21918 {
+	hardware ethernet 00:0a:95:ef:09:b2;
+	fixed-address 138.37.24.213;
+}
+
+host ccrs-16184 {
+	hardware ethernet 00:11:11:25:8d:f3;
+	fixed-address 138.37.24.214;
+}
+
+host ccrs-18619 {
+	hardware ethernet 00:11:11:a0:05:46;
+	fixed-address 138.37.24.215;
+}
+
+host ccrs-18616 {
+	hardware ethernet 00:11:11:a0:00:58;
+	fixed-address 138.37.24.216;
+}
+
+host ccrs-18949 {
+	hardware ethernet 00:11:11:8d:79:cc;
+	fixed-address 138.37.24.217;
+}
+
+host ccrs-18263 {
+	hardware ethernet 00:11:11:40:af:40;
+	fixed-address 138.37.24.218;
+}
+
+host ccrs-16828 {
+	hardware ethernet 00:e0:18:bf:c0:f0;
+	fixed-address 138.37.24.219;
+}
+
+host ccrs-16170 {
+	hardware ethernet 00:0c:f1:ae:3a:ff;
+	fixed-address 138.37.24.220;
+}
+
+host residences2-pr {
+	hardware ethernet 00:30:6e:c8:82:b3;
+	fixed-address 138.37.24.222;
+}
+
+host residences4-pr {
+	hardware ethernet 00:1f:29:22:a4:17;
+	fixed-address 138.37.24.224;
+}
+
+host ccrs-21211 {
+	hardware ethernet 00:16:76:b0:7c:77;
+	fixed-address 138.37.24.225;
+}
+
+host ccrs-21270 {
+	hardware ethernet 00:16:76:b0:81:3a;
+	fixed-address 138.37.24.226;
+}
+
+host ccrs-21308 {
+	hardware ethernet 00:16:76:b0:75:b0;
+	fixed-address 138.37.24.227;
+}
+
+host scs-19402 {
+	hardware ethernet 00:19:d1:a3:ff:bd;
+	fixed-address 138.37.24.228;
+}
+
+host ccrs-21470 {
+	hardware ethernet 00:19:d1:7f:f7:39;
+	fixed-address 138.37.24.229;
+}
+
+host ccrs-19409 {
+	hardware ethernet 00:1c:c0:07:91:d0;
+	fixed-address 138.37.24.230;
+}
+
+host ccrs-21817DH {
+	hardware ethernet 00:0e:7b:7f:d1:8d;
+	fixed-address 138.37.24.231;
+}
+
+host scs-30388 {
+	hardware ethernet 00:1c:c0:82:14:ee;
+	fixed-address 138.37.24.232;
+}
+
+host ccrs-21259 {
+	hardware ethernet 00:16:76:44:14:44;
+	fixed-address 138.37.24.233;
+}
+
+host ccrs-19450 {
+	hardware ethernet 00:1c:c0:16:ad:95;
+	fixed-address 138.37.24.234;
+}
+
+host ccrs-19445 {
+	hardware ethernet 00:1c:c0:be:f7:ee;
+	fixed-address 138.37.24.235;
+}
+
+host ccrs-19443 {
+	hardware ethernet 00:1c:c0:16:ae:1c;
+	fixed-address 138.37.24.236;
+}
+
+host ccrs-19210 {
+	hardware ethernet 00:1c:c0:13:e1:9b;
+	fixed-address 138.37.24.237;
+}
+
+host ccrs-20024 {
+	hardware ethernet 00:1c:c0:16:da:46;
+	fixed-address 138.37.24.238;
+}
+
+host ccrs-20025 {
+	hardware ethernet 00:1c:c0:16:da:90;
+	fixed-address 138.37.24.239;
+}
+
+host ccrs-20029 {
+	hardware ethernet 00:1c:c0:09:10:17;
+	fixed-address 138.37.24.240;
+}
+
+host ccrs-19232 {
+	hardware ethernet 00:1f:5b:ee:7c:6f;
+	fixed-address 138.37.24.241;
+}
+
+host ccrs-19234 {
+	hardware ethernet 00:1f:f3:54:34:d6;
+	fixed-address 138.37.24.242;
+}
+
+host ccrs4-ps {
+	hardware ethernet 00:0e:7f:e0:73:98;
+	fixed-address 138.37.24.243;
+}
+
+host ccrs-21370 {
+	hardware ethernet 00:1c:c0:77:54:a2;
+	fixed-address 138.37.24.244;
+}
+
+host ccrs-20044 {
+	hardware ethernet 00:1c:c0:13:ea:a6;
+	fixed-address 138.37.24.245;
+}
+
+host ccrs-19150 {
+	hardware ethernet 00:1c:c0:41:13:e0;
+	fixed-address 138.37.24.246;
+}
+
+host scs-30432 {
+	hardware ethernet 00:1c:c0:be:40:da;
+	fixed-address 138.37.24.247;
+}
+
+host scs-30428 {
+	hardware ethernet 00:1c:c0:be:33:db;
+	fixed-address 138.37.24.248;
+}
+
+host ccrs-21825 {
+	hardware ethernet 00:13:20:94:f2:2a;
+	fixed-address 138.37.24.249;
+}
+
+host ccrs-21806 {
+	hardware ethernet 00:13:20:94:f5:30;
+	fixed-address 138.37.24.250;
+}
+
+host ccrs-21807 {
+	hardware ethernet 00:13:20:94:f4:fc;
+	fixed-address 138.37.24.251;
+}
+
+host ccrs-21810 {
+	hardware ethernet 00:16:76:43:ff:9d;
+	fixed-address 138.37.24.253;
+}
+
+host ccrs-16795 {
+	hardware ethernet 00:0c:6e:36:b2:ff;
+	fixed-address 138.37.24.254;
+}
+
+host ccrs-19037 {
+	hardware ethernet 00:1c:c0:77:9a:f7;
+	fixed-address 138.37.25.1;
+}
+
+host ccrs-16785 {
+	hardware ethernet 00:0c:6e:36:b3:3a;
+	fixed-address 138.37.25.2;
+}
+
+host ccrs-16956 {
+	hardware ethernet 00:03:47:2a:33:9e;
+	fixed-address 138.37.25.3;
+}
+
+host ccrs-16689 {
+	hardware ethernet 00:0c:6e:75:ff:00;
+	fixed-address 138.37.25.4;
+}
+
+host ccrs-18657 {
+	hardware ethernet 00:13:20:61:bd:e2;
+	fixed-address 138.37.25.5;
+}
+
+host ccrs-21337 {
+	hardware ethernet 00:16:76:b0:81:56;
+	fixed-address 138.37.25.6;
+}
+
+host ccrs-21427 {
+	hardware ethernet 00:16:76:b0:8c:cf;
+	fixed-address 138.37.25.7;
+}
+
+host ccrs-18670 {
+	hardware ethernet 00:16:76:b0:8d:32;
+	fixed-address 138.37.25.8;
+}
+
+host scs-30430 {
+	hardware ethernet 00:1c:c0:be:3f:3e;
+	fixed-address 138.37.25.9;
+}
+
+host scs-21328 {
+	hardware ethernet 00:16:76:b0:82:a2;
+	fixed-address 138.37.25.10;
+}
+
+host scs-30346 {
+	hardware ethernet 00:1c:c0:82:14:98;
+	fixed-address 138.37.25.11;
+}
+
+host scs-30347 {
+	hardware ethernet 00:1c:c0:82:14:e9;
+	fixed-address 138.37.25.12;
+}
+
+host scs-30348 {
+	hardware ethernet 00:1c:c0:82:12:8c;
+	fixed-address 138.37.25.13;
+}
+
+host scs2-pr {
+	hardware ethernet 00:00:74:e4:b5:bc;
+	fixed-address 138.37.25.14;
+}
+
+host ccrs3-pr {
+	hardware ethernet 00:00:74:e3:78:ac;
+	fixed-address 138.37.25.15;
+}
+
+host careers-21181 {
+	hardware ethernet 00:13:20:61:07:76;
+	fixed-address 138.37.25.16;
+}
+
+host careers-21182 {
+	hardware ethernet 00:13:20:61:0a:7b;
+	fixed-address 138.37.25.17;
+}
+
+host careers-30810 {
+	hardware ethernet 00:1c:c0:cb:ff:2d;
+	fixed-address 138.37.25.18;
+}
+
+host careers-30905 {
+	hardware ethernet 00:27:0e:0b:20:cd;
+	fixed-address 138.37.25.19;
+}
+
+host careers-20138 {
+	hardware ethernet 00:1c:c0:77:49:2b;
+	fixed-address 138.37.25.20;
+}
+
+host careers-20139 {
+	hardware ethernet 00:1c:c0:77:4a:bb;
+	fixed-address 138.37.25.21;
+}
+
+host careers-20142 {
+	hardware ethernet 00:1c:c0:77:55:27;
+	fixed-address 138.37.25.22;
+}
+
+host careers-20143 {
+	hardware ethernet 00:1c:c0:77:48:79;
+	fixed-address 138.37.25.23;
+}
+
+host careers-20140 {
+	hardware ethernet 00:1c:c0:77:48:89;
+	fixed-address 138.37.25.24;
+}
+
+host careers-20141 {
+	hardware ethernet 00:1c:c0:77:48:a1;
+	fixed-address 138.37.25.25;
+}
+
+host careers-15724 {
+	hardware ethernet 00:03:47:a2:bf:07;
+	fixed-address 138.37.25.26;
+}
+
+host careers-16837 {
+	hardware ethernet 00:11:11:24:45:b8;
+	fixed-address 138.37.25.27;
+}
+
+host careers-15427 {
+	hardware ethernet 00:03:47:a1:4b:54;
+	fixed-address 138.37.25.28;
+}
+
+host careers-14634 {
+	hardware ethernet 00:50:04:3d:f0:84;
+	fixed-address 138.37.25.29;
+}
+
+host careers-15414 {
+	hardware ethernet 00:03:47:94:e2:c7;
+	fixed-address 138.37.25.30;
+}
+
+host careers-16160 {
+	hardware ethernet 00:11:11:24:45:a8;
+	fixed-address 138.37.25.32;
+}
+
+host careers-18941 {
+	hardware ethernet 00:11:11:25:8a:03;
+	fixed-address 138.37.25.33;
+}
+
+host careers-18943 {
+	hardware ethernet 00:11:11:24:45:c7;
+	fixed-address 138.37.25.34;
+}
+
+host careers-18942 {
+	hardware ethernet 00:11:11:25:8d:ec;
+	fixed-address 138.37.25.35;
+}
+
+host careers-18730 {
+	hardware ethernet 00:0e:7b:16:87:67;
+	fixed-address 138.37.25.36;
+}
+
+host careers-21183 {
+	hardware ethernet 00:13:20:61:0b:2f;
+	fixed-address 138.37.25.37;
+}
+
+host careers-19602 {
+	hardware ethernet 00:19:d1:95:77:5c;
+	fixed-address 138.37.25.38;
+}
+
+host careers-19144 {
+	hardware ethernet 00:1c:c0:77:9b:7d;
+	fixed-address 138.37.25.39;
+}
+
+host scs-30596 {
+	hardware ethernet 00:1c:c0:bf:66:e9;
+	fixed-address 138.37.25.40;
+}
+
+host scs-30597 {
+	hardware ethernet 00:1c:c0:bf:51:e7;
+	fixed-address 138.37.25.41;
+}
+
+host scs-30598 {
+	hardware ethernet 00:1c:c0:bf:51:ef;
+	fixed-address 138.37.25.42;
+}
+
+host scs-30717 {
+	hardware ethernet 00:1c:c0:cb:e0:55;
+	fixed-address 138.37.25.43;
+}
+
+host scs-30732 {
+	hardware ethernet 00:1c:c0:cc:01:d7;
+	fixed-address 138.37.25.44;
+}
+
+host scs-30733 {
+	hardware ethernet 00:1c:c0:cb:e0:4d;
+	fixed-address 138.37.25.45;
+}
+
+host scs-30734 {
+	hardware ethernet 00:1c:c0:cb:e0:61;
+	fixed-address 138.37.25.46;
+}
+
+host scs-30768 {
+	hardware ethernet 00:1c:c0:cb:fd:13;
+	fixed-address 138.37.25.47;
+}
+
+host scs-30769 {
+	hardware ethernet 00:1c:c0:cc:01:85;
+	fixed-address 138.37.25.48;
+}
+
+host scs-30807 {
+	hardware ethernet 00:1c:c0:cb:fc:d9;
+	fixed-address 138.37.25.49;
+}
+
+host scs-30809 {
+	hardware ethernet 00:1c:c0:cb:fc:c5;
+	fixed-address 138.37.25.50;
+}
+
+host scs-30921 {
+	hardware ethernet 00:27:0e:0b:21:1f;
+	fixed-address 138.37.25.51;
+}
+
+host scs-30922 {
+	hardware ethernet 00:27:0e:0b:23:ba;
+	fixed-address 138.37.25.52;
+}
+
+host scs-30923 {
+	hardware ethernet 00:27:0e:0b:23:9d;
+	fixed-address 138.37.25.53;
+}
+
+host scs-30939 {
+	hardware ethernet 70:71:bc:18:ac:69;
+	fixed-address 138.37.25.54;
+}
+
+host scs-30948 {
+	hardware ethernet 70:71:bc:43:2f:86;
+	fixed-address 138.37.25.55;
+}
+
+host scs-30949 {
+	hardware ethernet 70:71:bc:43:6e:1f;
+	fixed-address 138.37.25.56;
+}
+
+host scs3-pr {
+	hardware ethernet 00:30:6e:f7:85:79;
+	fixed-address 138.37.25.63;
+}
+
+host scs4-pr {
+	hardware ethernet 00:10:83:43:f9:97;
+	fixed-address 138.37.25.64;
+}
+
+host reg-30917 {
+	hardware ethernet 00:27:0e:0b:21:46;
+	fixed-address 138.37.25.65;
+}
+
+host reg-30918 {
+	hardware ethernet 00:27:0e:0b:23:5d;
+	fixed-address 138.37.25.66;
+}
+
+host reg-30919 {
+	hardware ethernet 00:27:0e:0b:23:5f;
+	fixed-address 138.37.25.67;
+}
+
+host reg-30731 {
+	hardware ethernet 00:1c:c0:cb:ff:2f;
+	fixed-address 138.37.25.68;
+}
+
+host reg-30427 {
+	hardware ethernet 00:1c:c0:be:39:f7;
+	fixed-address 138.37.25.69;
+}
+
+host admis-30389 {
+	hardware ethernet 00:1c:c0:82:14:cc;
+	fixed-address 138.37.25.70;
+}
+
+host admis-30390 {
+	hardware ethernet 00:1c:c0:82:14:fc;
+	fixed-address 138.37.25.71;
+}
+
+host reg-30366 {
+	hardware ethernet 00:1c:c0:be:23:e4;
+	fixed-address 138.37.25.72;
+}
+
+host reg-30367 {
+	hardware ethernet 00:1c:c0:be:23:dc;
+	fixed-address 138.37.25.73;
+}
+
+host reg-30368 {
+	hardware ethernet 00:1c:c0:be:23:ce;
+	fixed-address 138.37.25.74;
+}
+
+host reg-30369 {
+	hardware ethernet 00:1c:c0:be:23:c2;
+	fixed-address 138.37.25.75;
+}
+
+host reg-30370 {
+	hardware ethernet 00:1c:c0:be:23:aa;
+	fixed-address 138.37.25.76;
+}
+
+host reg-30371 {
+	hardware ethernet 00:1c:c0:be:23:c0;
+	fixed-address 138.37.25.77;
+}
+
+host reg-30373 {
+	hardware ethernet 00:1c:c0:be:23:e6;
+	fixed-address 138.37.25.78;
+}
+
+host reg-30618 {
+	hardware ethernet 00:1c:c0:be:ba:48;
+	fixed-address 138.37.25.79;
+}
+
+host reg-30621 {
+	hardware ethernet 00:1c:c0:be:ba:b2;
+	fixed-address 138.37.25.80;
+}
+
+host reg-30631 {
+	hardware ethernet 00:1c:c0:be:b5:00;
+	fixed-address 138.37.25.81;
+}
+
+host reg-30718 {
+	hardware ethernet 00:1c:c0:cb:e0:6b;
+	fixed-address 138.37.25.82;
+}
+
+host reg-30719 {
+	hardware ethernet 00:1c:c0:cb:fe:87;
+	fixed-address 138.37.25.83;
+}
+
+host reg-30722 {
+	hardware ethernet 00:1c:c0:cb:ff:0f;
+	fixed-address 138.37.25.84;
+}
+
+host reg-30501 {
+	hardware ethernet 00:1c:c0:be:cb:68;
+	fixed-address 138.37.25.85;
+}
+
+host reg-30605 {
+	hardware ethernet 00:1c:c0:bf:66:bf;
+	fixed-address 138.37.25.86;
+}
+
+host reg-30603 {
+	hardware ethernet 00:1c:c0:bf:66:cd;
+	fixed-address 138.37.25.87;
+}
+
+host reg-30604 {
+	hardware ethernet 00:1c:c0:bf:66:b1;
+	fixed-address 138.37.25.88;
+}
+
+host reg-30531 {
+	hardware ethernet 00:1c:c0:bf:51:bb;
+	fixed-address 138.37.25.89;
+}
+
+host reg-30407 {
+	hardware ethernet 00:1c:c0:82:12:7c;
+	fixed-address 138.37.25.90;
+}
+
+host reg-18603 {
+	hardware ethernet 00:11:11:2f:6b:53;
+	fixed-address 138.37.25.91;
+}
+
+host reg-18169 {
+	hardware ethernet 00:11:11:40:af:61;
+	fixed-address 138.37.25.92;
+}
+
+host reg-21460 {
+	hardware ethernet 00:13:20:95:ec:8d;
+	fixed-address 138.37.25.93;
+}
+
+host reg-21455 {
+	hardware ethernet 00:13:20:95:ee:b9;
+	fixed-address 138.37.25.94;
+}
+
+host reg-21835 {
+	hardware ethernet 00:16:76:44:1f:48;
+	fixed-address 138.37.25.95;
+}
+
+host reg-21840 {
+	hardware ethernet 00:16:76:44:00:a6;
+	fixed-address 138.37.25.96;
+}
+
+host reg-16136 {
+	hardware ethernet 00:07:e9:3b:f6:fb;
+	fixed-address 138.37.25.97;
+}
+
+host reg-18674 {
+	hardware ethernet 00:16:76:50:bb:28;
+	fixed-address 138.37.25.98;
+}
+
+host reg-21836 {
+	hardware ethernet 00:16:76:88:1a:b6;
+	fixed-address 138.37.25.99;
+}
+
+host reg-21297 {
+	hardware ethernet 00:16:76:be:91:fb;
+	fixed-address 138.37.25.100;
+}
+
+host reg-21339 {
+	hardware ethernet 00:16:76:be:92:44;
+	fixed-address 138.37.25.101;
+}
+
+host admis-30980 {
+	hardware ethernet 70:71:bc:43:6d:d2;
+	fixed-address 138.37.25.102;
+}
+
+host reg-19035 {
+	hardware ethernet 00:1c:c0:77:54:cf;
+	fixed-address 138.37.25.105;
+}
+
+host reg-21219 {
+	hardware ethernet 00:16:76:b0:80:8c;
+	fixed-address 138.37.25.106;
+}
+
+host admis3-ps {
+	hardware ethernet 00:00:74:da:3e:1e;
+	fixed-address 138.37.25.107;
+}
+
+host reg-21436 {
+	hardware ethernet 00:19:d1:81:83:06;
+	fixed-address 138.37.25.109;
+}
+
+host reg-21334 {
+	hardware ethernet 00:19:d1:7f:f7:c5;
+	fixed-address 138.37.25.110;
+}
+
+host reg-21323 {
+	hardware ethernet 00:19:d1:7f:f3:34;
+	fixed-address 138.37.25.111;
+}
+
+host reg-21428 {
+	hardware ethernet 00:19:d1:7f:ea:7d;
+	fixed-address 138.37.25.113;
+}
+
+host reg-21425 {
+	hardware ethernet 00:19:d1:7f:f9:49;
+	fixed-address 138.37.25.114;
+}
+
+host reg-21343 {
+	hardware ethernet 00:19:d1:7f:fe:2b;
+	fixed-address 138.37.25.115;
+}
+
+host reg-21341 {
+	hardware ethernet 00:19:d1:81:83:2f;
+	fixed-address 138.37.25.116;
+}
+
+host reg-21342 {
+	hardware ethernet 00:19:d1:7f:f7:a5;
+	fixed-address 138.37.25.117;
+}
+
+host reg-21271 {
+	hardware ethernet 00:19:d1:7f:e0:e8;
+	fixed-address 138.37.25.118;
+}
+
+host reg-21423 {
+	hardware ethernet 00:19:d1:81:83:26;
+	fixed-address 138.37.25.120;
+}
+
+host reg-21432 {
+	hardware ethernet 00:19:d1:7f:fe:30;
+	fixed-address 138.37.25.121;
+}
+
+host reg-21307 {
+	hardware ethernet 00:19:d1:81:83:3d;
+	fixed-address 138.37.25.122;
+}
+
+host reg-21329 {
+	hardware ethernet 00:19:d1:7f:f9:51;
+	fixed-address 138.37.25.123;
+}
+
+host reg-21925 {
+	hardware ethernet 00:19:d1:81:86:c4;
+	fixed-address 138.37.25.124;
+}
+
+host reg-19038 {
+	hardware ethernet 00:1c:c0:77:54:fb;
+	fixed-address 138.37.25.125;
+}
+
+host reg-16722 {
+	hardware ethernet 00:0c:f1:6c:21:dc;
+	fixed-address 138.37.25.126;
+}
+
+host reg-20117 {
+	hardware ethernet 00:1c:c0:07:91:c0;
+	fixed-address 138.37.25.128;
+}
+
+host reg-20119 {
+	hardware ethernet 00:1c:c0:07:85:67;
+	fixed-address 138.37.25.129;
+}
+
+host reg-20123 {
+	hardware ethernet 00:19:d1:b3:01:3a;
+	fixed-address 138.37.25.130;
+}
+
+host reg-20124 {
+	hardware ethernet 00:19:d1:7f:4b:2d;
+	fixed-address 138.37.25.131;
+}
+
+host reg-19413 {
+	hardware ethernet 00:1c:c0:07:91:8e;
+	fixed-address 138.37.25.132;
+}
+
+host reg-19412 {
+	hardware ethernet 00:1c:c0:07:92:7b;
+	fixed-address 138.37.25.133;
+}
+
+host admis-20125 {
+	hardware ethernet 00:19:d1:b3:00:1f;
+	fixed-address 138.37.25.134;
+}
+
+host admis-20126 {
+	hardware ethernet 00:1c:c0:07:92:9b;
+	fixed-address 138.37.25.135;
+}
+
+host admis-16140 {
+	hardware ethernet 00:0c:f1:ae:3b:18;
+	fixed-address 138.37.25.136;
+}
+
+host reg-20026 {
+	hardware ethernet 00:1c:c0:2b:04:b6;
+	fixed-address 138.37.25.137;
+}
+
+host admis-20027 {
+	hardware ethernet 00:1c:c0:16:da:78;
+	fixed-address 138.37.25.138;
+}
+
+host reg-19240 {
+	hardware ethernet 00:1c:c0:41:14:56;
+	fixed-address 138.37.25.139;
+}
+
+host reg-19241 {
+	hardware ethernet 00:1c:c0:41:13:f3;
+	fixed-address 138.37.25.140;
+}
+
+host reg-19247 {
+	hardware ethernet 00:1c:c0:41:13:cb;
+	fixed-address 138.37.25.141;
+}
+
+host reg-16853 {
+	hardware ethernet 00:e0:18:e2:2f:30;
+	fixed-address 138.37.25.143;
+}
+
+host reg-18606 {
+	hardware ethernet 00:13:20:61:07:5a;
+	fixed-address 138.37.25.144;
+}
+
+host reg-sis-21371 {
+	hardware ethernet 00:1c:c0:09:20:c0;
+	fixed-address 138.37.25.145;
+}
+
+host reg-18174 {
+	hardware ethernet 00:11:11:40:ae:ca;
+	fixed-address 138.37.25.146;
+}
+
+host reg-21178 {
+	hardware ethernet 00:13:20:61:0b:1d;
+	fixed-address 138.37.25.147;
+}
+
+host admis-20028 {
+	hardware ethernet 00:1c:c0:07:3d:0a;
+	fixed-address 138.37.25.148;
+}
+
+host reg-sis-21939 {
+	hardware ethernet 00:16:76:43:9d:64;
+	fixed-address 138.37.25.149;
+}
+
+host reg-sis-21942 {
+	hardware ethernet 00:16:76:44:17:6c;
+	fixed-address 138.37.25.150;
+}
+
+host reg-sis-21829 {
+	hardware ethernet 00:16:76:40:9e:44;
+	fixed-address 138.37.25.151;
+}
+
+host reg-sis-21834 {
+	hardware ethernet 00:16:76:43:f2:94;
+	fixed-address 138.37.25.152;
+}
+
+host reg-sis-21246 {
+	hardware ethernet 00:16:76:88:26:2b;
+	fixed-address 138.37.25.153;
+}
+
+host reg-sis-21240 {
+	hardware ethernet 00:16:76:88:23:43;
+	fixed-address 138.37.25.154;
+}
+
+host reg-21405 {
+	hardware ethernet 00:16:76:88:01:a1;
+	fixed-address 138.37.25.155;
+}
+
+host reg-sis-21242 {
+	hardware ethernet 00:16:76:88:0b:8a;
+	fixed-address 138.37.25.156;
+}
+
+host reg-sis-21372 {
+	hardware ethernet 00:1c:c0:77:46:6c;
+	fixed-address 138.37.25.157;
+}
+
+host reg-21385 {
+	hardware ethernet 00:1c:c0:2c:2b:f2;
+	fixed-address 138.37.25.158;
+}
+
+host reg-sis-21214 {
+	hardware ethernet 00:16:76:87:b9:ef;
+	fixed-address 138.37.25.159;
+}
+
+host reg-19102 {
+	hardware ethernet 00:1c:c0:2c:2d:2d;
+	fixed-address 138.37.25.160;
+}
+
+host reg-19108 {
+	hardware ethernet 00:1c:c0:2c:15:e1;
+	fixed-address 138.37.25.161;
+}
+
+host admis-19109 {
+	hardware ethernet 00:1c:c0:2c:51:73;
+	fixed-address 138.37.25.162;
+}
+
+host reg-19047 {
+	hardware ethernet 00:1c:c0:77:9b:79;
+	fixed-address 138.37.25.163;
+}
+
+host reg-19048 {
+	hardware ethernet 00:1c:c0:77:9b:9b;
+	fixed-address 138.37.25.164;
+}
+
+host reg-19029 {
+	hardware ethernet 00:1c:c0:77:9b:65;
+	fixed-address 138.37.25.165;
+}
+
+host reg-19050 {
+	hardware ethernet 00:1c:c0:77:9b:91;
+	fixed-address 138.37.25.166;
+}
+
+host reg-30069 {
+	hardware ethernet 00:1c:c0:82:15:34;
+	fixed-address 138.37.25.168;
+}
+
+host admis-21368 {
+	hardware ethernet 00:1c:c0:82:06:c9;
+	fixed-address 138.37.25.169;
+}
+
+host reg-21254 {
+	hardware ethernet 00:1c:c0:82:15:62;
+	fixed-address 138.37.25.170;
+}
+
+host reg13-pr {
+	hardware ethernet 00:20:6b:5b:09:0b;
+	fixed-address 138.37.25.171;
+}
+
+host reg-30356 {
+	hardware ethernet 00:1c:c0:82:12:94;
+	fixed-address 138.37.25.172;
+}
+
+host reg7-pr {
+	hardware ethernet 00:00:74:ce:b4:0d;
+	fixed-address 138.37.25.173;
+}
+
+host reg-30910 {
+	hardware ethernet 00:27:0e:0b:40:fa;
+	fixed-address 138.37.25.174;
+}
+
+host princ-18642 {
+	hardware ethernet 00:11:11:84:72:90;
+	fixed-address 138.37.25.176;
+}
+
+host princ-18265 {
+	hardware ethernet 00:11:11:f0:13:06;
+	fixed-address 138.37.25.177;
+}
+
+host princ-21941 {
+	hardware ethernet 00:16:76:43:99:24;
+	fixed-address 138.37.25.178;
+}
+
+host princ-18267 {
+	hardware ethernet 00:11:11:f0:12:9b;
+	fixed-address 138.37.25.180;
+}
+
+host princ-18266 {
+	hardware ethernet 00:11:11:f0:12:35;
+	fixed-address 138.37.25.181;
+}
+
+host princ-21235 {
+	hardware ethernet 00:16:76:44:a4:65;
+	fixed-address 138.37.25.182;
+}
+
+host princ-21937 {
+	hardware ethernet 00:19:d1:22:4a:ce;
+	fixed-address 138.37.25.183;
+}
+
+host princ-21201 {
+	hardware ethernet 00:16:76:43:fd:c9;
+	fixed-address 138.37.25.184;
+}
+
+host princ-16463 {
+	hardware ethernet 00:04:75:bd:80:a1;
+	fixed-address 138.37.25.185;
+}
+
+host princ-Ricoh-Pr {
+	hardware ethernet 00:00:74:b0:c1:b8;
+	fixed-address 138.37.25.186;
+}
+
+host ootp-19209 {
+	hardware ethernet 00:1c:c0:14:63:29;
+	fixed-address 138.37.25.187;
+}
+
+host ootp-19211 {
+	hardware ethernet 00:1c:c0:16:c8:29;
+	fixed-address 138.37.25.188;
+}
+
+host ootp-30497 {
+	hardware ethernet 00:1c:c0:bf:1b:ec;
+	fixed-address 138.37.25.189;
+}
+
+host ootp-21389 {
+	hardware ethernet 00:1c:c0:41:13:b0;
+	fixed-address 138.37.25.190;
+}
+
+host ootp-30511 {
+	hardware ethernet 00:1c:c0:bf:1d:00;
+	fixed-address 138.37.25.191;
+}
+
+host prpl4-ps {
+	hardware ethernet 00:11:85:d7:4f:49;
+	fixed-address 138.37.25.192;
+}
+
+host ootp-30014 {
+	hardware ethernet 00:23:32:9a:36:82;
+	fixed-address 138.37.25.193;
+}
+
+host ootp-30350 {
+	hardware ethernet 00:1c:c0:82:12:4e;
+	fixed-address 138.37.25.194;
+}
+
+host ootp-30928 {
+	hardware ethernet 58:b0:35:aa:c1:64;
+	fixed-address 138.37.25.195;
+}
+
+host ootp-30937 {
+	hardware ethernet 34:15:9e:27:b6:4a;
+	fixed-address 138.37.25.196;
+}
+
+host ootp-30978 {
+	hardware ethernet 70:71:bc:43:7a:56;
+	fixed-address 138.37.25.197;
+}
+
+host ootp-30979 {
+	hardware ethernet 70:71:bc:43:7a:2a;
+	fixed-address 138.37.25.198;
+}
+
+host hso-30399 {
+	hardware ethernet 00:1c:c0:be:3a:8b;
+	fixed-address 138.37.25.201;
+}
+
+host est-30415 {
+	hardware ethernet 00:1c:c0:be:3e:c7;
+	fixed-address 138.37.25.202;
+}
+
+host est-30357 {
+	hardware ethernet 00:1c:c0:82:14:76;
+	fixed-address 138.37.25.203;
+}
+
+host est-30349 {
+	hardware ethernet 00:1c:c0:82:12:89;
+	fixed-address 138.37.25.204;
+}
+
+host est13-pr {
+	hardware ethernet 00:20:6b:5f:14:e2;
+	fixed-address 138.37.25.205;
+}
+
+host est-19235 {
+	hardware ethernet 00:1c:c0:41:13:70;
+	fixed-address 138.37.25.206;
+}
+
+host est-19236 {
+	hardware ethernet 00:1c:c0:14:50:d8;
+	fixed-address 138.37.25.207;
+}
+
+host est-19237 {
+	hardware ethernet 00:1c:c0:27:d1:6d;
+	fixed-address 138.37.25.208;
+}
+
+host est-19239 {
+	hardware ethernet 00:1c:c0:41:13:ef;
+	fixed-address 138.37.25.209;
+}
+
+host est-18666 {
+	hardware ethernet 00:16:76:b0:88:cd;
+	fixed-address 138.37.25.210;
+}
+
+host est-19446 {
+	hardware ethernet 00:1c:c0:07:92:26;
+	fixed-address 138.37.25.211;
+}
+
+host est-19447 {
+	hardware ethernet 00:1c:c0:07:91:84;
+	fixed-address 138.37.25.212;
+}
+
+host est-21412 {
+	hardware ethernet 00:19:d1:3d:ad:17;
+	fixed-address 138.37.25.213;
+}
+
+host est-16723 {
+	hardware ethernet 00:e0:18:e2:2c:10;
+	fixed-address 138.37.25.214;
+}
+
+host est-20112 {
+	hardware ethernet 00:1c:c0:07:91:2c;
+	fixed-address 138.37.25.215;
+}
+
+host est-20121 {
+	hardware ethernet 00:1c:c0:07:92:3e;
+	fixed-address 138.37.25.216;
+}
+
+host est-20120 {
+	hardware ethernet 00:1c:c0:07:8b:87;
+	fixed-address 138.37.25.217;
+}
+
+host est-16123 {
+	hardware ethernet 00:07:e9:3c:0b:7a;
+	fixed-address 138.37.25.218;
+}
+
+host est-19216 {
+	hardware ethernet 00:1c:c0:16:c9:1c;
+	fixed-address 138.37.25.219;
+}
+
+host est-19221 {
+	hardware ethernet 00:1c:c0:07:22:17;
+	fixed-address 138.37.25.220;
+}
+
+host est-21373 {
+	hardware ethernet 00:1c:c0:77:9b:13;
+	fixed-address 138.37.25.221;
+}
+
+host est-21379 {
+	hardware ethernet 00:1c:c0:77:9b:6f;
+	fixed-address 138.37.25.222;
+}
+
+host est-30991 {
+	hardware ethernet 70:71:bc:3c:0b:97;
+	fixed-address 138.37.25.223;
+}
+
+host est-21424 {
+	hardware ethernet 00:16:76:a8:95:ff;
+	fixed-address 138.37.25.224;
+}
+
+host est-18717 {
+	hardware ethernet 00:11:11:ed:86:2b;
+	fixed-address 138.37.25.225;
+}
+
+host est-21929 {
+	hardware ethernet 00:19:d1:5e:8a:53;
+	fixed-address 138.37.25.226;
+}
+
+host est-16546 {
+	hardware ethernet 00:03:47:cf:2f:e2;
+	fixed-address 138.37.25.227;
+}
+
+host est-16529 {
+	hardware ethernet 00:03:47:cf:2f:b8;
+	fixed-address 138.37.25.228;
+}
+
+host est-15716 {
+	hardware ethernet 00:50:da:3f:fc:8a;
+	fixed-address 138.37.25.229;
+}
+
+host est-18204 {
+	hardware ethernet 00:11:11:e0:39:c1;
+	fixed-address 138.37.25.230;
+}
+
+host est-21351 {
+	hardware ethernet 00:1c:c0:77:49:85;
+	fixed-address 138.37.25.231;
+}
+
+host est-21367 {
+	hardware ethernet 00:1c:c0:77:4a:5a;
+	fixed-address 138.37.25.232;
+}
+
+host est-16022 {
+	hardware ethernet 00:0c:f1:ae:3c:66;
+	fixed-address 138.37.25.233;
+}
+
+host est-20035 {
+	hardware ethernet 00:1c:c0:77:4a:a1;
+	fixed-address 138.37.25.234;
+}
+
+host est-16196 {
+	hardware ethernet 00:11:11:25:8b:92;
+	fixed-address 138.37.25.235;
+}
+
+host est-16182 {
+	hardware ethernet 00:11:11:24:45:9b;
+	fixed-address 138.37.25.236;
+}
+
+host est-18602 {
+	hardware ethernet 00:11:11:9f:fd:f5;
+	fixed-address 138.37.25.238;
+}
+
+host est-18720 {
+	hardware ethernet 00:11:11:ed:85:97;
+	fixed-address 138.37.25.239;
+}
+
+host est-18704 {
+	hardware ethernet 00:11:11:ed:83:ed;
+	fixed-address 138.37.25.240;
+}
+
+host est-18608 {
+	hardware ethernet 00:11:11:9f:ef:c2;
+	fixed-address 138.37.25.241;
+}
+
+host est-18315 {
+	hardware ethernet 00:06:5b:e0:fa:6b;
+	fixed-address 138.37.25.242;
+}
+
+host estates7-ps {
+	hardware ethernet 00:00:85:ba:a4:3c;
+	fixed-address 138.37.25.243;
+}
+
+host est-18162 {
+	hardware ethernet 00:11:11:40:af:55;
+	fixed-address 138.37.25.245;
+}
+
+host est-18161 {
+	hardware ethernet 00:11:11:40:af:5b;
+	fixed-address 138.37.25.246;
+}
+
+host est-18168 {
+	hardware ethernet 00:11:11:65:83:3f;
+	fixed-address 138.37.25.247;
+}
+
+host est-21185 {
+	hardware ethernet 00:13:20:61:8f:d4;
+	fixed-address 138.37.25.248;
+}
+
+host est-21179 {
+	hardware ethernet 00:13:20:61:0a:ea;
+	fixed-address 138.37.25.249;
+}
+
+host est-18658 {
+	hardware ethernet 00:13:20:61:b8:71;
+	fixed-address 138.37.25.251;
+}
+
+host est-16497 {
+	hardware ethernet 00:03:47:e7:6d:b1;
+	fixed-address 138.37.25.252;
+}
+
+host est-sec-21458 {
+	hardware ethernet 00:13:20:96:19:da;
+	fixed-address 138.37.25.253;
+}
+
+host est-21826 {
+	hardware ethernet 00:13:20:94:f5:62;
+	fixed-address 138.37.25.254;
+}
+
+host est-21837 {
+	hardware ethernet 00:13:20:94:f3:65;
+	fixed-address 138.37.26.1;
+}
+
+host est-21814 {
+	hardware ethernet 00:16:76:40:9e:8a;
+	fixed-address 138.37.26.2;
+}
+
+host est-21202 {
+	hardware ethernet 00:16:76:44:a7:88;
+	fixed-address 138.37.26.3;
+}
+
+host est-21404 {
+	hardware ethernet 00:16:76:b0:80:0b;
+	fixed-address 138.37.26.4;
+}
+
+host est-21431 {
+	hardware ethernet 00:16:76:b0:8d:18;
+	fixed-address 138.37.26.5;
+}
+
+host est-16545 {
+	hardware ethernet 00:03:47:cf:2f:45;
+	fixed-address 138.37.26.6;
+}
+
+host est-21192 {
+	hardware ethernet 00:13:20:61:0a:c7;
+	fixed-address 138.37.26.7;
+}
+
+host est-21301 {
+	hardware ethernet 00:16:76:b0:8e:31;
+	fixed-address 138.37.26.8;
+}
+
+host est-21309 {
+	hardware ethernet 00:16:76:b0:8c:eb;
+	fixed-address 138.37.26.9;
+}
+
+host est-21227 {
+	hardware ethernet 00:16:76:be:92:62;
+	fixed-address 138.37.26.10;
+}
+
+host est-21415 {
+	hardware ethernet 00:19:d1:3d:9d:60;
+	fixed-address 138.37.26.11;
+}
+
+host est-21408 {
+	hardware ethernet 00:19:d1:5e:c7:87;
+	fixed-address 138.37.26.12;
+}
+
+host est-21930 {
+	hardware ethernet 00:19:d1:5e:95:0f;
+	fixed-address 138.37.26.13;
+}
+
+host est-21931 {
+	hardware ethernet 00:19:d1:5f:4e:24;
+	fixed-address 138.37.26.14;
+}
+
+host est-21310 {
+	hardware ethernet 00:19:d1:5f:4f:e0;
+	fixed-address 138.37.26.15;
+}
+
+host est-21288 {
+	hardware ethernet 00:19:d1:5e:89:ee;
+	fixed-address 138.37.26.16;
+}
+
+host est-21276 {
+	hardware ethernet 00:19:d1:3d:9d:97;
+	fixed-address 138.37.26.17;
+}
+
+host est-21285 {
+	hardware ethernet 00:19:d1:3d:9d:3c;
+	fixed-address 138.37.26.18;
+}
+
+host est-21273 {
+	hardware ethernet 00:19:d1:26:4c:9f;
+	fixed-address 138.37.26.19;
+}
+
+host est-21319 {
+	hardware ethernet 00:19:d1:5e:c6:fc;
+	fixed-address 138.37.26.20;
+}
+
+host est-16547 {
+	hardware ethernet 00:03:47:cf:2f:bb;
+	fixed-address 138.37.26.21;
+}
+
+host est-21311 {
+	hardware ethernet 00:19:d1:7f:f9:88;
+	fixed-address 138.37.26.22;
+}
+
+host est-21924 {
+	hardware ethernet 00:19:d1:7f:e0:d6;
+	fixed-address 138.37.26.23;
+}
+
+host est-21492 {
+	hardware ethernet 00:19:d1:9a:46:d3;
+	fixed-address 138.37.26.24;
+}
+
+host est-19601 {
+	hardware ethernet 00:19:d1:9a:e8:cb;
+	fixed-address 138.37.26.25;
+}
+
+host est-21390 {
+	hardware ethernet 00:19:d1:95:6e:8f;
+	fixed-address 138.37.26.26;
+}
+
+host est-21383 {
+	hardware ethernet 00:19:d1:9a:2f:1f;
+	fixed-address 138.37.26.27;
+}
+
+host est-21479 {
+	hardware ethernet 00:19:d1:9a:2f:a4;
+	fixed-address 138.37.26.28;
+}
+
+host est-20032 {
+	hardware ethernet 00:1c:c0:14:f7:57;
+	fixed-address 138.37.26.29;
+}
+
+host est-21375 {
+	hardware ethernet 00:1c:c0:77:48:90;
+	fixed-address 138.37.26.30;
+}
+
+host est-19228 {
+	hardware ethernet 00:1c:c0:77:4a:ea;
+	fixed-address 138.37.26.31;
+}
+
+host est-18610 {
+	hardware ethernet 00:11:11:a0:05:55;
+	fixed-address 138.37.26.32;
+}
+
+host est-30790 {
+	hardware ethernet 00:1c:c0:cb:fd:4b;
+	fixed-address 138.37.26.33;
+}
+
+host est-30791 {
+	hardware ethernet 00:1c:c0:cb:fd:21;
+	fixed-address 138.37.26.34;
+}
+
+host est-30792 {
+	hardware ethernet 00:1c:c0:cb:fd:37;
+	fixed-address 138.37.26.35;
+}
+
+host est-30793 {
+	hardware ethernet 00:1c:c0:cb:fd:2f;
+	fixed-address 138.37.26.36;
+}
+
+host est-30794 {
+	hardware ethernet 00:1c:c0:cb:fd:23;
+	fixed-address 138.37.26.37;
+}
+
+host est-30975 {
+	hardware ethernet 70:71:bc:43:6e:16;
+	fixed-address 138.37.26.38;
+}
+
+host est-30976 {
+	hardware ethernet 70:71:bc:43:79:e0;
+	fixed-address 138.37.26.39;
+}
+
+host est-30977 {
+	hardware ethernet 70:71:bc:43:79:cc;
+	fixed-address 138.37.26.40;
+}
+
+host extrel-20086 {
+	hardware ethernet 00:1c:c0:82:68:41;
+	fixed-address 138.37.26.42;
+}
+
+host MIS16131 {
+	hardware ethernet 00:07:e9:3c:0a:5d;
+	fixed-address 138.37.26.46;
+}
+
+host extrel-18716 {
+	hardware ethernet 00:11:11:ed:83:72;
+	fixed-address 138.37.26.50;
+}
+
+host extrel-18722 {
+	hardware ethernet 00:0e:7b:1d:db:a3;
+	fixed-address 138.37.26.51;
+}
+
+host extrel-21444 {
+	hardware ethernet 00:16:76:a8:6f:a1;
+	fixed-address 138.37.26.52;
+}
+
+host extrel-18634-lt {
+	hardware ethernet 00:0e:7b:9e:20:5f;
+	fixed-address 138.37.26.53;
+}
+
+host extre-18950 {
+	hardware ethernet 00:01:4a:05:ef:27;
+	fixed-address 138.37.26.54;
+}
+
+host extrel-16190 {
+	hardware ethernet 00:0a:e4:0b:89:f4;
+	fixed-address 138.37.26.55;
+}
+
+host extrel-16881 {
+	hardware ethernet 00:03:47:fb:b4:53;
+	fixed-address 138.37.26.56;
+}
+
+host extrel-20020 {
+	hardware ethernet 00:1c:c0:16:c8:ca;
+	fixed-address 138.37.26.57;
+}
+
+host extrel-19145 {
+	hardware ethernet 00:1c:c0:2c:2d:6b;
+	fixed-address 138.37.26.58;
+}
+
+host extrel-19146 {
+	hardware ethernet 00:1c:c0:14:18:48;
+	fixed-address 138.37.26.59;
+}
+
+host extrel-16744 {
+	hardware ethernet 00:07:e9:85:f0:f4;
+	fixed-address 138.37.26.61;
+}
+
+host extrel-21180 {
+	hardware ethernet 00:13:20:73:a8:4b;
+	fixed-address 138.37.26.63;
+}
+
+host extrel-18659 {
+	hardware ethernet 00:11:24:ce:4b:62;
+	fixed-address 138.37.26.67;
+}
+
+host extrel-30414 {
+	hardware ethernet 00:25:4b:d2:8e:12;
+	fixed-address 138.37.26.68;
+}
+
+host extrel-18664 {
+	hardware ethernet 00:11:24:dc:89:b2;
+	fixed-address 138.37.26.70;
+}
+
+host extrel-21452 {
+	hardware ethernet 00:13:20:95:ee:be;
+	fixed-address 138.37.26.71;
+}
+
+host extrel2-pr {
+	hardware ethernet 08:00:09:be:9e:ce;
+	fixed-address 138.37.26.76;
+}
+
+host extrel-18713 {
+	hardware ethernet 00:11:11:ed:86:a9;
+	fixed-address 138.37.26.77;
+}
+
+host extrel-21811 {
+	hardware ethernet 00:16:76:44:a3:54;
+	fixed-address 138.37.26.78;
+}
+
+host extrel-18260 {
+	hardware ethernet 00:11:24:3c:59:a6;
+	fixed-address 138.37.26.79;
+}
+
+host extrel-15796 {
+	hardware ethernet 00:e0:29:24:d8:2c;
+	fixed-address 138.37.26.80;
+}
+
+host extrel-21198 {
+	hardware ethernet 00:0e:7b:a9:bc:69;
+	fixed-address 138.37.26.81;
+}
+
+host extrel-18660 {
+	hardware ethernet 00:13:20:61:c5:13;
+	fixed-address 138.37.26.85;
+}
+
+host extrel-18661 {
+	hardware ethernet 00:13:20:61:d8:67;
+	fixed-address 138.37.26.86;
+}
+
+host extrel-19238 {
+	hardware ethernet 00:1c:c0:41:14:7b;
+	fixed-address 138.37.26.87;
+}
+
+host extrel-18663 {
+	hardware ethernet 00:13:20:61:d7:d5;
+	fixed-address 138.37.26.88;
+}
+
+host extrel-21850 {
+	hardware ethernet 00:0e:7b:4d:db:76;
+	fixed-address 138.37.26.89;
+}
+
+host extrel-16658 {
+	hardware ethernet 00:e0:06:09:55:66;
+	fixed-address 138.37.26.91;
+}
+
+host extrel-21190 {
+	hardware ethernet 00:90:27:2e:82:17;
+	fixed-address 138.37.26.92;
+}
+
+host extrel-18668 {
+	hardware ethernet 00:13:20:61:d9:6c;
+	fixed-address 138.37.26.94;
+}
+
+host extrel-21457 {
+	hardware ethernet 00:13:20:95:ee:d6;
+	fixed-address 138.37.26.97;
+}
+
+host extrel-16493 {
+	hardware ethernet 00:03:47:e7:6a:54;
+	fixed-address 138.37.26.98;
+}
+
+host extrel-21804 {
+	hardware ethernet 00:13:20:82:03:ad;
+	fixed-address 138.37.26.101;
+}
+
+host extrel-21438 {
+	hardware ethernet 00:16:76:b0:81:58;
+	fixed-address 138.37.26.103;
+}
+
+host extrel-21206 {
+	hardware ethernet 00:16:76:44:a4:76;
+	fixed-address 138.37.26.107;
+}
+
+host extrel-16964 {
+	hardware ethernet 00:07:e9:bf:79:3d;
+	fixed-address 138.37.26.108;
+}
+
+host extrel-21325 {
+	hardware ethernet 00:16:76:b0:75:a8;
+	fixed-address 138.37.26.109;
+}
+
+host extrel-21327 {
+	hardware ethernet 00:16:76:be:92:69;
+	fixed-address 138.37.26.110;
+}
+
+host extrel-21316 {
+	hardware ethernet 00:16:76:b0:8c:fb;
+	fixed-address 138.37.26.111;
+}
+
+host extrel8-ps {
+	hardware ethernet 1c:c1:de:16:61:36;
+	fixed-address 138.37.26.123;
+}
+
+host eduliaison4-ps {
+	hardware ethernet 00:14:38:de:df:d2;
+	fixed-address 138.37.26.124;
+}
+
+host cs-19604 {
+	hardware ethernet 00:1c:c0:40:f0:31;
+	fixed-address 138.37.26.129;
+}
+
+host cs-21252 {
+	hardware ethernet 00:16:76:b0:86:ea;
+	fixed-address 138.37.26.131;
+}
+
+host cs-18678 {
+	hardware ethernet 00:13:20:61:bd:97;
+	fixed-address 138.37.26.132;
+}
+
+host cs-20031 {
+	hardware ethernet 00:1c:c0:2c:2b:37;
+	fixed-address 138.37.26.133;
+}
+
+host cs-18667 {
+	hardware ethernet 00:13:20:61:bd:8a;
+	fixed-address 138.37.26.134;
+}
+
+host cs-21225 {
+	hardware ethernet 00:19:d1:3d:ed:d3;
+	fixed-address 138.37.26.135;
+}
+
+host MIS16897 {
+	hardware ethernet 00:e0:18:d2:b9:58;
+	fixed-address 138.37.26.136;
+}
+
+host cs-16859 {
+	hardware ethernet 00:e0:18:e2:29:d1;
+	fixed-address 138.37.26.138;
+}
+
+host cs-19128 {
+	hardware ethernet 00:1c:c0:82:07:6b;
+	fixed-address 138.37.26.142;
+}
+
+host cs-jgbs {
+	hardware ethernet 00:11:24:3b:27:98;
+	fixed-address 138.37.26.143;
+}
+
+host cs-16697 {
+	hardware ethernet 00:0c:6e:36:b3:38;
+	fixed-address 138.37.26.144;
+}
+
+host cs-15854 {
+	hardware ethernet 00:50:da:44:1d:b3;
+	fixed-address 138.37.26.145;
+}
+
+host cs-tanh3 {
+	hardware ethernet 00:a0:c9:c9:3c:76;
+	fixed-address 138.37.26.147;
+}
+
+host MIS16201 {
+	hardware ethernet 00:0c:f1:6c:21:f9;
+	fixed-address 138.37.26.148;
+}
+
+host cs-tanh2 {
+	hardware ethernet 00:0a:27:e3:07:2c;
+	fixed-address 138.37.26.149;
+}
+
+host cs-16875 {
+	hardware ethernet 00:07:e9:bf:79:53;
+	fixed-address 138.37.26.151;
+}
+
+host cs-19149 {
+	hardware ethernet 00:1c:c0:41:14:af;
+	fixed-address 138.37.26.152;
+}
+
+host cs-21377 {
+	hardware ethernet 00:19:d1:81:83:41;
+	fixed-address 138.37.26.153;
+}
+
+host cs-20118 {
+	hardware ethernet 00:19:d1:e5:fb:cc;
+	fixed-address 138.37.26.154;
+}
+
+host cs-19603 {
+	hardware ethernet 00:1c:c0:07:92:02;
+	fixed-address 138.37.26.155;
+}
+
+host cs-16494 {
+	hardware ethernet 00:03:47:e7:6d:a9;
+	fixed-address 138.37.26.156;
+}
+
+host cs-19414 {
+	hardware ethernet 00:1c:c0:07:84:fa;
+	fixed-address 138.37.26.157;
+}
+
+host cs-19217 {
+	hardware ethernet 00:1c:c0:14:56:25;
+	fixed-address 138.37.26.158;
+}
+
+host cs-30512 {
+	hardware ethernet 00:1c:c0:bf:1c:da;
+	fixed-address 138.37.26.159;
+}
+
+host cs-30728 {
+	hardware ethernet 00:1c:c0:cb:e0:67;
+	fixed-address 138.37.26.160;
+}
+
+host cs-30777 {
+	hardware ethernet 00:1c:c0:cb:fd:29;
+	fixed-address 138.37.26.161;
+}
+
+host cs-30787 {
+	hardware ethernet 00:1c:c0:cb:fd:41;
+	fixed-address 138.37.26.162;
+}
+
+host cs-30808 {
+	hardware ethernet 00:1c:c0:cb:fd:33;
+	fixed-address 138.37.26.163;
+}
+
+host ieu-16127 {
+	hardware ethernet 00:0c:f1:6c:21:1f;
+	fixed-address 138.37.26.192;
+}
+
+host ieu-18300 {
+	hardware ethernet 00:0e:7b:c0:53:6a;
+	fixed-address 138.37.26.193;
+}
+
+host ieu-16948 {
+	hardware ethernet 00:00:39:ae:3a:db;
+	fixed-address 138.37.26.194;
+}
+
+host ieu-21819 {
+	hardware ethernet 00:0e:7b:3f:1f:8e;
+	fixed-address 138.37.26.195;
+}
+
+host ieu-16078 {
+	hardware ethernet 00:0c:f1:ae:3d:4d;
+	fixed-address 138.37.26.196;
+}
+
+host ieu-19419 {
+	hardware ethernet 00:1c:c0:13:a6:f4;
+	fixed-address 138.37.26.197;
+}
+
+host ieu-19420 {
+	hardware ethernet 00:1c:c0:16:ae:6e;
+	fixed-address 138.37.26.198;
+}
+
+host ieu-16926 {
+	hardware ethernet 00:03:47:2a:33:a1;
+	fixed-address 138.37.26.199;
+}
+
+host ieu-18731 {
+	hardware ethernet 00:0e:7b:2e:86:67;
+	fixed-address 138.37.26.200;
+}
+
+host ieu-18733 {
+	hardware ethernet 00:0e:7b:38:88:23;
+	fixed-address 138.37.26.201;
+}
+
+host ieu-18261 {
+	hardware ethernet 00:0e:7b:ad:55:6a;
+	fixed-address 138.37.26.202;
+}
+
+host ieu-21447 {
+	hardware ethernet 00:16:76:b0:8d:0d;
+	fixed-address 138.37.26.203;
+}
+
+host ieu7-ps {
+	hardware ethernet 00:26:73:00:e8:39;
+	fixed-address 138.37.26.204;
+}
+
+host occuh-32003 {
+	hardware ethernet 70:71:bc:3c:0b:ad;
+	fixed-address 138.37.26.217;
+}
+
+host occuh-32004 {
+	hardware ethernet 70:71:bc:3c:0b:ba;
+	fixed-address 138.37.26.218;
+}
+
+host occuh-32005 {
+	hardware ethernet 70:71:bc:3c:0b:dc;
+	fixed-address 138.37.26.219;
+}
+
+host occuh-32006 {
+	hardware ethernet 70:71:bc:3c:0b:f7;
+	fixed-address 138.37.26.220;
+}
+
+host occuh-32007 {
+	hardware ethernet 70:71:bc:3c:0b:cb;
+	fixed-address 138.37.26.221;
+}
+
+host occuh-32008 {
+	hardware ethernet 70:71:bc:3c:0b:f0;
+	fixed-address 138.37.26.222;
+}
+
+host occuh-18948 {
+	hardware ethernet 00:11:11:25:8d:f0;
+	fixed-address 138.37.26.223;
+}
+
+host occuh-16968 {
+	hardware ethernet 00:03:47:fb:b3:75;
+	fixed-address 138.37.26.224;
+}
+
+host occuh-16962 {
+	hardware ethernet 00:03:47:fb:b3:97;
+	fixed-address 138.37.26.225;
+}
+
+host occuh-18288 {
+	hardware ethernet 00:13:20:61:be:1d;
+	fixed-address 138.37.26.226;
+}
+
+host occuh-18682 {
+	hardware ethernet 00:01:02:d0:1d:84;
+	fixed-address 138.37.26.227;
+}
+
+host occuh-21188 {
+	hardware ethernet 00:13:20:61:0a:bd;
+	fixed-address 138.37.26.228;
+}
+
+host occuh-18656 {
+	hardware ethernet 00:13:20:61:be:11;
+	fixed-address 138.37.26.229;
+}
+
+host occuh-21459 {
+	hardware ethernet 00:13:20:95:3b:fc;
+	fixed-address 138.37.26.230;
+}
+
+host occuh-21330 {
+	hardware ethernet 00:16:76:be:92:50;
+	fixed-address 138.37.26.231;
+}
+
+host occuh-21286 {
+	hardware ethernet 00:19:d1:3d:ac:ea;
+	fixed-address 138.37.26.232;
+}
+
+host occuh-18255 {
+	hardware ethernet 00:11:11:25:8d:f7;
+	fixed-address 138.37.26.233;
+}
+
+host occuh-19119 {
+	hardware ethernet 00:1c:c0:2c:54:73;
+	fixed-address 138.37.26.234;
+}
+
+host occuh-19120 {
+	hardware ethernet 00:1c:c0:2c:2c:a7;
+	fixed-address 138.37.26.235;
+}
+
+host acs-16688 {
+	hardware ethernet 00:0c:6e:76:06:1e;
+	fixed-address 138.37.26.236;
+}
+
+host acs-21248 {
+	hardware ethernet 00:16:76:50:db:51;
+	fixed-address 138.37.26.237;
+}
+
+host acs-16691 {
+	hardware ethernet 00:0c:6e:76:06:99;
+	fixed-address 138.37.26.238;
+}
+
+host acs-21478 {
+	hardware ethernet 00:19:d1:9a:2e:3e;
+	fixed-address 138.37.26.239;
+}
+
+host acs-18709 {
+	hardware ethernet 00:11:11:ed:83:bb;
+	fixed-address 138.37.26.240;
+}
+
+host acs-18710 {
+	hardware ethernet 00:11:11:ed:83:f4;
+	fixed-address 138.37.26.241;
+}
+
+host acs-18702 {
+	hardware ethernet 00:11:11:ed:86:1a;
+	fixed-address 138.37.26.243;
+}
+
+host acs-18715 {
+	hardware ethernet 00:11:11:ed:83:ea;
+	fixed-address 138.37.26.244;
+}
+
+host acs-18705 {
+	hardware ethernet 00:11:11:ed:85:6b;
+	fixed-address 138.37.26.245;
+}
+
+host welfare2-pr {
+	hardware ethernet 00:0e:7f:dd:60:d6;
+	fixed-address 138.37.26.246;
+}
+
+host welfare1-pr {
+	hardware ethernet 08:00:09:c5:57:1f;
+	fixed-address 138.37.26.247;
+}
+
+host acs-18653 {
+	hardware ethernet 00:0e:7b:90:03:25;
+	fixed-address 138.37.26.248;
+}
+
+host acs-21101 {
+	hardware ethernet 00:13:20:61:bd:d3;
+	fixed-address 138.37.26.249;
+}
+
+host acs-21461 {
+	hardware ethernet 00:16:76:b0:82:41;
+	fixed-address 138.37.26.250;
+}
+
+host acs-21912 {
+	hardware ethernet 00:19:d1:81:83:42;
+	fixed-address 138.37.26.253;
+}
+
+host acs-21949 {
+	hardware ethernet 00:19:d1:5e:a8:a5;
+	fixed-address 138.37.26.254;
+}
+
+host acs-19227 {
+	hardware ethernet 00:1c:c0:41:14:a0;
+	fixed-address 138.37.27.1;
+}
+
+host acs-19242 {
+	hardware ethernet 00:1c:c0:2e:50:4e;
+	fixed-address 138.37.27.2;
+}
+
+host acs-19243 {
+	hardware ethernet 00:1c:c0:2c:51:2e;
+	fixed-address 138.37.27.3;
+}
+
+host acs-19244 {
+	hardware ethernet 00:1c:c0:2c:52:5a;
+	fixed-address 138.37.27.4;
+}
+
+host acs-19245 {
+	hardware ethernet 00:1c:c0:2c:2c:93;
+	fixed-address 138.37.27.5;
+}
+
+host acs-19246 {
+	hardware ethernet 00:1c:c0:2c:51:9e;
+	fixed-address 138.37.27.6;
+}
+
+host acs-19111 {
+	hardware ethernet 00:1c:c0:2c:4d:70;
+	fixed-address 138.37.27.7;
+}
+
+host acs-19112 {
+	hardware ethernet 00:1c:c0:2c:45:9b;
+	fixed-address 138.37.27.8;
+}
+
+host acs-19116 {
+	hardware ethernet 00:1c:c0:2c:39:65;
+	fixed-address 138.37.27.9;
+}
+
+host acs-19117 {
+	hardware ethernet 00:1c:c0:16:d9:17;
+	fixed-address 138.37.27.10;
+}
+
+host barts-1768670-LC {
+	hardware ethernet 00:11:11:24:45:a6;
+	fixed-address 138.37.27.24;
+}
+
+host fin-18609 {
+	hardware ethernet 00:11:11:9f:e3:e1;
+	fixed-address 138.37.27.25;
+}
+
+host fin-18604 {
+	hardware ethernet 00:11:11:9f:e4:2a;
+	fixed-address 138.37.27.26;
+}
+
+host fin-18734 {
+	hardware ethernet 00:08:0d:df:97:d7;
+	fixed-address 138.37.27.27;
+}
+
+host fin-21838 {
+	hardware ethernet 00:13:20:94:f3:66;
+	fixed-address 138.37.27.28;
+}
+
+host fin-21839 {
+	hardware ethernet 00:13:20:94:f5:4b;
+	fixed-address 138.37.27.29;
+}
+
+host fin-16203 {
+	hardware ethernet 00:0c:f1:6c:21:f3;
+	fixed-address 138.37.27.32;
+}
+
+host fin-rd-16192 {
+	hardware ethernet 00:11:11:25:8a:0b;
+	fixed-address 138.37.27.34;
+}
+
+host fin-rd-16191 {
+	hardware ethernet 00:11:11:25:89:ff;
+	fixed-address 138.37.27.35;
+}
+
+host fin-rd-16709 {
+	hardware ethernet 00:07:e9:3c:0a:94;
+	fixed-address 138.37.27.36;
+}
+
+host fin-rd-21426 {
+	hardware ethernet 00:19:d1:3d:9d:4b;
+	fixed-address 138.37.27.37;
+}
+
+host fin-rd-18676 {
+	hardware ethernet 00:19:d1:3d:9d:4e;
+	fixed-address 138.37.27.38;
+}
+
+host fin-rd-19113 {
+	hardware ethernet 00:1c:c0:2c:50:41;
+	fixed-address 138.37.27.39;
+}
+
+host fin-rd-19031 {
+	hardware ethernet 00:1c:c0:77:9b:6d;
+	fixed-address 138.37.27.40;
+}
+
+host fin-rd-19032 {
+	hardware ethernet 00:1c:c0:77:9b:7b;
+	fixed-address 138.37.27.41;
+}
+
+host fin-rd-30419 {
+	hardware ethernet 00:1c:c0:be:3a:9b;
+	fixed-address 138.37.27.42;
+}
+
+host fin-rd-30420 {
+	hardware ethernet 00:1c:c0:be:3a:a4;
+	fixed-address 138.37.27.43;
+}
+
+host fin-rd-30421 {
+	hardware ethernet 00:1c:c0:be:3f:31;
+	fixed-address 138.37.27.44;
+}
+
+host fin-rd-30422 {
+	hardware ethernet 00:1c:c0:be:3a:68;
+	fixed-address 138.37.27.45;
+}
+
+host fin-rd-30423 {
+	hardware ethernet 00:1c:c0:be:3a:aa;
+	fixed-address 138.37.27.46;
+}
+
+host fin-rd-30907 {
+	hardware ethernet 00:27:0e:0b:21:1e;
+	fixed-address 138.37.27.47;
+}
+
+host fin-rd-30908 {
+	hardware ethernet 00:27:0e:0b:41:1b;
+	fixed-address 138.37.27.48;
+}
+
+host fin-30940 {
+	hardware ethernet 70:71:bc:43:6d:d1;
+	fixed-address 138.37.27.49;
+}
+
+host fin-30941 {
+	hardware ethernet 70:71:bc:43:7a:4f;
+	fixed-address 138.37.27.50;
+}
+
+host fin-rd-30989 {
+	hardware ethernet 70:71:bc:43:6d:c6;
+	fixed-address 138.37.27.51;
+}
+
+host fin-rd-30990 {
+	hardware ethernet 70:71:bc:43:7a:19;
+	fixed-address 138.37.27.52;
+}
+
+host fin-18620-prn {
+	hardware ethernet 00:11:85:d7:d7:48;
+	fixed-address 138.37.27.67;
+}
+
+host fin22-ps {
+	hardware ethernet 00:01:e6:64:11:e5;
+	fixed-address 138.37.27.69;
+}
+
+host fin-16183-RH {
+	hardware ethernet 00:11:11:25:8d:fc;
+	fixed-address 138.37.27.92;
+}
+
+host fin-18617-RH {
+	hardware ethernet 00:11:11:a0:06:2f;
+	fixed-address 138.37.27.93;
+}
+
+host fin-18605-RH {
+	hardware ethernet 00:11:11:9f:e3:e6;
+	fixed-address 138.37.27.94;
+}
+
+host fin-18706-RH {
+	hardware ethernet 00:11:11:ed:85:ca;
+	fixed-address 138.37.27.95;
+}
+
+host fin-21570-RH {
+	hardware ethernet 00:0b:db:7e:f1:96;
+	fixed-address 138.37.27.96;
+}
+
+host ward-30530 {
+	hardware ethernet 00:1c:c0:bf:66:c3;
+	fixed-address 138.37.27.98;
+}
+
+host ward-30532 {
+	hardware ethernet 00:1c:c0:bf:66:7d;
+	fixed-address 138.37.27.99;
+}
+
+host ward-30533 {
+	hardware ethernet 00:1c:c0:bf:66:c5;
+	fixed-address 138.37.27.100;
+}
+
+host chs-ward-21401 {
+	hardware ethernet 00:16:76:b0:81:1c;
+	fixed-address 138.37.27.105;
+}
+
+host chs-ward-21416 {
+	hardware ethernet 00:16:76:a8:67:a3;
+	fixed-address 138.37.27.106;
+}
+
+host chs-ward-21403 {
+	hardware ethernet 00:16:76:b0:80:77;
+	fixed-address 138.37.27.107;
+}
+
+host chs-ward-20049 {
+	hardware ethernet 00:1c:c0:82:15:4c;
+	fixed-address 138.37.27.108;
+}
+
+host chs-ward-30072 {
+	hardware ethernet 00:1c:c0:82:15:38;
+	fixed-address 138.37.27.109;
+}
+
+host erd-15790 {
+	hardware ethernet 00:01:02:14:51:5e;
+	fixed-address 138.37.27.112;
+}
+
+host erd-18621 {
+	hardware ethernet 00:11:11:9f:e1:96;
+	fixed-address 138.37.27.113;
+}
+
+host smd-16904 {
+	hardware ethernet 00:03:47:2a:33:60;
+	fixed-address 138.37.27.118;
+}
+
+host erd-16878 {
+	hardware ethernet 00:07:e9:bf:78:37;
+	fixed-address 138.37.27.119;
+}
+
+host erd-18615 {
+	hardware ethernet 00:11:11:9f:f2:5b;
+	fixed-address 138.37.27.120;
+}
+
+host erd-18173 {
+	hardware ethernet 00:11:11:40:ae:bc;
+	fixed-address 138.37.27.121;
+}
+
+host erd-21805 {
+	hardware ethernet 00:13:20:94:f5:01;
+	fixed-address 138.37.27.122;
+}
+
+host dcm-pr {
+	hardware ethernet 00:00:85:0c:9f:08;
+	fixed-address 138.37.27.123;
+}
+
+host erd-18176 {
+	hardware ethernet 00:11:11:40:af:0b;
+	fixed-address 138.37.27.124;
+}
+
+host erd-16169 {
+	hardware ethernet 00:11:11:25:89:ef;
+	fixed-address 138.37.27.125;
+}
+
+host ward-18119 {
+	hardware ethernet 00:0f:1f:82:ae:e9;
+	fixed-address 138.37.27.126;
+}
+
+host erd-18612 {
+	hardware ethernet 00:11:11:a0:00:8e;
+	fixed-address 138.37.27.127;
+}
+
+host erd-18177 {
+	hardware ethernet 00:11:11:65:82:de;
+	fixed-address 138.37.27.128;
+}
+
+host erd-21186 {
+	hardware ethernet 00:13:20:73:b2:de;
+	fixed-address 138.37.27.129;
+}
+
+host erd-16980 {
+	hardware ethernet 00:03:47:e7:6a:4a;
+	fixed-address 138.37.27.130;
+}
+
+host erd-21901 {
+	hardware ethernet 00:13:20:61:bd:7d;
+	fixed-address 138.37.27.131;
+}
+
+host erd-18677 {
+	hardware ethernet 00:13:20:61:bd:ee;
+	fixed-address 138.37.27.132;
+}
+
+host ward-21456 {
+	hardware ethernet 00:13:20:95:ed:3b;
+	fixed-address 138.37.27.134;
+}
+
+host ward-18128 {
+	hardware ethernet 00:0d:9d:92:15:56;
+	fixed-address 138.37.27.135;
+}
+
+host ward-18137 {
+	hardware ethernet 00:0e:7b:d8:c2:0a;
+	fixed-address 138.37.27.136;
+}
+
+host ward-18117 {
+	hardware ethernet 00:19:b9:44:4f:53;
+	fixed-address 138.37.27.137;
+}
+
+host ward-18249 {
+	hardware ethernet 00:04:75:e7:18:6f;
+	fixed-address 138.37.27.138;
+}
+
+host ward-30773 {
+	hardware ethernet 00:1c:c0:cb:fd:27;
+	fixed-address 138.37.27.139;
+}
+
+host MIS18101 {
+	hardware ethernet 00:0b:cd:72:85:f6;
+	fixed-address 138.37.27.140;
+}
+
+host MIS-WhCh-compaq1 {
+	hardware ethernet 00:0b:cd:72:85:ea;
+	fixed-address 138.37.27.142;
+}
+
+host ward-19208 {
+	hardware ethernet 00:1c:c0:16:c8:ff;
+	fixed-address 138.37.27.143;
+}
+
+host ward-G5-18402 {
+	hardware ethernet 00:0d:93:31:57:e4;
+	fixed-address 138.37.27.144;
+}
+
+host ward-19422 {
+	hardware ethernet 00:1c:c0:16:ad:4d;
+	fixed-address 138.37.27.145;
+}
+
+host ward-19423 {
+	hardware ethernet 00:1c:c0:2c:2a:72;
+	fixed-address 138.37.27.146;
+}
+
+host ward-19424 {
+	hardware ethernet 00:1c:c0:14:55:45;
+	fixed-address 138.37.27.147;
+}
+
+host ward-20046 {
+	hardware ethernet 00:1c:c0:77:59:57;
+	fixed-address 138.37.27.148;
+}
+
+host ward-30342 {
+	hardware ethernet 00:1c:c0:82:07:63;
+	fixed-address 138.37.27.149;
+}
+
+host ward-21652-pr {
+	hardware ethernet 00:12:79:82:1a:ba;
+	fixed-address 138.37.27.150;
+}
+
+host ward-21280 {
+	hardware ethernet 00:19:d1:26:4c:bb;
+	fixed-address 138.37.27.151;
+}
+
+host ward-16609 {
+	hardware ethernet 00:0c:6e:76:06:2a;
+	fixed-address 138.37.27.153;
+}
+
+host ward-30431 {
+	hardware ethernet 00:1c:c0:be:40:ab;
+	fixed-address 138.37.27.154;
+}
+
+host ward-PWDavies {
+	hardware ethernet 00:0b:cd:72:67:36;
+	fixed-address 138.37.27.155;
+}
+
+host ward-18314 {
+	hardware ethernet 00:11:85:f1:59:96;
+	fixed-address 138.37.27.169;
+}
+
+host est-18748 {
+	hardware ethernet 00:e0:18:e2:2e:f5;
+	fixed-address 138.37.27.171;
+}
+
+host est-18718 {
+	hardware ethernet 00:11:11:ed:86:42;
+	fixed-address 138.37.27.172;
+}
+
+host est-18719 {
+	hardware ethernet 00:11:11:ed:83:f0;
+	fixed-address 138.37.27.173;
+}
+
+host ward-chs-18721 {
+	hardware ethernet 00:11:11:ed:86:00;
+	fixed-address 138.37.27.174;
+}
+
+host ward-16626 {
+	hardware ethernet 00:0c:6e:76:06:47;
+	fixed-address 138.37.27.175;
+}
+
+host est-21821 {
+	hardware ethernet 00:14:22:4b:45:5d;
+	fixed-address 138.37.27.176;
+}
+
+host ward-21818 {
+	hardware ethernet 00:13:20:94:f4:fe;
+	fixed-address 138.37.27.177;
+}
+
+host smd-dental-21823 {
+	hardware ethernet 00:13:20:94:f1:d5;
+	fixed-address 138.37.27.178;
+}
+
+host ward-21906 {
+	hardware ethernet 00:13:20:94:f4:ed;
+	fixed-address 138.37.27.179;
+}
+
+host est-wht-4050n-ps {
+	hardware ethernet 00:30:c1:8c:57:3b;
+	fixed-address 138.37.27.180;
+}
+
+host ward-21513 {
+	hardware ethernet 00:13:72:6a:c4:10;
+	fixed-address 138.37.27.183;
+}
+
+host erd-21210 {
+	hardware ethernet 00:16:76:88:23:95;
+	fixed-address 138.37.27.186;
+}
+
+host ward-21414 {
+	hardware ethernet 00:19:d1:3d:9c:41;
+	fixed-address 138.37.27.188;
+}
+
+host ward-21281 {
+	hardware ethernet 00:19:d1:26:4c:ab;
+	fixed-address 138.37.27.189;
+}
+
+host stuoffice-19438 {
+	hardware ethernet 00:19:d1:9a:37:5a;
+	fixed-address 138.37.27.191;
+}
+
+host stuoffice-19439 {
+	hardware ethernet 00:19:d1:9a:70:5e;
+	fixed-address 138.37.27.192;
+}
+
+host stuoffice-19440 {
+	hardware ethernet 00:19:d1:9a:2f:41;
+	fixed-address 138.37.27.193;
+}
+
+host stuoffice-19441 {
+	hardware ethernet 00:19:d1:9a:2c:a8;
+	fixed-address 138.37.27.194;
+}
+
+host stuoffice-21471 {
+	hardware ethernet 00:19:d1:9a:2f:8a;
+	fixed-address 138.37.27.195;
+}
+
+host stuoffice-21474 {
+	hardware ethernet 00:19:d1:9a:2e:82;
+	fixed-address 138.37.27.196;
+}
+
+host stuoffice-20030 {
+	hardware ethernet 00:1c:c0:14:f6:cc;
+	fixed-address 138.37.27.197;
+}
+
+host stuoffice-30730 {
+	hardware ethernet 00:1c:c0:cb:f9:35;
+	fixed-address 138.37.27.198;
+}
+
+host stuoffice-19036 {
+	hardware ethernet 00:1c:c0:77:54:b0;
+	fixed-address 138.37.27.199;
+}
+
+host stuoffice-19045 {
+	hardware ethernet 00:1c:c0:77:4a:f3;
+	fixed-address 138.37.27.200;
+}
+
+host stuoffice-20047 {
+	hardware ethernet 00:1c:c0:77:55:4a;
+	fixed-address 138.37.27.201;
+}
+
+host stuoffice-21480 {
+	hardware ethernet 00:19:d1:9a:2c:af;
+	fixed-address 138.37.27.202;
+}
+
+host stuoffice-19043 {
+	hardware ethernet 00:1c:c0:77:9b:1d;
+	fixed-address 138.37.27.203;
+}
+
+host stuoffice-19044 {
+	hardware ethernet 00:1c:c0:77:9b:73;
+	fixed-address 138.37.27.204;
+}
+
+host stuoffice-19040 {
+	hardware ethernet 00:1c:c0:77:9b:8f;
+	fixed-address 138.37.27.205;
+}
+
+host stuoffice-30493 {
+	hardware ethernet 00:1c:c0:be:c5:f0;
+	fixed-address 138.37.27.206;
+}
+
+host stuoffice-30496 {
+	hardware ethernet 00:1c:c0:be:c8:7a;
+	fixed-address 138.37.27.207;
+}
+
+host stuoffice-21477 {
+	hardware ethernet 00:19:d1:9a:2f:04;
+	fixed-address 138.37.27.208;
+}
+
+host stuoffice-21203 {
+	hardware ethernet 00:16:76:50:c3:c2;
+	fixed-address 138.37.27.209;
+}
+
+host stuoffice-21217 {
+	hardware ethernet 00:16:76:50:db:70;
+	fixed-address 138.37.27.210;
+}
+
+host stuoffice-21468 {
+	hardware ethernet 00:19:d1:a4:04:f1;
+	fixed-address 138.37.27.211;
+}
+
+host stuoffice-21469 {
+	hardware ethernet 00:16:76:be:92:5c;
+	fixed-address 138.37.27.212;
+}
+
+host stuoffice-21260 {
+	hardware ethernet 00:16:76:43:fb:c9;
+	fixed-address 138.37.27.213;
+}
+
+host stuoffice-13822 {
+	hardware ethernet 00:60:8c:f2:d1:fa;
+	fixed-address 138.37.27.214;
+}
+
+host stuoffice-21677 {
+	hardware ethernet 00:0e:a6:59:a3:74;
+	fixed-address 138.37.27.215;
+}
+
+host stuoffice-19213 {
+	hardware ethernet 00:1c:c0:16:c9:58;
+	fixed-address 138.37.27.216;
+}
+
+host stuoffice-19218 {
+	hardware ethernet 00:1c:c0:08:39:5e;
+	fixed-address 138.37.27.217;
+}
+
+host stuoffice-30360 {
+	hardware ethernet 00:1c:c0:82:12:40;
+	fixed-address 138.37.27.218;
+}
+
+host stuoffice-16128 {
+	hardware ethernet 00:07:e9:3b:bf:c9;
+	fixed-address 138.37.27.219;
+}
+
+host stuoffice-16827 {
+	hardware ethernet 00:e0:18:bf:c1:b0;
+	fixed-address 138.37.27.220;
+}
+
+host stuoffice-16836 {
+	hardware ethernet 00:e0:18:bf:c1:bf;
+	fixed-address 138.37.27.221;
+}
+
+host stuoffice-16940 {
+	hardware ethernet 00:e0:18:d2:b9:d4;
+	fixed-address 138.37.27.222;
+}
+
+host stuoffice-16690 {
+	hardware ethernet 00:0c:6e:48:91:4f;
+	fixed-address 138.37.27.223;
+}
+
+host stuoffice-19249 {
+	hardware ethernet 00:1c:c0:2c:4f:fd;
+	fixed-address 138.37.27.224;
+}
+
+host stuoffice-19604 {
+	hardware ethernet 00:1c:c0:07:92:5a;
+	fixed-address 138.37.27.225;
+}
+
+host stuoffice-21263 {
+	hardware ethernet 00:16:76:b0:88:88;
+	fixed-address 138.37.27.226;
+}
+
+host stuoffice-21486 {
+	hardware ethernet 00:19:d1:9a:29:5a;
+	fixed-address 138.37.27.227;
+}
+
+host stuoffice-30609 {
+	hardware ethernet 00:1c:c0:bf:66:df;
+	fixed-address 138.37.27.228;
+}
+
+host stuoffice-30610 {
+	hardware ethernet 00:1c:c0:bf:51:ff;
+	fixed-address 138.37.27.229;
+}
+
+host stuoffice-30611 {
+	hardware ethernet 00:1c:c0:bf:66:cb;
+	fixed-address 138.37.27.230;
+}
+
+host stuoffice-19103 {
+	hardware ethernet 00:1c:c0:2c:2d:6d;
+	fixed-address 138.37.27.232;
+}
+
+host DavidPickTabletWire {
+	hardware ethernet 00:11:85:5d:df:8b;
+	fixed-address 138.37.27.237, 138.37.16.1, 138.37.17.253, 138.37.18.238, 138.37.19.253;
+}
+
+host DavidPickTabletWireless {
+	hardware ethernet 00:0c:f1:4b:a5:9c;
+	fixed-address 138.37.27.238, 138.37.16.2;
+}
+
+host nsg-ping {
+	hardware ethernet 00:04:23:c1:f2:b0;
+	fixed-address 138.37.27.239;
+}
+
+host LANMETER-FLUKE {
+	hardware ethernet 00:c0:17:72:04:9b;
+	fixed-address 138.37.27.240, 138.37.16.240, 138.37.18.240;
+}
+
+host MISU-27-242 {
+	hardware ethernet 00:e0:a3:ff:49:c0;
+	fixed-address 138.37.27.242;
+}
+
+host MISU-27-243 {
+	hardware ethernet 00:e0:a3:fc:89:80;
+	fixed-address 138.37.27.243;
+}
+
+host MISU-27-244 {
+	hardware ethernet 00:e0:a3:fd:c9:80;
+	fixed-address 138.37.27.244;
+}
+
+host MISU-27-245 {
+	hardware ethernet 00:50:f0:32:0d:00;
+	fixed-address 138.37.27.245;
+}
+
+host MISU-27-246 {
+	hardware ethernet 00:50:50:e0:45:c0;
+	fixed-address 138.37.27.246;
+}
+
+host AMSREMOTE1 {
+	hardware ethernet 00:02:55:7c:c9:f9;
+	fixed-address 138.37.28.130;
+}
+
+host AMSTEST1 {
+	hardware ethernet 00:02:55:7c:e4:51;
+	fixed-address 138.37.28.131;
+}
+
+host AMSPAYROLL1 {
+	hardware ethernet 00:06:29:d5:84:db;
+	fixed-address 138.37.28.133;
+}
+
+host AMSCITRIX1 {
+	hardware ethernet 00:01:02:6b:78:fa;
+	fixed-address 138.37.28.134;
+}
+
+host Agresso-28-135 {
+	hardware ethernet 00:03:47:3a:52:d3;
+	fixed-address 138.37.28.135;
+}
+
+host Agresso-28-136 {
+	hardware ethernet 00:02:55:08:ba:9f;
+	fixed-address 138.37.28.136;
+}
+
+host Agresso-28-137 {
+	hardware ethernet 00:02:55:58:fc:1e;
+	fixed-address 138.37.28.137;
+}
+
+host Agresso-28-138 {
+	hardware ethernet 00:02:55:91:b0:93;
+	fixed-address 138.37.28.138;
+}
+
+host AMSCITRIX2 {
+	hardware ethernet 00:02:55:91:b0:b7;
+	fixed-address 138.37.28.139;
+}
+
+host AMSPAYROLL3 {
+	hardware ethernet 00:06:29:55:8e:7d;
+	fixed-address 138.37.28.140;
+}
+
+host Agresso-28-141 {
+	hardware ethernet 00:01:03:d8:1d:92;
+	fixed-address 138.37.28.141;
+}
+
+host gawain-fxp3 {
+	hardware ethernet 00:03:47:0d:a0:ad;
+	fixed-address 138.37.28.188;
+}
+
+host MISU-28-189 {
+	hardware ethernet 00:02:4b:17:aa:4d;
+	fixed-address 138.37.28.189;
+}
+
+host gatekeeper {
+	hardware ethernet 00:00:c0:70:f6:d3;
+	fixed-address 138.37.30.1;
+}
+
+host gatekeeper2 {
+	hardware ethernet 00:a0:c9:49:8c:f2;
+	fixed-address 138.37.30.2;
+}
+
+host MISU-30-253 {
+	hardware ethernet 00:00:0c:04:1e:42;
+	fixed-address 138.37.30.253;
+}
+
+host enq {
+	hardware ethernet 00:00:c0:6d:f6:d3;
+	fixed-address 138.37.31.1;
+}
+
+host que {
+	hardware ethernet 00:d0:b7:46:e1:32;
+	fixed-address 138.37.31.2;
+}
+
+host misu-nt1 {
+	hardware ethernet 00:90:27:ac:9b:1f;
+	fixed-address 138.37.31.5;
+}
+
+host employer-data {
+	hardware ethernet 00:08:74:1d:b1:ed;
+	fixed-address 138.37.31.113;
+}
+
+host tester-sn31 {
+	hardware ethernet 00:50:da:3f:ff:4a;
+	fixed-address 138.37.31.120;
+}
+
+host MISU-16-022-sn31-121 {
+	hardware ethernet 00:e0:18:96:80:a5;
+	fixed-address 138.37.31.121;
+}
+
+host llu-30931 {
+	hardware ethernet 00:27:0e:10:f7:20;
+	fixed-address 138.37.194.1;
+}
+
+host llu-30932 {
+	hardware ethernet 00:27:0e:10:d7:6d;
+	fixed-address 138.37.194.2;
+}
+
+host llu-30933 {
+	hardware ethernet 00:27:0e:10:f7:19;
+	fixed-address 138.37.194.3;
+}
+
+host llu-30934 {
+	hardware ethernet 00:27:0e:10:f7:36;
+	fixed-address 138.37.194.4;
+}
+
+host llu4-pr {
+	hardware ethernet 00:1b:8b:25:82:09;
+	fixed-address 138.37.194.124;
+}
+
