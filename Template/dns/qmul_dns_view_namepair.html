@@ -40,6 +40,10 @@
 			<div class="thefield">{{machine.time_modified}}</div> <br>
 		</div>
 		<div class="fieldwrapper">
+			<label class="styled">Time to Live</label>
+			<div class="thefield"> {% if not machine.ttl %} Default {% else %} {{machine.ttl}} {% endif %} (in seconds)</div> <br>
+		</div>
+		<div class="fieldwrapper">
 			<label class="styled">Services</label>	
 			<div class="thefield"> 
 				<!a onclick="return showAddAnotherPopup(this);" id="add_services" class="add-another" href="/dns/add/{{ machine.id }}/" style = "text-align:center;" > 

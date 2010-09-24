@@ -1,0 +1,7 @@
+2010-09-24 17:47:31.278221: Success - scanned file /home/jasonl/svn/mynet/test-data/DNS-data
+2010-09-24 17:47:31.278221: Error in formatting - could not add the following records:
+Line:46550|^_services._dns-sd._udp.dcs.qmul.ac.uk:_http._tcp.dcs.qmul.ac.uk:300|IP address or machine name is invalid.
+Line:46551|^_services._dns-sd._udp.dcs.qmul.ac.uk:_ipp._tcp.dcs.qmul.ac.uk:300|IP address or machine name is invalid.
+Line:46552|^b._dns-sd._udp.dcs.qmul.ac.uk:dcs.qmul.ac.uk:86400|IP address or machine name is invalid.
+Line:46553|^lb._dns-sd._udp.dcs.qmul.ac.uk:dcs.qmul.ac.uk:86400|IP address or machine name is invalid.
+Line:46554|^_http._tcp.dcs.qmul.ac.uk:JANET\ Roaming\ Service._http._tcp.dcs.qmul.ac.uk|IP address or machine name is invalid.

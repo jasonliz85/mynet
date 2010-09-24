@@ -78,10 +78,10 @@ def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
 		values: m_id = unique id of record in db, model_name = name of the table in db
 	"""	
 	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
-	print currentNetGroup
+	#print currentNetGroup
 	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
 	now = datetime.datetime.today()
-	newEvent = log( NetGroupName 		= currentNetGroup,
+	newEvent = log( #NetGroupName 		= currentNetGroup,
 			NetUser		 	= currentUser,
 			TableName		= tname,
 			RecordID		= tid,
@@ -136,6 +136,9 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 	if m_name_str == "DNS_name":	
 		if not mod_record.name == values['name']: 
 			mod_record.name = values['name']
+			is_modified = bool(1)
+		if not mod_record.ttl == values['ttl']: 
+			mod_record.ttl = values['ttl']
 			is_modified = bool(1)
 		if not mod_record.description == values['description']:
 			if CompareDescriptions(mod_record.description, values['description']):
@@ -217,9 +220,8 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 			ipVersion = False
 	except KeyError:
 		pass
-	
 	if m_name_str == "DNS_name":
-		tp = values['dns_typ']
+		tp = values['dns_type']
 		if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
 			tp = '1BD'
 		newRecord = model_name( name	= values['name'],
@@ -228,7 +230,8 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 					is_ipv6 	= ipVersion,
 					time_created 	= now,
 					time_modified	= now,
-					description 	= values['description']								
+					description 	= values['description'],
+					ttl 		= values['ttl']							
 					)
 	elif m_name_str == "DHCP_ip_pool":		
 		if (IPAddress(values['ip_first']).version == 6):
@@ -256,7 +259,6 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 	newRecord.save() #vals = model_name.objects.filter(id = newRecord.id).values() 
 	init_values = "{}" 
 	final_values = newRecord.LogRepresentation()#str(vals[0])
-	print final_values
 	LogEvent('A',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, newRecord.id)
 	return newRecord.id
 		

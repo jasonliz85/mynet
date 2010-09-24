@@ -10,9 +10,9 @@ class Register_namepair_Form(forms.Form):
 	                ('2NA', 'Machine Name --> IP Address'), 	# NA = name-address
         	        ('3AN', 'IP Address --> Machine Name'), 	# AD = address-name
 			)
-	dns_typ		= forms.ChoiceField(choices=TYPE_CHOICES, initial = '1BD', widget = forms.RadioSelect(), label = 'Type')
+	dns_type		= forms.ChoiceField(choices=TYPE_CHOICES, initial = '1BD', widget = forms.RadioSelect(), label = 'Type')
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
-	
+	ttl		= forms.IntegerField(required = False,label = 'Time to Live (seconds)')
 	def clean_ip_address(self):
 		ip_address = self.cleaned_data['ip_address']
 		ip_address = ip_address.replace(' ','')
@@ -32,10 +32,12 @@ class Register_namepair_Form(forms.Form):
 		dscr = dscr.lstrip()
 		dscr = dscr.rstrip()
 		return dscr
+
 	 	
 class Register_service_Form(forms.Form):
 	service_name 	= forms.CharField(label = 'Machine Name', widget = forms.TextInput(attrs={'class':'special', 'size':'10'}))		#DNS name regular expression
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
+	ttl		= forms.IntegerField(label = 'Time to Live (seconds)')
 
 class ViewMachinesActionForm(forms.Form):
 	STATUS_CHOICES = ( 

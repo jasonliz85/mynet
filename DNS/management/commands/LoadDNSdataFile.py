@@ -1,6 +1,9 @@
 from django.core.management.base import LabelCommand
 from netaddr import *
 from string import replace, lstrip, rstrip
+import datetime
+from mynet.DNS.models import *
+from mynet.helper_views import AddAndLogRecord
 def CheckIPAddress(section):
 	'''
 	Returns True if 'section' is a valid ip version 4 address (ip address must be not be version 6)
@@ -37,7 +40,6 @@ def FormatReverseLoopup(section):
 	value is correct
 	'''
 	ip_normal = ''
-	print section
 	#strip string end values '.in-addr.arpa' and '.ip6.arpa'and reverse the result
 	#must deal with Ipv6 and ipv4 separately
 	if is_ipv6_check(section): #ipv6
@@ -50,22 +52,14 @@ def FormatReverseLoopup(section):
 				ip_normal = ip_normal + ip_reversed[i:i-4:-1] + ':'
 	else: #ipv4
 		ip_reversed = section.replace('.in-addr.arpa','')
-		first_points = ip_reversed.find('.')
-		find_point = 0
-		while (find_point == -1):
+		find_point = ip_reversed.find('.')
+		while find_point > -1:
+			ip_normal = '.' + ip_reversed[0:find_point:] +  ip_normal
+			ip_reversed = ip_reversed.replace(ip_reversed[0:find_point:], '', 1)
+			ip_reversed = ip_reversed.lstrip('.')
 			find_point = ip_reversed.find('.')
-			ip_normal = ip_reversed[0:find_point] + ip_normal
-			
-		while (find_point > -1):
-		... 	find_point = test2.find('.')
-		... 	ip_normal = test2[0:find_point] + ip_normal
-		... 	test2 = test2.replace(test2[0:find_point], '')
-		... 	test2 = test2.lstrip('.')
-		... 	print test2
-
-		print points
-	
-	print ip_normal
+			if find_point == -1:
+				ip_normal = ip_reversed + ip_normal
 	#check if the results when reversed matches the exactl value of the input section
 	try:
 		ip_normal_revered = IPAddress(ip_normal).reverse_dns
@@ -84,7 +78,7 @@ def FindValuesFromSplittedLine(dns_type, splitted_line):
 	To comment:
 	'''
 	#dns values to be populated, ttl is not neccessary and is optional
-	values = {'dns_type': '', 'ip_address':'', 'name':'', 'ttl': ''}
+	values = {'dns_type': '', 'ip_address':'', 'name':'', 'ttl': 0, 'description':''}
 	
 	if dns_type == '+':
 		values['dns_type'] = '2NA'
@@ -130,7 +124,7 @@ def FindValuesFromSplittedLine(dns_type, splitted_line):
 	if values['ip_address'] == '' or values['name'] == '' or values['dns_type'] == '':
 		return 'SKIP'
 	elif values['ip_address'] == 'INVALID':
-		print values
+		#print values
 		return False
 	else:
 		return values
@@ -139,24 +133,81 @@ class Command(LabelCommand):
 	def handle_label(self, label,**options):
 		print 'Adding data from file: %s' % label
 		line_count = 0
+		dns_list = list()
+		not_added = list()
 		f = open(label, 'r')
 		if f:
+			#Find All Records to be Added
 			for line in f:
 				line_count = line_count + 1
-				if line[0] == ('^' or '+' or '='):
+				if line[0] in ['^', '+', '=']:
 					line = line.strip()
 					#find variables in the line - dns type, ip address, machine name, ttl field, 
 					splitted = line[1:].split(':')
 					Values = FindValuesFromSplittedLine(line[0], splitted)
 					#If Values returns False, then could not successfully identify both machine name and ip address
 					if not Values:
-						print line
-						print Values
-						print 'Error: Could not find either the machine name or ip address from line "%s"' % line_count
-						break
+						Error = 'Line:%s|%s|IP address or machine name is invalid.' % (line_count, line)
+						not_added.append(Error)
+						#=zedberry-edv999.core-net.qmul.ac.uk:172.22.1.0,226
+					else:
+						dns_list.append(Values)
 				else:
 					pass
 			f.close()
+			filename = "LoadDNSdataLog.log"
+			FILE = open(filename,"w")
+			now = datetime.datetime.now()
+			logstring = '%s: Success - scanned file %s\n' % (now, label)
+			FILE.write(logstring)
+			if not_added:
+				logstring = '%s: Error in formatting - could not add the following records:\n' % now
+				print logstring
+				FILE.write(logstring)
+				for record in not_added:
+					print record
+					FILE.write(record + '\n')
+				done = 0
+				while not done:
+					rslt = raw_input("Do you want to proceed without adding these records? (hint: \"yes\" or \"no\"): ")
+					if rslt == "yes":
+						confirm = True
+						break
+					elif rslt:
+						confirm = False
+						break
+		
+			if confirm:
+				done = 0
+				while not done:
+					rslt = raw_input("There are a total of %s records. Do you want to add? (hint: \"yes\" or \"no\"): " % len(dns_list))
+					if rslt == "yes":
+						#Enter all records in database						
+						check_dns_list = list()
+						line_count = 0
+						error_count = 0
+						for record in dns_list:		
+							[unique, unique_error] = DNS_name.objects.is_unique(record['ip_address'],record['name'],record['dns_type'], '', True)	
+							if unique:
+								AddAndLogRecord('DNS_name', DNS_name, 'admin', record)
+								line_count = line_count + 1
+							else:
+								error_count = error_count + 1
+								logstring = '%s|Error|Machine Name: %s, IP Address: %s, DNS type:%s | could not save to database - %s.' %(now,record['name'], record['ip_address'],record['dns_type'], unique_error )
+								FILE.write(logstring + '\n')
+								#print logstring
+				
+						logstring = 'Total DNS records: %s' %len(dns_list)
+						FILE.write(logstring + '\n')
+						logstring = 'Total Successfully created: %s' % line_count	
+						FILE.write(logstring + '\n')
+						logstring = 'Total in Error: %s' % error_count		
+						FILE.write(logstring + '\n')
+						break
+					elif rslt:
+						print 'User cancelled...'
+						break
+			FILE.close()
 		else:
 		    print 'Error: File "%s" could not be opened' % label
 	

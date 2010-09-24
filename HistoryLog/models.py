@@ -25,7 +25,7 @@ class log(models.Model):
 			('2','DHCP IP Pools'),
 			('3','DHCP Machines')
 	)
-	NetGroupName 	= models.ManyToManyField(Group, blank=True)
+	#NetGroupName 	= models.ManyToManyField(Group, blank=True)
 	TableName	= models.CharField('Table Name',max_length = 1, choices = MODEL_CHOICES)
 	RecordID	= models.IntegerField('Table RecordAction ID')
 	NetUser		= models.ForeignKey(User, blank=True)
