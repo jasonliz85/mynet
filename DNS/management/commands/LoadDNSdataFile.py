@@ -140,8 +140,8 @@ class Command(LabelCommand):
 			#Find All Records to be Added
 			for line in f:
 				line_count = line_count + 1
+				line = line.strip()
 				if line[0] in ['^', '+', '=']:
-					line = line.strip()
 					#find variables in the line - dns type, ip address, machine name, ttl field, 
 					splitted = line[1:].split(':')
 					Values = FindValuesFromSplittedLine(line[0], splitted)
