@@ -1,6 +1,6 @@
 from django.core.management.base import LabelCommand
 from netaddr import *
-from string import replace, lstrip, rstrip
+#from string import replace, lstrip, rstrip
 import datetime
 from mynet.DNS.models import *
 from mynet.helper_views import AddAndLogRecord
@@ -158,8 +158,9 @@ class Command(LabelCommand):
 			filename = "LoadDNSdataLog.log"
 			FILE = open(filename,"w")
 			now = datetime.datetime.now()
-			logstring = '%s: Success - scanned file %s\n' % (now, label)
+			logstring = '%s: Successfully scanned file %s\n' % (now, label)
 			FILE.write(logstring)
+			confirm = True
 			if not_added:
 				logstring = '%s: Error in formatting - could not add the following records:\n' % now
 				print logstring
@@ -173,14 +174,20 @@ class Command(LabelCommand):
 					if rslt == "yes":
 						confirm = True
 						break
-					elif rslt:
+					elif rslt == 'no':
+						print 'User cancelled...'
+						logstring = 'User cancelled...' 
+						FILE.write(logstring + '\n')
 						confirm = False
 						break
-		
+			else:
+				logstring = '%s: No errors founded during initial scan :o) \n' % now
+				FILE.write(logstring)
+				
 			if confirm:
 				done = 0
 				while not done:
-					rslt = raw_input("There are a total of %s records. Do you want to add? (hint: \"yes\" or \"no\"): " % len(dns_list))
+					rslt = raw_input("There are a total of %s records that have been found. Do you want to add these? (hint: \"yes\" or \"no\"): " % len(dns_list))
 					if rslt == "yes":
 						#Enter all records in database						
 						check_dns_list = list()
@@ -190,7 +197,7 @@ class Command(LabelCommand):
 							[unique, unique_error] = DNS_name.objects.is_unique(record['ip_address'],record['name'],record['dns_type'], '', True)	
 							if unique:
 								AddAndLogRecord('DNS_name', DNS_name, 'admin', record)
-								line_count = line_count + 1
+							 	line_count = line_count + 1
 							else:
 								error_count = error_count + 1
 								logstring = '%s|Error|Machine Name: %s, IP Address: %s, DNS type:%s | could not save to database - %s.' %(now,record['name'], record['ip_address'],record['dns_type'], unique_error )
@@ -204,8 +211,10 @@ class Command(LabelCommand):
 						logstring = 'Total in Error: %s' % error_count		
 						FILE.write(logstring + '\n')
 						break
-					elif rslt:
+					elif rslt == 'no':
 						print 'User cancelled...'
+						logstring = 'User cancelled...' 
+						FILE.write(logstring + '\n')
 						break
 			FILE.close()
 		else:

@@ -1,0 +1,33 @@
+2010-09-28 16:58:36.972643: Successfully scanned file /home/jasonl/svn/mynet/test-data/subnets.txt
+2010-09-28 16:58:36.972643: Error in formatting - could not add the following records:
+Line:112| 966 | 138.37.30.xx/xx	       | Platform services: Enrollment PCs              | Richard Grint
+|Invalid formating or incorrect subnet.
+Line:156| 5xx |                         | Computer Science - 00 <= xx <= 49
+|Invalid formating or incorrect subnet.
+Line:210| 600 |                         | Student Service
+|Invalid formating or incorrect subnet.
+Line:211|  V  |                         | Student Service
+|Invalid formating or incorrect subnet.
+Line:212| 649 |                         | Student Service
+|Invalid formating or incorrect subnet.
+Line:340| 255 |                         | Print Budget query connection for the Front Desk
+|Invalid formating or incorrect subnet.
+Line:386|     |                         | it is too often used by the default		| 
+|Invalid formating or incorrect subnet.
+Line:387|     |                         | configuration on "Consumer" equipment		| 
+|Invalid formating or incorrect subnet.
+Line:388|     |                         | But it can be used for point-to-point links or	| 
+|Invalid formating or incorrect subnet.
+Line:389|     |                         | other similar purposes as link-local addresses	| 
+|Invalid formating or incorrect subnet.
+Line:419| 81x |                         | Cienna channel on lambda 1 channel x - 0 <= x <= 9
+|Invalid formating or incorrect subnet.
+Line:420| 82x |                         | Cienna channel on lambda 2 channel x - 0 <= x <= 9
+|Invalid formating or incorrect subnet.
+Line:421| 83x |                         | Other Uplink or external cross-link
+|Invalid formating or incorrect subnet.
+Line:423| 55x |                         | RHT Trust - 0 <= x <= 9			| network@qmul.ac.uk
+|Invalid formating or incorrect subnet.
+Total DHCP records: 405
+Total Successfully created: 0
+Total in Error: 0

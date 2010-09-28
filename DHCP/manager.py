@@ -45,7 +45,7 @@ class MachineManager(models.Manager):
 		unique_error = ''
 		#1. find subnet belonging to ip address	(ip)	
 		subnet = get_subnet_from_ip(user_obj, ip)
-		print subnet
+		#print subnet
 		if not len(subnet):
 			unique = False
 			unique_error = "You do not have permission to add/edit this IP address."

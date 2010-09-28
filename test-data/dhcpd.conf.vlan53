@@ -1,0 +1,77 @@
+# Chemistry vulnerable stuff:
+
+subnet 138.37.53.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "chem.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.53.255;
+  option routers 138.37.53.254;
+# option ntp-servers 138.37.53.254;
+  option domain-name-servers 138.37.6.1, 138.37.7.1;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  range 138.37.53.1 138.37.53.15;
+}
+
+subnet 138.37.54.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "chem.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.53.255;
+  option routers 138.37.53.254;
+# option ntp-servers 138.37.53.254;
+  option domain-name-servers 138.37.6.1, 138.37.7.1;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  pool {
+  	option domain-name-servers bogus.example.com;
+    max-lease-time 300;
+    range 138.37.54.1 138.37.54.30;
+    allow unknown-clients;
+  }
+  pool {
+    option domain-name-servers ns1.example.com, ns2.example.com;
+    max-lease-time 28800;
+    range 138.37.54.32;
+    deny unknown-clients;
+  }
+}
+
+subnet 138.37.55.0 netmask 255.255.255.0 { authoritative;
+  option domain-name "chem.qmul.ac.uk";
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 138.37.53.255;
+  option routers 138.37.53.254;
+# option ntp-servers 138.37.53.254;
+  option domain-name-servers 138.37.6.1, 138.37.7.1;
+  default-lease-time 43200; # twelve hours
+  max-lease-time 43200; # twelve hours
+  pool {
+  	option domain-name-servers bogus.example.com;
+    max-lease-time 300;
+    range 138.37.55.11 138.37.55.22;
+    allow unknown-clients;
+  }
+}
+
+host wb53-016 {
+        hardware ethernet 00:05:5D:A3:C5:CD;
+        fixed-address 138.37.53.16;
+}
+
+host wb53-017 {
+        hardware ethernet 00:90:27:BD:F8:FA;
+        fixed-address 138.37.53.17;
+}
+
+host wb53-018 {
+        hardware ethernet 00:90:27:BE:04:70;
+        fixed-address 138.37.53.18;
+}
+
+host wb53-019 {
+        hardware ethernet 00:02:A5:AB:A9:E8;
+        fixed-address 138.37.53.19;
+}
+host jason-pc {
+        hardware ethernet 00:AA:BB:CC:DD:EF;
+        fixed-address 138.37.111.222;
+}
