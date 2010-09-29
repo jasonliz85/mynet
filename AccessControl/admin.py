@@ -9,6 +9,6 @@ class NetGroup_Admin(admin.ModelAdmin):
 		return obj.date.strftime('%d %b %Y %H:%M')
 
 admin.site.register(NetGroup, NetGroup_Admin)
-admin.site.register(DNS_expr)
-admin.site.register(DNS_ipval)
+admin.site.register(dns_expression)
+admin.site.register(ip_subnet)
 

@@ -1,5 +1,7 @@
 from netaddr import *
 from django.core.management.base import LabelCommand
+from mynet.AccessControl.views import add_ip_subnet
+
 import datetime
 def extractSubnet(sn):
 	'''
@@ -23,7 +25,10 @@ def extractDescription(dscr):
 		dscr[i] = dscr[i].replace('|','')
 		dscr[i] = dscr[i].replace('\t','')
 		dscr[i] = dscr[i].strip()
-		description = description + dscr[i]
+		if i == 0:
+			description = description + dscr[i]
+		else:
+			description = description + ' | ' + dscr[i]	
 	return description
 def FindValuesFromSplittedLine(splitted_line):
 	'''
@@ -121,11 +126,16 @@ class Command(LabelCommand):
 						line_count = 0
 						error_count = 0
 						for record in subnet_list:		
-							#[unique, unique_error] = DNS_name.objects.is_unique(record['ip_address'],record['name'],record['dns_type'], '', True)	
 							for i in range(len(record)):
-								print record
-				
-						logstring = 'Total DHCP records: %s' %len(subnet_list)
+								[unique, unique_error] = add_ip_subnet(record)
+								if unique:
+								 	error_count = error_count + 1
+									logstring = '%s|Error|: subnet %s | could not save to database - %s.' %(now,record['ip_value'], unique_error )
+									FILE.write(logstring + '\n')
+									print logstring
+								else:
+									line_count = line_count + 1
+						logstring = 'Total subnet records: %s' %len(subnet_list)
 						FILE.write(logstring + '\n')
 						logstring = 'Total Successfully created: %s' % line_count	
 						FILE.write(logstring + '\n')

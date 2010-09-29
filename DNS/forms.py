@@ -12,7 +12,7 @@ class Register_namepair_Form(forms.Form):
 			)
 	dns_type		= forms.ChoiceField(choices=TYPE_CHOICES, initial = '1BD', widget = forms.RadioSelect(), label = 'Type')
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
-	ttl		= forms.IntegerField(required = False,label = 'Time to Live (seconds)')
+	ttl		= forms.IntegerField(required = False,label = 'Time to Live')
 	def clean_ip_address(self):
 		ip_address = self.cleaned_data['ip_address']
 		ip_address = ip_address.replace(' ','')
@@ -32,13 +32,23 @@ class Register_namepair_Form(forms.Form):
 		dscr = dscr.lstrip()
 		dscr = dscr.rstrip()
 		return dscr
+	def clean_ttl(self):
+		try:
+			int(self.cleaned_data['ttl'])
+		except ValueError:
+			raise forms.ValidationError("Enter the time in seconds")
+		
+		return self.cleaned_data['ttl']
 
 	 	
 class Register_service_Form(forms.Form):
 	service_name 	= forms.CharField(label = 'Machine Name', widget = forms.TextInput(attrs={'class':'special', 'size':'10'}))		#DNS name regular expression
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
 	ttl		= forms.IntegerField(label = 'Time to Live (seconds)')
-
+	def clean_service_name(self):
+		service_name = self.cleaned_data['service_name']		
+		service_name = service_name.replace(' ','')
+		return dns_expr
 class ViewMachinesActionForm(forms.Form):
 	STATUS_CHOICES = ( 
 			('act', ''),

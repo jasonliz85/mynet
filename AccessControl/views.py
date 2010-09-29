@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db import IntegrityError
 from mynet.AccessControl.models import *
 from netaddr import IPAddress, IPNetwork
 import datetime, re
@@ -131,4 +132,37 @@ def is_name_in_netresource(request, dns_name):
 			break
 
 	return has_permission
+
+def add_ip_subnet(values):
 	
+	Error = ''
+	new_subnet = ip_subnet(	ip_value = values['ip_value'],
+							vlan	= values['vlan'],
+							description = values['description']
+							)
+	
+	try:
+		p, created = ip_subnet.objects.get_or_create(	ip_value 	= values['ip_value'],
+														vlan		= values['vlan'],
+														description = values['description']
+														)
+	except Exception, e:
+		if isinstance(e, IntegrityError):
+			Error = 'IP subnet is not unique'
+			return True, Error
+		elif isinstance(e, ValueError):
+			Error = 'IP subnet (string), vlan (integer) or Description (text) are of the wrong type.'
+			return True, Error
+
+#	try:
+#		new_subnet.save()
+#	except IntegrityError:
+#		Error = 'IP subnet is not unique'
+#		print Error
+#		return True, Error
+#	except ValueError:
+#		Error = 'IP subnet (string), vlan (integer) or Description (text) are of the wrong type.'
+#		print Error
+#		return True, Error
+	
+	return False, Error
