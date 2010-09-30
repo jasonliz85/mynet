@@ -36,9 +36,13 @@
 	{% if not machinelists %}
 		<ul class = "errorlist"><li> This table is empty </ul><li>	
 	{% else %}
+	
 	<form method="post" class = viewbackform action="">	
 		<div class="actions">
-			
+			Results {{ machinelists.start_index }}
+			to {{ machinelists.end_index }}
+			of {{ machinelists.paginator.count }} 
+			<br><br>			
 			<label>Action: 
 				{{form.status}}
 			</label>
@@ -69,7 +73,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		{% for machinelist in machinelists %}
+		{% for machinelist in machinelists.object_list %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
@@ -83,9 +87,33 @@
 		{% endfor %}
 		</tbody>
 		</table>
-		<!<input type="checkbox" name="_selected_action" value="{{machinelist.id}}" class="action-select">
-		<!td{{form.cc_myself.html_name}}</td>
+		<div>
+		{% if machinelists.has_previous %}
+			<a href="/dhcp/machine/list/default/{{ machinelists.previous_page_number }}" %}">Previous</a>
+		{% endif %}
+		{% if machinelists.has_next %}
+			<a href="/dhcp/machine/list/default/{{ machinelists.next_page_number }}">next</a>			
+			<!a href="{#% url paged_pagination_test original machinelists.next_page_number %#}"Next</a>
+		{% endif %}
+		
+	<div class="pagination">
+		<span class="step-links">
+		    {% if machinelists.has_previous %}
+		        <a href="?page_index={{ machinelists.previous_page_number }}">previous</a>
+		    {% endif %}
 
+		    <span class="current">
+		        Page {{ machinelists.number }} of {{ machinelists.paginator.num_pages }}.
+		    </span>
+
+		    {% if machinelists.has_next %}
+		        <a href="?page_index={{ machinelists.next_page_number }}">next</a>
+		    {% endif %}
+		</span>
+	</div>
+
+
+		</div>
 	</form>
 	{% endif %}
 		

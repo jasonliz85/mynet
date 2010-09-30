@@ -35,7 +35,7 @@ def ParameterChecks(user_object, ip, name, dt, rid, enable_softcheck):
 		return is_valid, error_msg
 	else:
 		[is_valid, error_msg] = DNS_name.objects.is_unique(ip, name, dt, rid, enable_softcheck)
-	print error_msg
+	#print error_msg
 	return is_valid, error_msg
 
 #DNS_name pair
@@ -105,7 +105,7 @@ def dns_namepair_add(request):
 				tempFilter = DNS_name.objects.filter(ip_address = ip).exclude(id = registeredID)
 				regServices = list()
 				for i in range(len(tempFilter)):
-					[is_service_permitted, msg] = DNS_name.objects.is_permitted(request, tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type, '', True)
+					[is_service_permitted, msg] = is_permitted(request, tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type)#DNS_name.objects.is_permitted(request, tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type, '', True)
 					if is_service_permitted:
 						tempFilter[i].ip = str(tempFilter[i].ip_address)
 						regServices.append(tempFilter[i])
@@ -213,10 +213,17 @@ def dns_namepair_edit(request, pair_id):
 				modID = EditAndLogRecord('DNS_name', pair_id,  DNS_name,request.user.username, valAft)
 				regpair = DNS_name.objects.get(id = modID)
 				regpair.ip = str(IPAddress(regpair.ip_address))
-				regServices = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = modID)
-				for i in range(len(regServices)):
-					regServices[i].ip = str(regServices[i].ip_address)
-		
+				#regServices = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = modID)
+				#for i in range(len(regServices)):
+				#	regServices[i].ip = str(regServices[i].ip_address)
+				
+				tempFilter = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = modID)
+				regServices = list()
+				for i in range(len(tempFilter)):
+					[is_service_permitted, msg] = is_permitted(request, tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type)#DNS_name.objects.is_permitted(request, tempFilter[i].ip_address, tempFilter[i].name, tempFilter[i].dns_type, '', True)
+					if is_service_permitted:
+						tempFilter[i].ip = str(tempFilter[i].ip_address)
+						regServices.append(tempFilter[i])
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 			else:
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_type':info['dns_type'],'ip_address':info['ip_address'],'dscr':info['dscr'],'ttl': info['ttl'] })

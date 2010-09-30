@@ -32,13 +32,13 @@ class Register_namepair_Form(forms.Form):
 		dscr = dscr.lstrip()
 		dscr = dscr.rstrip()
 		return dscr
-	def clean_ttl(self):
-		try:
-			int(self.cleaned_data['ttl'])
-		except ValueError:
-			raise forms.ValidationError("Enter the time in seconds")
-		
-		return self.cleaned_data['ttl']
+#	def clean_ttl(self):
+#		try:
+#			int(self.cleaned_data['ttl'])
+#		except ValueError:
+#			raise forms.ValidationError("Enter the time in seconds")
+#		
+#		return self.cleaned_data['ttl']
 
 	 	
 class Register_service_Form(forms.Form):

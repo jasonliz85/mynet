@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 #-------import models
 from mynet.DHCP.models import *
 #-------import forms
@@ -219,11 +220,20 @@ def dhcp_page_machine_edit(request, m_id):
 
 #
 @login_required
-def dhcp_page_machine_delete_multiple(request):	#this function needs renaming!!!!!!!!!!!!!!!!
+def dhcp_page_machine_listing(request, page_index=1):	#this function needs renaming!!!!!!!!!!!!!!!!
 	registeredmachines =  DHCP_machine.objects.get_permitted_records(request)# DNS_name.objects.all()#.order_by("dns_type")
 	#for display purposes
 	for i in range(len(registeredmachines)):
 		registeredmachines[i].ip = str(IPAddress(registeredmachines[i].ip_address))
+
+	paginator = Paginator(registeredmachines, 50, 5)
+	print str(page_index)
+	try:
+		page = paginator.page(page_index)
+		print page
+	except (EmptyPage, InvalidPage), e:
+		page = paginator.page(paginator.num_pages)
+	
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)		
 		action = request.POST['status']
@@ -240,19 +250,19 @@ def dhcp_page_machine_delete_multiple(request):	#this function needs renaming!!!
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : registeredmachines })
+						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page })
 					else:
 						regmachine = DHCP_machine.objects.get(id = item_selected[0])
 						return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines })	
+					return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page })	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines })	
+				return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page })	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : registeredmachines})
+		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page})
 
 #Delete a single record in the DHCP registration model
 @login_required
