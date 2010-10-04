@@ -199,7 +199,7 @@ def dhcp_page_machine_edit(request, m_id):
 		if editform.is_valid():
 			info = editform.cleaned_data
 			ip = IPAddress(info['ipID'])
-			[can_pass, custom_errors] = ParameterChecks(request, ip, "", str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
+			[can_pass, custom_errors] = ParameterChecks(request, ip, '', str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
 			if can_pass:
 				valAft = { 	'mac_address' :info['mcID'],'ip_address': ip,
 						'host_name' :info['pcID'],'description' :info['dscr']	}
@@ -208,32 +208,48 @@ def dhcp_page_machine_edit(request, m_id):
 				regmachine.ip = regmachine.ip_address
 				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 			else:
-				editform = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
+				editform = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
 				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
 	else:
 		try:
 			regmachine = DHCP_machine.objects.get(id = m_id)		
 		except DHCP_machine.DoesNotExist:
-			return HttpResponseRedirect("/dhcp/machine/list/default")	
+			return HttpResponseRedirect("/dhcp/machine/list/")	
 		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(regmachine.ip_address), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
 	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 
 #
 @login_required
-def dhcp_page_machine_listing(request, page_index=1):	#this function needs renaming!!!!!!!!!!!!!!!!
-	registeredmachines =  DHCP_machine.objects.get_permitted_records(request)# DNS_name.objects.all()#.order_by("dns_type")
-	#for display purposes
-	for i in range(len(registeredmachines)):
+def dhcp_page_machine_listing(request, page_index = 1 ):	
+	#get order direction, and order type
+	order_dir = request.GET.get('ot', 'desc')
+	order_by = request.GET.get('o', 'ip')
+	#get permitted records
+	registeredmachines =  DHCP_machine.objects.get_permitted_records(request) #registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir)
+	for i in range(len(registeredmachines)): #for display purposes
 		registeredmachines[i].ip = str(IPAddress(registeredmachines[i].ip_address))
-
-	paginator = Paginator(registeredmachines, 50, 5)
-	print str(page_index)
+		registeredmachines[i].record_no = i + 1
+	#get number of records per page
+	try:
+		list_length = int(request.GET.get('len', '400'))
+	except ValueError:
+		list_length = 100
+	if not list_length:
+		list_length = len(registeredmachines) 
+	#set up pagination
+	paginator = Paginator(registeredmachines, list_length, 5)
 	try:
 		page = paginator.page(page_index)
-		print page
 	except (EmptyPage, InvalidPage), e:
 		page = paginator.page(paginator.num_pages)
-	
+	#toggle sort type and specify sort order
+	sort = {}
+	sort['order'] = order_by
+	if order_dir == 'desc':
+		sort['type'] = 'asc'
+	else:
+		sort['type'] = 'desc'
+	#get details from form and display
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)		
 		action = request.POST['status']
@@ -250,19 +266,19 @@ def dhcp_page_machine_listing(request, page_index=1):	#this function needs renam
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page })
+						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
 					else:
 						regmachine = DHCP_machine.objects.get(id = item_selected[0])
 						return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page })	
+					return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page })	
+				return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page})
+		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
 
 #Delete a single record in the DHCP registration model
 @login_required
@@ -275,7 +291,7 @@ def dhcp_page_machine_delete_single(request, m_id):
 	mDelete = list()
 	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine', ''))
 	if mDelete == False:
-		return HttpResponseRedirect("/dhcp/machine/list/default")
+		return HttpResponseRedirect("/dhcp/machine/list/")
 	mlength = len(mDelete)
 	
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
@@ -283,16 +299,20 @@ def dhcp_page_machine_delete_single(request, m_id):
 #View a single registered machine in the DHCP model
 @login_required
 def dhcp_page_machine_view(request, m_id):
+	#check m_id
 	try:
 		m_id = int(m_id)
 	except ValueError:
 		raise Http404()	
-	
+	#check if id in database
 	try:
 		regmachine = DHCP_machine.objects.get(id = m_id)
 	except DHCP_machine.DoesNotExist:
-		return HttpResponseRedirect("/dhcp/machine/list/default")
-	
+		return HttpResponseRedirect("/dhcp/machine/list/")
+	#check if permitted
+	[is_valid, error_msg] = dhcp_permission_check(request, regmachine.ip, "", False)
+	if not is_valid:
+		return HttpResponseRedirect("/error/permission/")
 	regmachine = DHCP_machine.objects.get(id = m_id)
 	regmachine.ip = str(IPAddress(regmachine.ip_address))
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})

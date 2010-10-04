@@ -12,7 +12,9 @@ urlpatterns = patterns('mynet.views',
 	#('^login/$', 'mynet.views.login'),
 	(r'^home/$','home'),	
 	(r'^dns/$', 'dns_page'),						#dns- main dns home page
-	(r'^dhcp/$', 'dhcp_page'),						#dhcp - main dchp info page
+	(r'^dhcp/$', 'dhcp_page'),						#dhcp - main dchp info page	
+	(r'^error/permission/$', 'permission_error'),
+	(r'^error/record/$', 'record_error'),
 	
 )
 	#####################################################
@@ -20,9 +22,9 @@ urlpatterns = patterns('mynet.views',
 	#####################################################
 urlpatterns += patterns('django.views.static',	
 	#work from qm
-	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/mynet/Media'}),
-	#work from home
-	#(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jason/Projects/qm_projects/mynet/media'}),
+	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/mynet/Media'}),
+	#work from home ##django.views.static
+	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/mynet/Media'}),
 	(r'^admin/', include(admin.site.urls)),
 	(r'^accounts/login/$', login),
 	(r'^accounts/logout/$', logout),
@@ -45,7 +47,7 @@ urlpatterns += patterns('HistoryLog.views',
 urlpatterns += patterns('DNS.views',
 		
 	#CRUD Registed DNS pairs - Create, Read, Update, Destroy
-	(r'^dns/pair/add$', 'dns_namepair_add'),					#dns -
+	(r'^dns/pair/add$', 'dns_namepair_add'),							#dns -
 	(r'^dns/pair/list/default$', 'dns_namepair_listing'),				#dns - 
 	(r'^dns/pair/(\d{1,3})/view$', 'dns_namepair_view'),				#dns -
 	(r'^dns/pair/(\d{1,3})/edit$', 'dns_namepair_edit'),				#dns - 
@@ -59,20 +61,22 @@ urlpatterns += patterns('DNS.views',
 urlpatterns += patterns('DHCP.views',
 	
 	#CRUD Registered IP Pools- Create, Read, Update, Destroy
-	(r'^dhcp/pool/add$', 'dhcp_page_IP_range_add'),					#dhcp - 
-	(r'^dhcp/pool/list/default$', 'dhcp_page_IP_range_listing'), 			#dhcp - 
+	(r'^dhcp/pool/add$', 'dhcp_page_IP_range_add'),						#dhcp - 
+	(r'^dhcp/pool/list/default$', 'dhcp_page_IP_range_listing'), 		#dhcp - 
 	(r'^dhcp/pool/(\d{1,3})/view$', 'dhcp_page_IP_range_view'),			#dhcp - 
 	(r'^dhcp/pool/(\d{1,3})/edit$', 'dhcp_page_IP_range_edit'),			#dhcp - 
-	(r'^dhcp/pool/(\d{1,3})/delete$', 'dhcp_page_IP_range_delete'), 		#dhcp - 
+	(r'^dhcp/pool/(\d{1,3})/delete$', 'dhcp_page_IP_range_delete'), 	#dhcp - 
 	
 	#CRUD Registered Machfrom django.conf.urls.defaults import *ine- Create, Read, Update, Destroy
-	(r'^dhcp/machine/add$', 'dhcp_page_machine_add'),				#dhcp - register a machine
-	#url(r'^dhcp/machine/list/default/', 'dhcp_page_machine_listing'), 		#dhcp - registered machine listings
-	(r'^dhcp/machine/list/default/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing' ), 		#dhcp - registered machine listings
-	(r'^dhcp/machine/(\d{1,3})/view$', 'dhcp_page_machine_view'),			#dhcp - view individual machine
-	(r'^dhcp/machine/(\d{1,3})/edit$', 'dhcp_page_machine_edit'),			#dhcp - edit an existing machine record
+	(r'^dhcp/machine/add$', 'dhcp_page_machine_add'),							#dhcp - register a machine
+	#url(r'^dhcp/machine/list/default/', 'dhcp_page_machine_listing'), 			#dhcp - registered machine listings
+	#?ot=asc&amp;o=1
+	(r'^dhcp/machine/list/$', 'dhcp_page_machine_listing'),						#dhcp - registered machine listings
+	(r'^dhcp/machine/list/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing'), #dhcp - registered machine listings, x pages per record
+	(r'^dhcp/machine/(\d{1,3})/view$', 'dhcp_page_machine_view'),				#dhcp - view individual machine
+	(r'^dhcp/machine/(\d{1,3})/edit$', 'dhcp_page_machine_edit'),				#dhcp - edit an existing machine record
 	(r'^dhcp/machine/(\d{1,3})/delete$', 'dhcp_page_machine_delete_single'), 	#dhcp - delete existing machine record (single)
-	
+	#(r'^dhcp/machine/list/(?P<sort_by>[a-z])/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing' ), 		
 	#(r'^dhcp/deletemachine/$', views.dhcp_page_machine_delete_multiple), 		#dhcp - delete existing machine record (multiple)
 	#(r'^dhcp/viewTest/$', views.dhcp_page_list_machines), 				#dhcp - delete existing machine record (multiple)	
 	

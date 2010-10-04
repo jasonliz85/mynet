@@ -337,6 +337,7 @@ table {
 	border-collapse:collapse;
 	border-color:#CCCCCC;
 	border: 1px solid #DDDDDD;
+	!important
 }
 tbody td {
 	border-left:1px solid #DDDDDD;
@@ -359,8 +360,8 @@ thead th, tfoot td {
 	border-bottom:1px solid #DDDDDD;
 	border-left:1px solid #DDDDDD;
 	color:#666666;
-	font-size:100%; /*11px;*/
-	padding:5px 5px;
+	font-size:80%; /*11px;*/
+	padding:2px 5px;
 }
 
 thead td {
@@ -371,6 +372,7 @@ thead td {
 	/*background-color: #F8F8F8;*/
 	font-size:100%; /*11px;*/
 	padding:2px 5px;
+	!important
 }
 tfoot td {
 	border-bottom:medium none;
@@ -459,7 +461,7 @@ table.orderable-initalized .order-cell, body > tr > td.order-cell {
 }
 /***********************************************************************/
 /***********************************************************************/
-/***********************************************************************/
+/***********************************************************************/ 
 #changelist table input {
 margin:0;
 }

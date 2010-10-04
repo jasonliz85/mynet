@@ -61,7 +61,10 @@ def dhcp_page(request):
 	return render_to_response('qmul_dhcp.html', {})
 def dns_page(request):
 	return render_to_response('qmul_dns.html', {})
-	
+def permission_error(request):
+	return render_to_response('qmul_permission_error.html', {})
+def record_error(request):
+	return render_to_response('qmul_permission_error.html', {})
 ###########################################################################################
 ###########################################################################################
 ###########################################################################################
