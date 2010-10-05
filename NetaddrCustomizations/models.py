@@ -137,19 +137,20 @@ class NetaddrIPNetworkField(models.Field):
         return db4net(value)
 
     def to_python(self, value):
-        if value is None:
-            return value
-        if not isinstance(value, basestring):
-            return value
-        try:
-            version = int(value[0])
-            value = int(value[2:34], 16)
-            prefixlen = int(value[35:38])
-            network = netaddr.IPNetwork(value, version=version, implicit_prefix=True)
-            network.prefixlen = prefixlen
-            return network
-        except:
-            raise exceptions.ValidationError(u'Enter a valid IP Network')
+		if value is None:
+			return value
+		if not isinstance(value, basestring):
+			return value
+		try:
+			version = int(value[0])
+			prefixlen = int(value[36:38])
+			value = int(value[2:34], 16)
+			address = netaddr.IPAddress(value, version=version)
+			network = netaddr.IPNetwork(address)
+			network.prefixlen = prefixlen
+			return network
+		except:
+			raise exceptions.ValidationError(u'Enter a valid IP Network')
 
     def formfield(self, **kwargs):
         defaults = {'form_class': forms.NetaddrIPNetworkField}

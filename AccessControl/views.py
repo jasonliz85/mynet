@@ -134,29 +134,49 @@ def is_name_in_netresource(request, dns_name):
 	return has_permission
 
 def add_ip_subnet(values):
-	
+	'''
+	This function adds an ip subnet to the model ip_subnet. If record.save is not unique, return as Error = True
+	'''
 	Error = ''
-	new_subnet = ip_subnet(	ip_value = values['ip_value'],
+##	new_subnet = ip_subnet(	ip_value = values['ip_value'],
+##							vlan	= values['vlan'],
+##							description = values['description']
+##							)
+#	
+#	try:
+#		p, created = ip_subnet.objects.get_or_create(	ip_value 	= values['ip_value'],
+#														vlan		= values['vlan'],
+#														description = values['description']
+#														)
+#	print "About to try: ", values['ip_value']
+	new_subnet = ip_subnet(	ip_network = IPNetwork(values['ip_value']),
 							vlan	= values['vlan'],
 							description = values['description']
 							)
-	
 	try:
-		p, created = ip_subnet.objects.get_or_create(	ip_value 	= values['ip_value'],
-														vlan		= values['vlan'],
-														description = values['description']
-														)
+		new_subnet.save()
 	except Exception, e:
-		if isinstance(e, IntegrityError):
-			Error = 'IP subnet is not unique'
-			return True, Error
-		elif isinstance(e, ValueError):
-			Error = 'IP subnet (string), vlan (integer) or Description (text) are of the wrong type.'
-			return True, Error
-
+		return True, e
+#	new_subnet.save()
 #	try:
-#		new_subnet.save()
-#	except IntegrityError:
+##		p, created = ip_subnet.objects.get_or_create(	ip_network 	= IPNetwork(values['ip_value']),
+#		net = IPNetwork(values['ip_value'])
+#		print "Net value: ", net
+#		p, created = ip_subnet.objects.get_or_create(   ip_network  = net,
+#														vlan		= values['vlan'],
+#														description = values['description']
+#	 												)
+#		print "Tried: ", values['ip_value'] 										
+#	except Exception, e:
+#		print "Exception found: ", values['ip_value']
+#		if isinstance(e, IntegrityError):
+#			Error = 'IP subnet is not unique'
+#			return True, Error
+#		elif isinstance(e, ValueError):
+#			Error = 'IP subnet (string), vlan (integer) or Description (text) are of the wrong type.'
+#			return True, Error
+#		print values['ip_value']
+		#raise exceptions.AttributeError('')
 #		Error = 'IP subnet is not unique'
 #		print Error
 #		return True, Error

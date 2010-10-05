@@ -161,15 +161,21 @@ def dns_namepair_listing(request):
 #view a single ip-name pair 
 @login_required
 def dns_namepair_view(request, pair_id):
+	#check pair_id
 	try:
 		pair_id = int(pair_id)
 	except ValueError:
 		raise Http404()	
+	#check record exists in database
 	try:
 		regpair = DNS_name.objects.get(id = pair_id)
 	except DNS_name.DoesNotExist:
 		return HttpResponseRedirect("/dns/pair/list/default")
-		
+	#check permission
+	[is_valid, val] = DNS_name.objects.is_permitted(request,regpair.ip_address, regpair.name, regpair.dns_type)
+	if not is_valid:
+		return HttpResponseRedirect("/error/permission/")
+	#get other records for viewing
 	regpair.ip = str(regpair.ip_address)
 	tempFilter = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = regpair.id)
 	regServices = list()
@@ -183,10 +189,21 @@ def dns_namepair_view(request, pair_id):
 #delete a single record 
 @login_required
 def dns_namepair_delete(request, pair_id):
+	#check pair_id
 	try:
 		pair_id = int(pair_id)
 	except ValueError:
 		raise Http404()		
+	#check record in database
+	try:
+		val = DNS_name.objects.get(id = pair_id)
+	except DNS_name.DoesNotExist:
+		return HttpResponseRedirect("/dns/pair/list/default")
+	#check permission
+	[is_valid, val] = DNS_name.objects.is_permitted(request,val.ip_address, val.name, val.dns_type)
+	if not is_valid:
+		return HttpResponseRedirect("/error/permission/")
+	#delete record
 	mDelete = list()
 	mDelete.append(DeleteAndLogRecord(pair_id, DNS_name, request.user.username, 'DNS_name', ''))
 	mlength = len(mDelete)

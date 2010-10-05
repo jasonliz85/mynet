@@ -114,36 +114,48 @@ def dhcp_page_IP_range_listing(request):
 #Viw a single IP range record on the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_view(request, ip_id):
+	#check m_id
 	try:
 		ip_id = int(ip_id)
 	except ValueError:
 		raise Http404()	
-	
+	#check if id in database
 	try:
 		regpools = DHCP_ip_pool.objects.get(id = ip_id)
+		regpools.ip1 = str(regpools.ip_first)
+		regpools.ip2 = str(regpools.ip_last)
 	except DHCP_ip_pool.DoesNotExist:
 		return HttpResponseRedirect("/dhcp/pool/list/default")
-	
-	regpools.ip1 = str(regpools.ip_first)
-	regpools.ip2 = str(regpools.ip_last)
+	#check if permitted
+	[is_valid, error_msg] = dhcp_permission_check(request, regpools.ip_first, regpools.ip_last, False)
+	if not is_valid:
+		return HttpResponseRedirect("/error/permission/")
 	return  render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpools})
-
+	
 #Delete a single IP range on the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_delete(request, ip_id):
+	#check ip_id is an integer
 	try:
 		ip_id = int(ip_id)
 	except ValueError:
 		raise Http404()	
-	
+	#check if id in database
+	try:
+		val = DHCP_ip_pool.objects.get(id = ip_id)
+	except DHCP_ip_pool.DoesNotExist:
+		return HttpResponseRedirect("/dhcp/pool/list/default")
+	#check if permitted	
+	[is_valid, error_msg] = dhcp_permission_check(request, val.ip_first, val.ip_last, False)
+	if not is_valid:
+		return HttpResponseRedirect("/error/permission/")
+	#delete record
 	mDelete = list()
 	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username, 'DHCP_ip_pool', ''))
 	if mDelete == False:
 		return HttpResponseRedirect("/dhcp/pool/list/default")
 	mlength = len(mDelete)
-
 	return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength':mlength})
-
 #Edit a single IP range to the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_edit(request, ip_id):
@@ -180,7 +192,6 @@ def dhcp_page_IP_range_edit(request, ip_id):
 #################################################################################
 ####################### DHCP Machine Registration ###############################
 #################################################################################
-	
 #
 @login_required
 def dhcp_page_listings(request):
@@ -283,17 +294,26 @@ def dhcp_page_machine_listing(request, page_index = 1 ):
 #Delete a single record in the DHCP registration model
 @login_required
 def dhcp_page_machine_delete_single(request, m_id):
+	#check m_id is an integer
 	try:
 		m_id = int(m_id)
 	except ValueError:
 		raise Http404()	
-	
+	#check if id in database
+	try:
+		val = DHCP_machine.objects.get(id = m_id)
+	except DHCP_machine.DoesNotExist:
+		return HttpResponseRedirect("/dhcp/machine/list/")
+	#check if permitted	
+	[is_valid, error_msg] = dhcp_permission_check(request, val.ip_address, "", False)
+	if not is_valid:
+		return HttpResponseRedirect("/error/permission/")
+	#delete record
 	mDelete = list()
 	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine', ''))
 	if mDelete == False:
 		return HttpResponseRedirect("/dhcp/machine/list/")
 	mlength = len(mDelete)
-	
 	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
 
 #View a single registered machine in the DHCP model
@@ -307,14 +327,13 @@ def dhcp_page_machine_view(request, m_id):
 	#check if id in database
 	try:
 		regmachine = DHCP_machine.objects.get(id = m_id)
+		regmachine.ip = str(IPAddress(regmachine.ip_address))
 	except DHCP_machine.DoesNotExist:
 		return HttpResponseRedirect("/dhcp/machine/list/")
 	#check if permitted
-	[is_valid, error_msg] = dhcp_permission_check(request, regmachine.ip, "", False)
+	[is_valid, error_msg] = dhcp_permission_check(request, regmachine.ip_address, "", False)
 	if not is_valid:
 		return HttpResponseRedirect("/error/permission/")
-	regmachine = DHCP_machine.objects.get(id = m_id)
-	regmachine.ip = str(IPAddress(regmachine.ip_address))
 	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 
 #Add a machine to the DHCP registration model

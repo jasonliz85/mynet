@@ -43,7 +43,7 @@ class NetaddrIPAddressAsIntegerField(forms.Field):
             raise forms.ValidationError(self.error_messages['invalid'])
         return value.value
 
-class NetaddrIPAddressField(forms.Field):
+class NetaddrIPNetworkField(forms.Field):
     """
     A Django Form Field class to represent IP (sub)networks using the 'netaddr' package
     """

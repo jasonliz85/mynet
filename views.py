@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 import datetime
 from mynet.AccessControl import get_netgroups_managed_by_user, get_address_blocks_managed_by, get_dns_patterns_managed_by#add_permissions_to_session, get_permissions_to_session
+import pickle
 
 
 def add_permissions_to_session(request):
@@ -50,12 +51,23 @@ def home(request):
 	userInfo["first_name"] = request.user.first_name
 	userInfo["last_name"] = request.user.last_name
 	Groups = request.user.groups.all().values()
-	
 	add_permissions_to_session(request)
 	[NetworkResources, IPRanges, DNSExpressions] = get_permissions_to_session(request)
-
+	
+	try:
+		print request.session.__dict__
+		#pickle.dumps(request.session.__dict__, pickle.HIGHEST_PROTOCOL)
+		for k,value in request.session.__dict__['_session_cache'].items():
+			if k in [ 'dns_expressions', 'ip_blocks']:
+				continue
+			print "Trying to pickle session items: ",k,value 
+			x = pickle.dumps(request.session.__dict__[k], pickle.HIGHEST_PROTOCOL)
+			print x
+	except Exception, e:
+		if isinstance(e, pickle.PicklingError):
+			print "Error:%s..."% e
 	return render_to_response('qmul_main.html', {'userInfo': userInfo, 'Groups':Groups, 'NetworkResources':NetworkResources, 'IPRanges':IPRanges,'DNSExpressions':DNSExpressions })
-
+	#return render_to_response('qmul_main.html', {'userInfo': userInfo, 'Groups':Groups })
 @login_required
 def dhcp_page(request):
 	return render_to_response('qmul_dhcp.html', {})

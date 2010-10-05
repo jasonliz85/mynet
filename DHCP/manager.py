@@ -175,7 +175,8 @@ class IPPoolManager(models.Manager):
 		"""
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
 		[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
-	
+		find_first = []
+		find_last = []
 		empty_find = True
 		for block in range(len(ip_blocks)):
 			ip_block = IPNetwork(str(ip_blocks[block]))
@@ -184,7 +185,10 @@ class IPPoolManager(models.Manager):
 			ip_last_upper 	= Q(ip_last__lt = ip_block[-1])
 			ip_last_lower 	= Q(ip_last__gt = ip_block[0])
 			#filter the ip block
-			finds = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
+			#finds = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
+			find_first = self.filter(ip_first_upper and ip_first_lower)
+			find_last  = self.filter(ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
+			finds = find_first&find_last
 			if block == 0:
 				total_ip_finds = finds
 				if len(finds) == 0:
@@ -206,5 +210,4 @@ class IPPoolManager(models.Manager):
 			permitted_record = total_ip_finds
 		else:
 			permitted_record = list()
-					
 		return permitted_record

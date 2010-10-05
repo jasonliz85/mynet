@@ -126,15 +126,14 @@ class Command(LabelCommand):
 						line_count = 0
 						error_count = 0
 						for record in subnet_list:		
-							for i in range(len(record)):
-								[unique, unique_error] = add_ip_subnet(record)
-								if unique:
-								 	error_count = error_count + 1
-									logstring = '%s|Error|: subnet %s | could not save to database - %s.' %(now,record['ip_value'], unique_error )
-									FILE.write(logstring + '\n')
-									print logstring
-								else:
-									line_count = line_count + 1
+							[unique, unique_error] = add_ip_subnet(record)
+							if unique:
+							 	error_count = error_count + 1
+								logstring = '%s|Error|: subnet %s | could not save to database - %s.' %(now,record['ip_value'], unique_error )
+								FILE.write(logstring + '\n')
+								print logstring
+							else:
+								line_count = line_count + 1
 						logstring = 'Total subnet records: %s' %len(subnet_list)
 						FILE.write(logstring + '\n')
 						logstring = 'Total Successfully created: %s' % line_count	

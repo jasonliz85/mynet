@@ -33,7 +33,7 @@
 		{% endif %}
 	{% endfor %}
 	
-	{% if not machinelists %}
+	{% if not machinelists.object_list %}
 		<ul class = "errorlist"><li> This table is empty </ul><li>	
 	{% else %}
 	
@@ -43,10 +43,10 @@
 			Page {{ machinelists.number }} of {{ machinelists.paginator.num_pages }}.
 			<br><br>	
 				Show	
-				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=25">50</a>,
-				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=50">100</a>,
-				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=100">200</a>,
-				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=200">400</a>, or 
+				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=50">50</a>,
+				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=100">100</a>,
+				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=200">200</a>,
+				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=400">400</a>, or 
 				<a href="?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=0"> all</a> records per page
 			<br><br>
 			<label>Action: 
@@ -55,10 +55,10 @@
 			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete these registered machines?');" title="Run the selected action" class="button" type="submit" >Go</button>
 			<br><br>
 			{% if machinelists.has_previous %}
-				<a href="/dhcp/machine/list/{{ machinelists.previous_page_number }}" %}">&lt;&lt;Previous</a>
+				<a href="/dhcp/machine/list/{{ machinelists.previous_page_number }}" %}">&lt;&lt;Previous</a> | 
 			{% endif %}
 			{% if machinelists.has_next %}
-				<a href="/dhcp/machine/list/{{ machinelists.next_page_number }}">Next >></a>			
+				<a href="/dhcp/machine/list/{{ machinelists.next_page_number }}">Next &gt;&gt;</a>			
 			{% endif %}
 		</div>  
 		<br>
@@ -126,11 +126,10 @@
 		</table>
 		<div>
 		{% if machinelists.has_previous %}
-			<a href="/dhcp/machine/list/{{ machinelists.previous_page_number }}" %}">Previous</a>
+			<a href="/dhcp/machine/list/{{ machinelists.previous_page_number }}" %}">&lt;&lt; Previous</a> | 
 		{% endif %}
 		{% if machinelists.has_next %}
-			<a href="/dhcp/machine/list/{{ machinelists.next_page_number }}">next</a>			
-			<!a href="{#% url paged_pagination_test original machinelists.next_page_number %#}"Next</a>
+			<a href="/dhcp/machine/list/{{ machinelists.next_page_number }}">Next &gt;&gt;</a>			
 		{% endif %}
 		
 		<div class="pagination">
