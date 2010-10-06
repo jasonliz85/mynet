@@ -6,8 +6,6 @@ __all__ = [	'get_netgroups_managed_by_user',
 		'get_address_blocks_managed_by',
 		'get_subnet_from_ip',
 		'is_ipaddress_in_netresource',
-		'is_name_in_netresource', 
-		'get_permissions_to_session', 
-		'add_permissions_to_session']
+		'is_name_in_netresource']
 		
 

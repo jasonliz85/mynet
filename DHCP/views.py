@@ -231,10 +231,15 @@ def dhcp_page_machine_edit(request, m_id):
 
 #
 @login_required
-def dhcp_page_machine_listing(request, page_index = 1 ):	
+def dhcp_page_machine_listing(request):	
 	#get order direction, and order type
 	order_dir = request.GET.get('ot', 'desc')
 	order_by = request.GET.get('o', 'ip')
+	#get page index
+	try:
+		page_index = int(request.GET.get('pi', '1'))
+	except ValueError:
+		page_index = 1
 	#get permitted records
 	registeredmachines =  DHCP_machine.objects.get_permitted_records(request) #registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir)
 	for i in range(len(registeredmachines)): #for display purposes

@@ -72,7 +72,7 @@ urlpatterns += patterns('DHCP.views',
 	#url(r'^dhcp/machine/list/default/', 'dhcp_page_machine_listing'), 			#dhcp - registered machine listings
 	#?ot=asc&amp;o=1
 	(r'^dhcp/machine/list/$', 'dhcp_page_machine_listing'),						#dhcp - registered machine listings
-	(r'^dhcp/machine/list/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing'), #dhcp - registered machine listings, x pages per record
+	#(r'^dhcp/machine/list/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing'), #dhcp - registered machine listings, x pages per record
 	(r'^dhcp/machine/(\d{1,6})/view$', 'dhcp_page_machine_view'),				#dhcp - view individual machine
 	(r'^dhcp/machine/(\d{1,6})/edit$', 'dhcp_page_machine_edit'),				#dhcp - edit an existing machine record
 	(r'^dhcp/machine/(\d{1,6})/delete$', 'dhcp_page_machine_delete_single'), 	#dhcp - delete existing machine record (single)

@@ -15,7 +15,8 @@ class dns_expression(models.Model):
 		return self.expression
 
 class ip_subnet(models.Model):
-	ip_network 	= NetaddrCustomizations.models.NetaddrIPNetworkField('IP Network', unique=True)
+	ip_network 	= NetaddrCustomizations.models.NetaddrIPNetworkField('IP Network')
+#	ip_network 	= NetaddrCustomizations.models.NetaddrIPNetworkField('IP Network', unique=True)
 	@property
     	def ip_value(self): return str(self.ip_network)
 # was:	ip_value	= models.CharField('IP Subnet', max_length = 100, unique=True)		#Network Resource IP Subnet

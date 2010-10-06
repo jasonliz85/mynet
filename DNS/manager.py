@@ -1,7 +1,7 @@
 #This is the object manager for models.py
 from django.db import models
 from netaddr import *
-from mynet.AccessControl import is_ipaddress_in_netresource, is_name_in_netresource, get_permissions_to_session
+from mynet.AccessControl.views import is_ipaddress_in_netresource, is_name_in_netresource, get_address_blocks_managed_by, get_dns_patterns_managed_by
 from django.db.models import Q
 
 class NameManager(models.Manager):
@@ -118,8 +118,9 @@ class NameManager(models.Manager):
 		a further filtering step is applied - please see comments this function for further information.
 		"""
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
-	
+		#[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
+		ip_blocks = get_address_blocks_managed_by(request.user)
+		dns_exprs = get_dns_patterns_managed_by(request.user)
 		#first find all the ip addresses that the user has permission to control
 		empty_find = True
 		for block in range(len(ip_blocks)):

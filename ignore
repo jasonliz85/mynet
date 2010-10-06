@@ -317,3 +317,109 @@
 #	custom_errors = msg1 + errors + msg2
 #	return has_permission, custom_errors
 			
+			
+			
+#add_permissions_to_session, get_permissions_to_session
+#def add_permissions_to_session(request):
+#	"""
+#	Add Network Resource Name, IP Blocks (IP Address Ranges), and DNS Expressions to Django session
+#	"""
+#	#Network Resources	 	
+#	request.session['network_resources'] 	= get_netgroups_managed_by_user(request.user)
+#	#IP Ranges
+#	#request.session['ip_blocks'] 		= get_address_blocks_managed_by(request.user)
+#	#DNS Expressions	 
+#	request.session['dns_expressions'] 	= get_dns_patterns_managed_by(request.user)	
+#	
+#	return
+#	
+#def get_permissions_to_session(request):
+#	"""
+#	returns [Network Resource Name, IP Blocks (IP Address Ranges), DNS Expressions] from the Django session
+#	"""
+#	net_res = request.session['network_resources']
+#	#ip_ran  = request.session['ip_blocks']
+#	ip_ran  = get_address_blocks_managed_by(request.user)
+#	dns_exp = request.session['dns_expressions']
+#	
+#	return net_res, ip_ran, dns_exp
+
+
+
+#def add_permissions_to_session(request):
+#	"""
+#	Add Network Resource Name, IP Blocks (IP Address Ranges), and DNS Expressions to Django session
+#	"""
+#	#Network Resources	 	
+#	request.session['network_resources'] 	= get_netgroups_managed_by_user(request.user)
+#	#IP Ranges
+#	#request.session['ip_blocks'] 		= get_address_blocks_managed_by(request.user)
+#	#DNS Expressions	 
+#	request.session['dns_expressions'] 	= get_dns_patterns_managed_by(request.user)	
+#	
+#	return
+
+#def get_permissions_to_session(request):
+#	"""
+#	returns [Network Resource Name, IP Blocks (IP Address Ranges), DNS Expressions] from the Django session
+#	"""
+#	net_res = request.session['network_resources']
+#	#ip_ran  = request.session['ip_blocks']
+#	ip_ran  = get_address_blocks_managed_by(request.user)
+#	dns_exp = request.session['dns_expressions']
+#	
+#	return net_res, ip_ran, dns_exp
+	
+	# 	Error = ''
+##	new_subnet = ip_subnet(	ip_value = values['ip_value'],
+##							vlan	= values['vlan'],
+##							description = values['description']
+##							)
+#	
+#	try:
+#		p, created = ip_subnet.objects.get_or_create(	ip_value 	= values['ip_value'],
+#														vlan		= values['vlan'],
+#														description = values['description']
+#														)
+#	print "About to try: ", values['ip_value']
+
+#	new_subnet.save()
+#	try:
+##		p, created = ip_subnet.objects.get_or_create(	ip_network 	= IPNetwork(values['ip_value']),
+#		net = IPNetwork(values['ip_value'])
+#		print "Net value: ", net
+#		p, created = ip_subnet.objects.get_or_create(   ip_network  = net,
+#														vlan		= values['vlan'],
+#														description = values['description']
+#	 												)
+#		print "Tried: ", values['ip_value'] 										
+#	except Exception, e:
+#		print "Exception found: ", values['ip_value']
+#		if isinstance(e, IntegrityError):
+#			Error = 'IP subnet is not unique'
+#			return True, Error
+#		elif isinstance(e, ValueError):
+#			Error = 'IP subnet (string), vlan (integer) or Description (text) are of the wrong type.'
+#			return True, Error
+#		print values['ip_value']
+		#raise exceptions.AttributeError('')
+#		Error = 'IP subnet is not unique'
+#		print Error
+#		return True, Error
+#	except ValueError:
+#		Error = 'IP subnet (string), vlan (integer) or Description (text) are of the wrong type.'
+#		print Error
+#		return True, Error
+
+#	try:
+#		print request.session.__dict__
+#		pickle.dumps(request.session.__dict__, pickle.HIGHEST_PROTOCOL)
+#		for k,value in request.session.__dict__['_session_cache'].items():
+#			if k in [ 'dns_expressions', 'ip_blocks']:
+#				continue
+#			print "Trying to pickle session items: ",k,value 
+#			x = pickle.dumps(request.session.__dict__[k], pickle.HIGHEST_PROTOCOL)
+#			print x
+#	except Exception, e:
+#		if isinstance(e, pickle.PicklingError):
+#			print "Error:%s..."% e

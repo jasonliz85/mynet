@@ -2,37 +2,6 @@ from django.db import models
 from django.db.models import Q
 from mynet.AccessControl import *#get_subnet_from_ip
 from netaddr import *
-
-#def get_permissions_to_session(request):
-#	"""
-#	returns [Network Resource Name, IP Blocks (IP Address Ranges), DNS Expressions] from the Django session
-#	"""
-#	net_res = request.session['network_resources']
-#	ip_ran  = request.session['ip_blocks']
-#	dns_exp = request.session['dns_expressions']
-#	
-#	return net_res, ip_ran, dns_exp
-
-#def is_ipaddress_in_netresource(request, ip_address):	
-#	"""
-#	returns true if the input ip address (ip_address) is within the ip blocks specified in the user's session, else returns false. 
-#	It assumes the input ip address is in integer form.
-#	"""
-#	#[blank1, ip_blocks, blank2] = get_permissions_to_session(request)
-#	ip_blocks = request.session['ip_blocks']
-#	ip_block_str = ''
-#	has_permission = False
-#	
-#	#for each ip address block in all ip address blocks in the list...
-#	for block in range(len(ip_blocks)):
-#		ip_block = IPNetwork(str(ip_blocks[block]))
-#		#...check if ip_address is within range
-#		if int(ip_address) < int(ip_block[-1]) and int(ip_address) > int(ip_block[0]):
-#			has_permission = True			
-#			ip_block_str = str(ip_blocks[block])
-#			break
-
-#	return has_permission, ip_block_str
 	
 class MachineManager(models.Manager):
 	def is_unique(self, user_obj, ip, mac, mid):
@@ -79,8 +48,8 @@ class MachineManager(models.Manager):
 		ip_blocks that the user is able to access. 
 		"""
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
-	
+		#[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
+		ip_blocks = get_address_blocks_managed_by(request.user)
 		empty_find = True
 		for block in range(len(ip_blocks)):
 			ip_block = IPNetwork(str(ip_blocks[block]))
@@ -174,7 +143,8 @@ class IPPoolManager(models.Manager):
 		ip_blocks that the user is able to access. 
 		"""
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
+		#[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
+		ip_blocks = get_address_blocks_managed_by(request.user)
 		find_first = []
 		find_last = []
 		empty_find = True

@@ -337,6 +337,7 @@ table {
 	border-collapse:collapse;
 	border-color:#CCCCCC;
 	border: 1px solid #DDDDDD;
+	width: 100%;
 	!important
 }
 tbody td {
@@ -469,11 +470,12 @@ margin:0;
 background-color:#FFFFCC;
 }
 #changelist .actions {
-background:url("../img/admin/nav-bg-reverse.gif") repeat-x scroll 0 -10px white;
-border-bottom:1px solid #DDDDDD;
-border-top:1px solid #FFFFFF;
-color:#999999;
-padding:3px;
+	background:url("../images/nav-bg-reverse.gif") repeat-x scroll 0 -10px white;
+	border-bottom:1px solid #DDDDDD;
+	border-top:1px solid #FFFFFF;
+	border: 1px solid #DDDDDD;
+	color:#999999;
+	padding:3px;
 }
 #changelist .actions:last-child {
 border-bottom:medium none;
@@ -484,8 +486,9 @@ margin-left:0.5em;
 padding:1px 2px;
 }
 #changelist .actions label {
-font-size:11px;
-margin-left:0.5em;
+	font-size: 80%; /*11px;*/
+	line-height: 13px;
+	margin-left:0.5em;
 }
 #changelist #action-toggle {
 display:none;

@@ -62,7 +62,7 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	else:
 		check2 = True
 		ip_block2 = ip_block1
-		
+		07-10-2010
 	if not check1 or not check2 or not ip_block1 == ip_block2:	
 		#ip pools
 		if not ip_block1 == ip_block2:
