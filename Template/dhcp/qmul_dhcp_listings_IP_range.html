@@ -35,14 +35,25 @@
 		<ul class = "errorlist"><li> This table is empty </ul><li>	
 	{% else %}	
 	<form method="post" class = viewbackform action="">	
-		<div class="actions">
-			
-			<label>Action: 
+		<div id = 'changelist' class = 'module'>
+			<div class="actions">			
+				<label>
+				Action: 
 				{{form.status}}
-			</label>
-			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete these registered machines?');" title="Run the selected action" class="button" type="submit" >Go</button>
-		</div>  
-		<br>
+				<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete these ip pairs?');" title="Run the selected action" class="button" type="submit" >Go</button>
+				Show:	
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=50">50</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=100">100</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=200">200</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=400">400</a>, or 
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=0"> all</a> records per page
+				<p class="paginator">
+					{% load paginator %}
+					{% paginator 4 %}
+				</p>
+				</label>
+			</div>  
+		</div>
 		<table cellspacing="0">
 		<thead>
 			<tr>
@@ -52,23 +63,80 @@
 			<th>
 				<a>No.</a>
 			</th>
-			<th>
-				<a href="?ot=asc&amp;o=1">IP Pools</a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "ip" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=ip&amp;len={{list_size}}&amp;tog=yes"> IP Pools </a>
+			{%else%}
+				<th {% ifequal sort.order "ip" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=ip&amp;len={{list_size}}&amp;tog=yes"> IP Pools </a>
+			{%endif%}
 			</th>
 			<th>				
 			</th>
 			<th>				
 			</th>
-			<th> 
-				<a href="?ot=asc&amp;o=3"> IP version </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "ver" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=ver&amp;len={{list_size}}&amp;tog=yes"> IP Version </a>
+			{%else%}
+				<th {% ifequal sort.order "ver" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=ver&amp;len={{list_size}}&amp;tog=yes"> IP Version </a>
+			{%endif%}
 			</th>
-			<th>
-				<a href="?ot=asc&amp;o=4"> Time Created	</a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Created </a>
+			{%else%}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Created </a>
+			{%endif%}
 			</th>
 			</tr>
 		</thead>
 		<tbody>
-		{% for machinelist in machinelists %}
+		{% for machinelist in machinelists.object_list %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td>{{ forloop.counter }}</td>
@@ -83,6 +151,10 @@
 		{% endfor %}
 		</tbody>
 		</table>
+		<p class="paginator">
+			{% load paginator %}
+			{% paginator 4 %}
+		</p>
 	</form>
 	{% endif %}
 		

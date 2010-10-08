@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Q
 from mynet.AccessControl import *#get_subnet_from_ip
 from netaddr import *
-	
+
 class MachineManager(models.Manager):
 	def is_unique(self, user_obj, ip, mac, mid):
 		'''
@@ -42,21 +42,35 @@ class MachineManager(models.Manager):
 					unique = False
 							
 		return unique, unique_error
-	def get_permitted_records(self, request):
+	def get_permitted_records(self, request, order_by, order_dir, change_dir):
 		"""
 		This function returns a queryset from the model DHCP_macgroupshine . The returned results are filtered by permitted
 		ip_blocks that the user is able to access. 
+		order_by - order by ip:ip_address, mac:mac_address, time:time_created
+		order_dir - asc:ascending or desc:descending
+		change_dir - 
 		"""
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		#[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
 		ip_blocks = get_address_blocks_managed_by(request.user)
 		empty_find = True
+		if order_by == 'ip':
+			var = "ip_address"
+		elif order_by == 'mac':
+			var = "mac_address"
+		elif order_by == 'host':
+			var = "host_name"
+		else:
+			var = "time_created"
+			
+		if order_dir == 'desc':
+			var = "-"+var
+		#
 		for block in range(len(ip_blocks)):
 			ip_block = IPNetwork(str(ip_blocks[block]))
 			ip_filter_upper = Q(ip_address__lt = ip_block[-1])
 			ip_filter_lower = Q(ip_address__gt = ip_block[0])
 			#filter the ip block
-			finds = self.filter( ip_filter_upper, ip_filter_lower )
+			finds = self.filter( ip_filter_upper, ip_filter_lower ).order_by(var)
 			if block == 0:
 				total_ip_finds = finds
 				if len(finds) == 0:

@@ -1,0 +1,31 @@
+{% spaceless %}
+	<span class="paginate-pages" onclick="Paginator.jumpToPage({{ pages }})" title="Page Jump">
+		{{ pages }} 
+		{% ifequal pages 1%}
+			Page
+		{% else %}
+			Pages
+		{% endifequal %}
+	</span>
+	{% if show_first %}
+		<span class="paginate-first"><a href="?pi=1&amp;?ot={{sort_type}}&amp;o={{sort_order}}&amp;len={{list_len}}"" title="First Page">&laquo;</a></span>
+	{% endif %}
+	{% if has_previous %}
+		<span class="paginate-previous"><a href="?pi={{ previous }}&amp;?ot={{sort_type}}&amp;o={{sort_order}}&amp;len={{list_len}}" title="Previous Page">&lt;</a></span>
+	{% endif %}
+	{% for num in page_numbers %}
+		{% ifequal num page %}
+			<span class="this-page" title="Current Page">{{ num }}</span>
+		{% else %}
+			<a href="?pi={{ num }}&amp;?ot={{sort_type}}&amp;o={{sort_order}}&amp;len={{list_len}}" title="Page {{ num }}">{{ num }}</a>
+		{% endifequal %}
+	{% endfor %}
+	{% if has_next %}
+		<a href="?pi={{ next }}&amp;?ot={{sort_type}}&amp;o={{sort_order}}&amp;len={{list_len}}" title="Next Page">&gt;</a>
+	{% endif %}
+	{% if show_last %}
+		<a href="?pi={{ pages }}&amp;?ot={{sort_type}}&amp;o={{sort_order}}&amp;len={{list_len}}" title="Last Page">&raquo;</a>
+	{% endif %}
+	{{total_records}} records in total
+{% endspaceless %}
+

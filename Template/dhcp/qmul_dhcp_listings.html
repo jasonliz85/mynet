@@ -28,12 +28,12 @@
 	
 
 	<h2><a name="status">Registered Machines</a></h2>
-	<p> This page shows all the registered machines on this network. </p>
+	<p> This page shows all the registered machines that you have permission to control. </p>
 	
 	{% for field in form %}
 		{% if field.errors %}
 			{{field.errors}}
-		{% endif %}
+		{% endif %}		
 	{% endfor %}
 	
 	{% if not machinelists.object_list %}
@@ -42,26 +42,21 @@
 	
 	<form method="post" class = viewbackform action="">	
 		<div id = 'changelist' class = 'module'>
-			Results {{ machinelists.start_index }} to {{ machinelists.end_index }} of {{ machinelists.paginator.count }}. 
-			Page {{ machinelists.number }} of {{ machinelists.paginator.num_pages }}.
-			<br><br>	
-			{% if machinelists.has_previous %}
-				<a href="?pi={{ machinelists.previous_page_number }}" %}">&lt;&lt;Previous</a> | 
-			{% endif %}
-			{% if machinelists.has_next %}
-				<a href="?pi={{ machinelists.next_page_number }}">Next &gt;&gt;</a>			
-			{% endif %}
 			<div class="actions">			
 				<label>
 				Action: 
 				{{form.status}}
 				<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete these registered machines?');" title="Run the selected action" class="button" type="submit" >Go</button>
 				Show:	
-				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=50">50</a>,
-				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=100">100</a>,
-				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=200">200</a>,
-				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=400">400</a>, or 
-				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type}}&amp;o={{sort.order}}&amp;len=0"> all</a> records per page
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=50">50</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=100">100</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=200">200</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=400">400</a>, or 
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=0"> all</a> records per page
+				<p class="paginator">
+					{% load paginator %}
+					{% paginator 4 %}
+				</p>
 				</label>
 			</div>  
 		</div>
@@ -74,41 +69,93 @@
 			<th>
 				<a>No.</a>
 			</th>
-			<th {% ifequal sort.order "mac" %}
-					{% ifequal sort.type "asc" %}
-						class="sorted ascending"
-					{% else %}	
-						class="sorted descending"
-					{% endifequal %}
-				{% endifequal %} >
-				<a href="?ot={{sort.type}}&amp;o=mac&amp;len={{list_size}}">MAC Address</a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "mac" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=mac&amp;len={{list_size}}&amp;tog=yes"> MAC Address </a>
+			{%else%}
+				<th {% ifequal sort.order "mac" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=mac&amp;len={{list_size}}&amp;tog=yes"> MAC Address </a>
+			{%endif%}
 			</th>
-			<th {% ifequal sort.order "ip" %}
-					{% ifequal sort.type "asc" %}
-						class="sorted ascending"
-					{% else %}	
-						class="sorted descending"
-					{% endifequal %}
-				{% endifequal %} >
-				<a href="?ot={{sort.type}}&amp;o=ip&amp;len={{list_size}}"> IP Address </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "ip" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=ip&amp;len={{list_size}}&amp;tog=yes"> IP Address </a>
+			{%else%}
+				<th {% ifequal sort.order "ip" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=ip&amp;len={{list_size}}&amp;tog=yes"> IP Address </a>
+			{%endif%}
 			</th>
-			<th {% ifequal sort.order "host" %}
-					{% ifequal sort.type "asc" %}
-						class="sorted ascending"
-					{% else %}	
-						class="sorted descending"
-					{% endifequal %}
-				{% endifequal %} > 
-				<a href="?ot={{sort.type}}&amp;o=host&amp;len={{list_size}}"> Host Name </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "host" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=host&amp;len={{list_size}}&amp;tog=yes"> Host Name </a>
+			{%else%}
+				<th {% ifequal sort.order "host" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=host&amp;len={{list_size}}&amp;tog=yes"> Host Name </a>
+			{%endif%}
 			</th>
-			<th {% ifequal sort.order "time" %}
-					{% ifequal sort.type "asc" %}
-						class="sorted ascending"
-					{% else %}	
-						class="sorted descending"
-					{% endifequal %}
-				{% endifequal %} >
-				<a href="?ot={{sort.type}}&amp;o=time&amp;len={{list_size}}"> Time Created	</a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Created </a>
+			{%else%}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Created </a>
+			{%endif%}
 			</th>
 			</tr>
 		</thead>
@@ -126,51 +173,13 @@
 			</tr>
 		{% endfor %}
 		</tbody>
+		<tfoot>
+		</tfoot>
 		</table>
-		<div>
-		{% if machinelists.has_previous %}
-			<a href="?pi={{ machinelists.previous_page_number }}" %}">&lt;&lt; Previous</a> | 
-		{% endif %}
-		{% if machinelists.has_next %}
-			<a href="?pi={{ machinelists.next_page_number }}">Next &gt;&gt;</a>			
-		{% endif %}
-		
-		<div class="pagination">
-				<span class="current">
-				    Page {{ machinelists.number }} of {{ machinelists.paginator.num_pages }}
-				</span>
-		</div>
-		
-		<div class="pager">
-		{% if machinelists.has_previous %}
-		  <span class="page">
-		  <a href="?pi={{ machinelists.previous_page_number }}">&lt; Prev</a>
-		  </span>
-		{% endif %}
-
-		{% if show_first %}
-		  <span class="page"><a href="?pi=1">1</a></span>
-		  <span class="ellipsis">...</span>
-		{% endif %}
-		{% for linkpage in machinelists.page_numbers %}
-		  {% ifequal linkpage machinelists.page %}
-			 <span class="current">{{ machinelists.page }}</span>
-		  {% else %}
-			 <span class="page"><a href="?pi={{ linkpage }}"
-				   >{{ linkpage }}</a></span>
-		  {% endifequal %}
-		{% endfor %}
-		{% if machinelists.show_last %}
-		  <span class="ellipsis">...</span>
-		  <span class="pi"><a href="?pi=last">{{ machinelists.pages }}</a></span>
-		{% endif %}
-		{% if machinelists.has_next %}
-		  <span class="pi"><a href="?pi={{ machinelists.next_page_number }}">Next &gt;</a></span>
-		{% endif %}
-		</div>
-
-
-		</div>
+		<p class="paginator">
+			{% load paginator %}
+			{% paginator 4 %}
+		</p>
 	</form>
 	{% endif %}
 		

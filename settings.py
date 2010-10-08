@@ -89,6 +89,7 @@ INSTALLED_APPS = (
 	'mynet.AccessControl',
 	'mynet.DNS',
 	'mynet.DHCP',
+	'mynet.DHCP.templatetags.paginator',
 	'mynet.HistoryLog',
 	'mynet.NetaddrTest',
 )

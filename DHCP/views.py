@@ -76,11 +76,52 @@ def dhcp_page_IP_range_add(request):
 #List all IP range records in the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_listing(request):
+	#get order direction, and order type
+	order_dir = request.GET.get('ot', 'desc')
+	order_by = request.GET.get('o', 'ip')
+	toggle_order = request.GET.get('tog', 'no')
+	#get page index
+	try:
+		page_index = int(request.GET.get('pi', '1'))
+	except ValueError:
+		page_index = 1
+	#toggle sort type and specify sort order
+	sort = {}
+	sort['order'] = order_by
+	if toggle_order == 'yes':
+		change_dir = True
+		sort['toggle'] = change_dir
+	else:
+		change_dir = False
+		sort['toggle'] = False	
+	if order_dir == 'desc':
+		sort['type'] = 'asc'
+		sort['type_bef'] = 'desc'
+	else:
+		sort['type'] = 'desc'
+		sort['type_bef'] = 'asc'
+			
+	#get permitted records
 	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request)
-	#for display purposes
-	for i in range(len(registered_IP_pools)):
+	#registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir, change_dir)
+	for i in range(len(registered_IP_pools)):#for display purposes
 		registered_IP_pools[i].ip1 = str(IPAddress(registered_IP_pools[i].ip_first))
 		registered_IP_pools[i].ip2 = str(IPAddress(registered_IP_pools[i].ip_last))
+		registered_IP_pools[i].record_no = i + 1
+	#get number of records per page
+	try:
+		list_length = int(request.GET.get('len', '400'))
+	except ValueError:
+		list_length = 100
+	if not list_length:
+		list_length = len(registered_IP_pools) 
+	#set up pagination
+	paginator = Paginator(registered_IP_pools, list_length, 5)
+	try:
+		page = paginator.page(page_index)
+	except (EmptyPage, InvalidPage), e:
+		page = paginator.page(paginator.num_pages)
+	#get post details
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
@@ -97,19 +138,19 @@ def dhcp_page_IP_range_listing(request):
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						return render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : registered_IP_pools })
+						return render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
 					else:
 						regmachine = DHCP_ip_pool.objects.get(idns_typed = item_selected[0])
 						return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : registered_IP_pools })	
+					return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : registered_IP_pools })	
+				return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : registered_IP_pools})
+		return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
 	
 #Viw a single IP range record on the DHCP IP pool model
 @login_required
@@ -235,13 +276,31 @@ def dhcp_page_machine_listing(request):
 	#get order direction, and order type
 	order_dir = request.GET.get('ot', 'desc')
 	order_by = request.GET.get('o', 'ip')
+	toggle_order = request.GET.get('tog', 'no')
 	#get page index
 	try:
 		page_index = int(request.GET.get('pi', '1'))
 	except ValueError:
 		page_index = 1
+	#toggle sort type and specify sort order
+	sort = {}
+	sort['order'] = order_by
+	if toggle_order == 'yes':
+		change_dir = True
+		sort['toggle'] = change_dir
+	else:
+		change_dir = False
+		sort['toggle'] = False	
+	if order_dir == 'desc':
+		sort['type'] = 'asc'
+		sort['type_bef'] = 'desc'
+	else:
+		sort['type'] = 'desc'
+		sort['type_bef'] = 'asc'
+			
 	#get permitted records
-	registeredmachines =  DHCP_machine.objects.get_permitted_records(request) #registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir)
+	#registeredmachines =  DHCP_machine.objects.get_permitted_records(request) 
+	registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir, change_dir)
 	for i in range(len(registeredmachines)): #for display purposes
 		registeredmachines[i].ip = str(IPAddress(registeredmachines[i].ip_address))
 		registeredmachines[i].record_no = i + 1
@@ -258,13 +317,6 @@ def dhcp_page_machine_listing(request):
 		page = paginator.page(page_index)
 	except (EmptyPage, InvalidPage), e:
 		page = paginator.page(paginator.num_pages)
-	#toggle sort type and specify sort order
-	sort = {}
-	sort['order'] = order_by
-	if order_dir == 'desc':
-		sort['type'] = 'asc'
-	else:
-		sort['type'] = 'desc'
 	#get details from form and display
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)		
