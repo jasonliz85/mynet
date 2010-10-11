@@ -3,11 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 #-------import models
-from mynet.DHCP.models import *
+from subnets.DHCP.models import *
 #-------import forms
-from mynet.DHCP.forms import *
+from subnets.DHCP.forms import *
 #-------import views
-from mynet.helper_views import *
+from subnets.helper_views import *
 #from netaddr import *
 import datetime
 
@@ -140,7 +140,9 @@ def dhcp_page_IP_range_listing(request):
 						actionForm = ViewMachinesActionForm(initial = {})
 						return render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
 					else:
-						regmachine = DHCP_ip_pool.objects.get(idns_typed = item_selected[0])
+						regmachine = DHCP_ip_pool.objects.get(id = item_selected[0])
+						regmachine.ip1 = str(regmachine.ip_first)
+						regmachine.ip2 = str(regmachine.ip_last)
 						return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
@@ -337,6 +339,7 @@ def dhcp_page_machine_listing(request):
 						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
 					else:
 						regmachine = DHCP_machine.objects.get(id = item_selected[0])
+						regmachine.ip = str(regmachine.ip_address)
 						return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from mynet.HistoryLog.models import *
+from subnets.HistoryLog.models import *
 
 
 class Log_Admin(admin.ModelAdmin):

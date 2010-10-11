@@ -1,8 +1,8 @@
 from django.core.management.base import LabelCommand
 from netaddr import *
 import datetime
-from mynet.DHCP.models import *
-from mynet.helper_views import AddAndLogRecord
+from subnets.DHCP.models import *
+from subnets.helper_views import AddAndLogRecord
 from django.contrib.auth.models import User
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'

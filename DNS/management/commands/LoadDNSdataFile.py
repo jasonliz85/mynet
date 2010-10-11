@@ -2,8 +2,8 @@ from django.core.management.base import LabelCommand
 from netaddr import *
 #from string import replace, lstrip, rstrip
 import datetime
-from mynet.DNS.models import *
-from mynet.helper_views import AddAndLogRecord
+from subnets.DNS.models import *
+from subnets.helper_views import AddAndLogRecord
 def CheckIPAddress(section):
 	'''
 	Returns True if 'section' is a valid ip version 4 address (ip address must be not be version 6)

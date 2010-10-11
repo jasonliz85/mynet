@@ -2,11 +2,11 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 #import models
-from mynet.DNS.models import *
+from subnets.DNS.models import *
 #import forms
-from mynet.DNS.forms import *
+from subnets.DNS.forms import *
 #import views
-from mynet.helper_views import *
+from subnets.helper_views import *
 
 from netaddr import *
 import datetime
@@ -145,6 +145,7 @@ def dns_namepair_listing(request):
 						return render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : registered_pairs })
 					else:
 						regmachine = DNS_name.objects.get(id = item_selected[0])
+						regmachine.ip = str(regmachine.ip_address)
 						regServices = DNS_name.objects.filter(ip_address = regmachine.ip_address).exclude(id = regmachine.id)
 						return render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine, 'machinelists':regServices})
 				else:

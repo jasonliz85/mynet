@@ -7,9 +7,9 @@ admin.autodiscover()
 	#####################################################
 	##################General Pages######################
 	#####################################################
-urlpatterns = patterns('mynet.views',
+urlpatterns = patterns('subnets.views',
 	('^$', 'home'),
-	#('^login/$', 'mynet.views.login'),
+	#('^login/$', 'subnets.views.login'),
 	(r'^home/$','home'),	
 	(r'^dns/$', 'dns_page'),						#dns- main dns home page
 	(r'^dhcp/$', 'dhcp_page'),						#dhcp - main dchp info page	
@@ -22,9 +22,9 @@ urlpatterns = patterns('mynet.views',
 	#####################################################
 urlpatterns += patterns('django.views.static',	
 	#work from qm
-	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/mynet/Media'}),
+	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
 	#work from home ##django.views.static
-	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/mynet/Media'}),
+	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
 	(r'^admin/', include(admin.site.urls)),
 	(r'^accounts/login/$', login),
 	(r'^accounts/logout/$', logout),
@@ -37,7 +37,7 @@ urlpatterns += patterns('HistoryLog.views',
 	
 	(r'^history/$','HistoryList'),
 	(r'^history/(\d{1,6})/view/single$','HistoryView'),
-	(r'^history/(\d{1,6})/view/multiple$', 'HistoryView2'),#'mynet.HistoryLog.views.HistoryView'), #(?P<vtype>\w{8})
+	(r'^history/(\d{1,6})/view/multiple$', 'HistoryView2'),#'subnets.HistoryLog.views.HistoryView'), #(?P<vtype>\w{8})
 	(r'^history/(\d{1,6})/undo/$$','HistoryUndoAction'),
 )
 
@@ -62,6 +62,7 @@ urlpatterns += patterns('DHCP.views',
 	
 	#CRUD Registered IP Pools- Create, Read, Update, Destroy
 	(r'^dhcp/pool/add$', 'dhcp_page_IP_range_add'),						#dhcp - 
+	(r'^dhcp/pool/list/$', 'dhcp_page_IP_range_listing'), 				#dhcp - 
 	(r'^dhcp/pool/list/default$', 'dhcp_page_IP_range_listing'), 		#dhcp - 
 	(r'^dhcp/pool/(\d{1,6})/view$', 'dhcp_page_IP_range_view'),			#dhcp - 
 	(r'^dhcp/pool/(\d{1,6})/edit$', 'dhcp_page_IP_range_edit'),			#dhcp - 
