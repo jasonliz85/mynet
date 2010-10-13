@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.db import IntegrityError
-from mynet.AccessControl.models import *
+from subnets.AccessControl.models import *
 from netaddr import IPAddress, IPNetwork
 import datetime, re
 

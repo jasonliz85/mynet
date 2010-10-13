@@ -1,6 +1,6 @@
 from netaddr import *
 from django.core.management.base import LabelCommand
-from mynet.AccessControl.views import add_ip_subnet
+from subnets.AccessControl.views import add_ip_subnet
 
 import datetime
 def extractSubnet(sn):

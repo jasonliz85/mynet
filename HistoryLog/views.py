@@ -1,11 +1,11 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 
-from mynet.AccessControl.models import *
-from mynet.HistoryLog.models import *
+from subnets.AccessControl.models import *
+from subnets.HistoryLog.models import *
 
-from mynet.AccessControl.views import *
-from mynet.helper_views import *
+from subnets.AccessControl.views import *
+from subnets.helper_views import *
 
 from django.contrib.auth.models import Group, User
 
@@ -181,60 +181,66 @@ def diff_values(table_number, val_bef, val_aft):
 @login_required
 def HistoryList(request):
 	#display all key informationcleaning my house uk
-	historyLogs = log.objects.all() 
+	if request.user.is_staff:
+		historyLogs = log.objects.all() 
 	
-	#extract values from query dictionary and compare difference
-	changed_list = list()
-	log_values = log.objects.all().values() #not sure if this call if neccessary
-	for i in range(len(log_values)):
-		bef = eval(log_values[i]['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
-		aft = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
-		table_no = log_values[i]['TableName']
-		changed_list.append(NewAndChangedKeys(table_no,bef,aft))
+		#extract values from query dictionary and compare difference
+		changed_list = list()
+		log_values = log.objects.all().values() #not sure if this call if neccessary
+		for i in range(len(log_values)):
+			bef = eval(log_values[i]['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
+			aft = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
+			table_no = log_values[i]['TableName']
+			changed_list.append(NewAndChangedKeys(table_no,bef,aft))
 		
-	return render_to_response('qmul_history_listings.html', {'historyLogs':historyLogs, 'netgroupno':1, 'changed_list':changed_list})
-	
+		return render_to_response('qmul_history_listings.html', {'historyLogs':historyLogs, 'netgroupno':1, 'changed_list':changed_list})
+	else:
+		return render_to_response('qmul_history_listings.html', {'historyLogs':'', 'PermissionError': True})
+		
 @login_required
 def HistoryView(request, h_id):
-	try:
-		h_id = int(h_id)
-	except ValueError:
-		raise Http404()	
-	try:
-		SingleLog = log.objects.get(id = h_id)
-	except log.DoesNotExist:
-		return HttpResponseRedirect("/history")
+	if request.user.is_staff:
+		try:
+			h_id = int(h_id)
+		except ValueError:
+			raise Http404()	
+		try:
+			SingleLog = log.objects.get(id = h_id)
+		except log.DoesNotExist:
+			return HttpResponseRedirect("/history")
 	
-	#prepare before and after values for display
-	ChangeLog = list()
-	bef = eval(SingleLog.ValuesBefore)
-	aft = eval(SingleLog.ValuesAfter)
-	table_no = SingleLog.TableName
-	ChangeLog.append(diff_values(table_no, bef, aft))
-	#regServices = DNS_name.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
-	return render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
-	
-def HistoryView2(request, h_id):
-	try:
-		h_id = int(h_id)
-	except ValueError:
-		raise Http404()	
-	try:
-		SingleLog = log.objects.get(id = h_id)
-	except log.DoesNotExist:
-		return HttpResponseRedirect("/history")
+		#prepare before and after values for display
+		ChangeLog = list()
+		bef = eval(SingleLog.ValuesBefore)
+		aft = eval(SingleLog.ValuesAfter)
+		table_no = SingleLog.TableName
+		ChangeLog.append(diff_values(table_no, bef, aft))
+		#regServices = DNS_name.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
+		return render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+	else:
+		return render_to_response('qmul_history_view.html', {'HistoryLog':'', 'PermissionError': True})
 		
-	Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
-	ChangeLog = list()
-	for i in range(len(Logs)):
-		bef = eval(Logs[i].ValuesBefore)
-		aft = eval(Logs[i].ValuesAfter)
-		table_no = Logs[i].TableName
-		ChangeLog.append(MulitpleViewFormat(table_no, bef, aft))
-	
-	print ChangeLog
-	return render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
-
+def HistoryView2(request, h_id):
+	if request.user.is_staff:
+		try:
+			h_id = int(h_id)
+		except ValueError:
+			raise Http404()	
+		try:
+			SingleLog = log.objects.get(id = h_id)
+		except log.DoesNotExist:
+			return HttpResponseRedirect("/history")
+		
+		Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
+		ChangeLog = list()
+		for i in range(len(Logs)):
+			bef = eval(Logs[i].ValuesBefore)
+			aft = eval(Logs[i].ValuesAfter)
+			table_no = Logs[i].TableName
+			ChangeLog.append(MulitpleViewFormat(table_no, bef, aft))
+		return render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
+	else:
+		return render_to_response('qmul_history_view_multiple.html', {'HistoryLog':'', 'PermissionError': True})
 @login_required
 def HistoryUndoAction(request, h_id):
 	try:

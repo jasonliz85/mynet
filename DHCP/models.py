@@ -1,7 +1,7 @@
 from django.db import models
-from mynet.DHCP.manager import *
+from subnets.DHCP.manager import *
 from netaddr import IPAddress, IPNetwork
-from mynet.AccessControl import *#is_ipaddress_in_netresource
+from subnets.AccessControl import *#is_ipaddress_in_netresource
 from django.db.models import Q
 import NetaddrCustomizations.models
 		

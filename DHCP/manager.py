@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Q
-from mynet.AccessControl import *#get_subnet_from_ip
+from subnets.AccessControl import *#get_subnet_from_ip
 from netaddr import *
 
 class MachineManager(models.Manager):

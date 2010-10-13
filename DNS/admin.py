@@ -1,5 +1,5 @@
 from django.contrib import admin
-from mynet.DNS.models import *
+from subnets.DNS.models import *
 
 class DNS_Admin(admin.ModelAdmin):
 	list_display = ('id','name', 'ip_address', 'dns_type')

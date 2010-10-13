@@ -1,10 +1,10 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 
-from mynet.HistoryLog.models import *
-from mynet.DHCP.models import *
-from mynet.DNS.models import *
-from mynet.HistoryLog.views import *
+from subnets.HistoryLog.models import *
+from subnets.DHCP.models import *
+from subnets.DNS.models import *
+from subnets.HistoryLog.views import *
 
 from netaddr import *
 import datetime, difflib

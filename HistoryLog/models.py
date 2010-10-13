@@ -1,5 +1,5 @@
 from django.db import models
-from mynet.AccessControl.models import *
+from subnets.AccessControl.models import *
 from django.contrib.auth.models import Group, User
 
 class netgroup(models.Model):

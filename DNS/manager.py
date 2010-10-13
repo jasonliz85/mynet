@@ -1,7 +1,7 @@
 #This is the object manager for models.py
 from django.db import models
 from netaddr import *
-from mynet.AccessControl.views import is_ipaddress_in_netresource, is_name_in_netresource, get_address_blocks_managed_by, get_dns_patterns_managed_by
+from subnets.AccessControl.views import is_ipaddress_in_netresource, is_name_in_netresource, get_address_blocks_managed_by, get_dns_patterns_managed_by
 from django.db.models import Q
 
 class NameManager(models.Manager):
@@ -77,7 +77,7 @@ class NameManager(models.Manager):
 		"""
 		This function checks the name, ipaddress and dns type to see the record is allowed to be created. There are three check, stated below:
 			bi-directional - two checks on each record is needed | permission for both ip address and machine name
-			address to name - check only pefrom mynet.DNS.models import *rmission for ip address
+			address to name - check only pefrom subnets.DNS.models import *rmission for ip address
 			name to address - check only permisiion for machine name
 		"""
 		has_permission = False	

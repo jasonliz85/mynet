@@ -1,6 +1,6 @@
 from django.contrib import admin
-from mynet.DHCP.models import *
-from mynet.NetaddrCustomizations.models import *
+from subnets.DHCP.models import *
+from subnets.NetaddrCustomizations.models import *
 
 class DHCP_Mach_Admin(admin.ModelAdmin):
 	list_display = ('id','mac_address', 'ip_address', 'host_name')
