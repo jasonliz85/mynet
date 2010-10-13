@@ -121,6 +121,18 @@ class NameManager(models.Manager):
 		#[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
 		ip_blocks = get_address_blocks_managed_by(request.user)
 		dns_exprs = get_dns_patterns_managed_by(request.user)
+		#testing for complex Qs
+		cq = list()
+		for block in range(len(ip_blocks)):
+			ip_block = IPNetwork(str(ip_blocks[block]))
+			ip_filter_upper = Q(ttl__lte = block)
+			ip_filter_lower = Q(ttl__gte = block)
+			cq.append(ip_filter_upper&ip_filter_lower)
+		import operator
+		finds = self.filter(reduce(operator.or_, cq)).count()
+		print finds
+			
+		
 		#first find all the ip addresses that the user has permission to control
 		empty_find = True
 		for block in range(len(ip_blocks)):
@@ -128,7 +140,7 @@ class NameManager(models.Manager):
 			ip_filter_upper = Q(ip_address__lte = ip_block[-1])
 			ip_filter_lower = Q(ip_address__gte = ip_block[0])
 			#filter the ip block
-			finds = self.filter( ip_filter_upper, ip_filter_lower )
+			finds = self.filter( ip_filter_upper& ip_filter_lower )
 			if block == 0:
 				total_ip_finds = finds
 				if len(finds) == 0:
@@ -166,7 +178,13 @@ class NameManager(models.Manager):
 						empty_find = False
 					else:
 						total_name_finds = finds|total_name_finds
-					
+		print 'Name Finds using normal:', len(total_name_finds)
+		complex_name_query = list()
+		for expression in range(len(dns_exprs)):
+			dns_filter = Q(name__regex = ('\S' + str(dns_exprs[expression])))
+			complex_name_query.append(dns_filter)
+		result = self.filter(reduce(operator.or_, complex_name_query)).count()
+		print 'Name Finds using complex:', result
 		if len(dns_exprs) > 0 and len(ip_blocks) > 0:
 			combined_records = total_name_finds|total_ip_finds
 		else:
