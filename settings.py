@@ -11,15 +11,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-<<<<<<< HEAD
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-#DATABASE_NAME = #'/home/jasonl/svn/mynet/Database/database.db' # Or path to database file if using sqlite3.		
-DATABASE_NAME = '/home/jason/Projects/qm_projects/mynet/Database/database.db'
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
-=======
 if RunningOn == 'dungbeetle':
     DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
     DATABASE_NAME = 'subnets'             # Or path to database file if using sqlite3.
@@ -41,7 +32,7 @@ elif RunningOn == 'dev_at_home':
     DATABASE_PASSWORD = ''         # Not used with sqlite3.
     DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
     DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
->>>>>>> 209bca9c28ac331be452231249a280608d85cf5d
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
