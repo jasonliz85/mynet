@@ -89,6 +89,7 @@ else:
     )
 
 ROOT_URLCONF = 'subnets.urls'
+
 if RunningOn == 'dungbeetle':
 	TEMPLATE_DIRS = (
 	    '/home/django/django_projects/subnets/Template',
