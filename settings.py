@@ -33,6 +33,7 @@ elif RunningOn == 'dev_at_home':
     DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
     DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -117,6 +118,26 @@ elif RunningOn == 'dev_at_QM':
 		    # Don't forget to use absolute paths, not relative paths.
 	)
 
+<<<<<<< HEAD
+ROOT_URLCONF = 'mynet.urls'
+
+TEMPLATE_DIRS = (
+	#work from home
+	'/home/jason/Projects/qm_projects/mynet/Template',
+	'/home/jason/Projects/qm_projects/mynet/Template/dhcp',
+	'/home/jason/Projects/qm_projects/mynet/Template/dns',
+	'/home/jason/Projects/qm_projects/mynet/Template/history',
+	#work from qm
+	#'/home/jasonl/svn/mynet/Template',
+	#'/home/jasonl/svn/mynet/Template/dhcp',
+	#'/home/jasonl/svn/mynet/Template/dns',
+	#'/home/jasonl/svn/mynet/Template/history',
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+=======
+>>>>>>> 209bca9c28ac331be452231249a280608d85cf5d
 INSTALLED_APPS = (
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
