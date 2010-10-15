@@ -33,43 +33,130 @@
 		{% endif %}
 	{% endfor %}
 	
-	{% if not machinelists %}
+	{% if not machinelists.object_list %}
 		<ul class = "errorlist"><li> This table is empty </ul><li>	
 	{% else %}
 	<form method="post" class = viewbackform action="">	
-		<div class="actions">
-			
-			<label>Action: 
+		<div id = 'changelist' class = 'module'>
+			<div class="actions">			
+				<label>
+				Action: 
 				{{form.status}}
-			</label>
-			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete?');" title="Run the selected action" class="button" type="submit" >Go</button>
-		</div>  
-		<br>
+				<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete?');" title="Run the selected action" class="button" type="submit" >Go</button>
+				Show:	
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=50">50</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=100">100</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=200">200</a>,
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=400">400</a>, or 
+				<a href="?pi={{ machinelists.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=0"> all</a> records per page
+				<p class="paginator">
+					{% load paginator %}
+					{% paginator 4 %}
+				</p>
+				</label>
+			</div>  
+		</div>
 		<table cellspacing="0">
 		<thead>
 			<tr>
-			<th>
-				<a>IP Address </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "ip" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=ip&amp;len={{list_size}}&amp;tog=yes"> IP Address </a>
+			{%else%}
+				<th {% ifequal sort.order "ip" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=ip&amp;len={{list_size}}&amp;tog=yes"> IP Address </a>
+			{%endif%}
 			</th>
 			<th>
 				<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
 			</th>
 			<th>
-				<a href="?ot=asc&amp;o=1">   Type </a>
+				<a>   Type </a>
 			</th>
-			<th>
-				<a href="?ot=asc&amp;o=2"> Machine Name </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "name" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=name&amp;len={{list_size}}&amp;tog=yes"> Machine Name </a>
+			{%else%}
+				<th {% ifequal sort.order "name" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=name&amp;len={{list_size}}&amp;tog=yes"> Machine Name </a>
+			{%endif%}
 			</th>
-			<th> 
-				<a href="?ot=asc&amp;o=3"> IP Version </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "vers" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=vers&amp;len={{list_size}}&amp;tog=yes"> IP Version </a>
+			{%else%}
+				<th {% ifequal sort.order "vers" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=vers&amp;len={{list_size}}&amp;tog=yes"> IP Version </a>
+			{%endif%}
 			</th>
-			<th>
-				<a href="?ot=asc&amp;o=4"> Time Created	</a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Created </a>
+			{%else%}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Created </a>
+			{%endif%}
 			</th>
 			</tr>
 		</thead>
 		<tbody>
-		{% for machinelist in machinelists %}
+		{% for machinelist in machinelists.object_list %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td>{% ifchanged machinelist.ip%} {{ machinelist.ip|lower }} {% endifchanged %} </td>
 				<!td><!{% ifequal machinelist.dns_type '1BD' %} {{ machinelist.ip_pair }} {% endifequal %} </td>
@@ -94,24 +181,23 @@
 			</tr>
 		{% endfor %}
 		</tbody>
+		</table>
+		<table>
 		<tfoot>
-			<tr> 
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
+			<tr><td>
+			<p class="paginator">
+			{% load paginator %}
+			{% paginator 4 %}
+			</p>
+			</td></tr>
 		</tfoot>
 		</table>
-
 	</form>
-	
-	<p> 
-	<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional"> Bi-directional IP mapping | 
-	<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> Machine name to IP address mapping | 
-	<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address"> IP address to machine name mapping
+	<p>
+	<img border="0" width="25" height="19" src="/site_media/images/bd.png" alt="bidirectional"> Bi-directional IP mapping <br>
+	<img border="0" width="25" height="19" src="/site_media/images/na.png" alt="name-address"> IP address to machine name mapping <br>
+	<img border="0" width="25" height="19" src="/site_media/images/an.png" alt="address-name"> Machine name to IP address mapping <br> 	
 	</p>
-	
 	
 	{% endif %}
 		

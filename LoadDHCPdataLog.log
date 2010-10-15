@@ -1,9 +1,5 @@
-2010-09-28 14:34:12.402150: Successfully scanned file /home/jasonl/svn/mynet/test-data/dhcpd.conf.vlan53
-2010-09-28 14:34:12.402150: No errors founded during initial scan :o) 
-2010-09-28 14:34:12.402150|Error|: MAC Address 00:05:5D:A3:C5:CD, IP Address: 138.37.53.16 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
-2010-09-28 14:34:12.402150|Error|: MAC Address 00:90:27:BD:F8:FA, IP Address: 138.37.53.17 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
-2010-09-28 14:34:12.402150|Error|: MAC Address 00:90:27:BE:04:70, IP Address: 138.37.53.18 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
-2010-09-28 14:34:12.402150|Error|: MAC Address 00:02:A5:AB:A9:E8, IP Address: 138.37.53.19 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-11 17:40:49.635085: Successfully scanned file test-data/dhcpd.conf.vlan53
+2010-10-11 17:40:49.635085: No errors founded during initial scan :o) 
 Total DHCP records: 8
-Total Successfully created: 5
-Total in Error: 4
+Total Successfully created: 9
+Total in Error: 0

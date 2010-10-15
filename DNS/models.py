@@ -1,6 +1,6 @@
 from django.db import models
 from netaddr import IPAddress
-from mynet.DNS.manager import *
+from subnets.DNS.manager import *
 import NetaddrCustomizations.models
 
 class DNS_name(models.Model):							#DNS NAMING MODEL

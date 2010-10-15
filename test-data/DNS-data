@@ -44583,7 +44583,8 @@ Zqmedia.qmul.ac.uk:a.ns.dcs.qmul.ac.uk.:hostmaster.eecs.qmul.ac.uk.:1285166414:1
 &qmedia.qmul.ac.uk::c.ns.qmul.ac.uk.:86400
 &qmedia.qmul.ac.uk::d.ns.qmul.ac.uk.:86400
 Cqmedia.qmul.ac.uk:www.qmedia.qmul.ac.uk:86400
-+www.qmedia.qmul.ac.uk:138.37.95.150:86400
++www.qmedia.qmul.ac.uk:138.37.95.150
+^224.94.37.138.in-addr.arpa:enchilada.eecs.qmul.ac.uk.:86400:86400
 Zeecs.qmul.ac.uk:a.ns.dcs.qmul.ac.uk.:hostmaster.eecs.qmul.ac.uk.:1285166414:14400:3600:864000:86400:86400
 :ipv6-test.eecs.qmul.ac.uk:28:\040\001\006\060\000\021\365\200\000\000\000\000\000\000\000\002:60
 &eecs.qmul.ac.uk::a.ns.dcs.qmul.ac.uk.:86400
@@ -44603,7 +44604,7 @@ Zeecs.qmul.ac.uk:a.ns.dcs.qmul.ac.uk.:hostmaster.eecs.qmul.ac.uk.:1285166414:144
 +ntp0.eecs.qmul.ac.uk:138.37.0.88:86400
 +ntp1.eecs.qmul.ac.uk:138.37.0.95:86400
 +vpn-test.eecs.qmul.ac.uk:138.37.0.39:86400
-Ctardis.eecs.qmul.ac.uk:srl001.esc.qmul.ac.uk:86400
+Ctardis.eecs.qmul.ac.uk:srl001.esc.q^224.94.37.138.in-addr.arpa:enchilada.eecs.qmul.ac.uk.:86400mul.ac.uk:86400
 :_vlmcs._TCP.eecs.qmul.ac.uk:33:\000\000\000\000\006\230\007wellard\003dcs\004qmul\002ac\002uk\000:86400
 &web-stu.eecs.qmul.ac.uk::a.ns.dcs.qmul.ac.uk.:86400
 &web-stu.eecs.qmul.ac.uk::b.ns.dcs.qmul.ac.uk.:86400
@@ -44625,7 +44626,7 @@ Ctardis.eecs.qmul.ac.uk:srl001.esc.qmul.ac.uk:86400
 +arash-pc.eecs.qmul.ac.uk:138.37.88.195:86400
 +arcardia-pc.eecs.qmul.ac.uk:138.37.88.72:86400
 +aria-pc.eecs.qmul.ac.uk:138.37.88.23:86400
-+arrow-pc.eecs.qmul.ac.uk:138.37.88.157:86400
++arrow-pc.eecs.qmul.ac.uk:138.37.8^224.94.37.138.in-addr.arpa:enchilada.eecs.qmul.ac.uk.:864008.157:86400
 +asteriosz-mini.eecs.qmul.ac.uk:138.37.89.130:86400
 +asterix-drac.eecs.qmul.ac.uk:138.37.95.94:86400
 +asterix.eecs.qmul.ac.uk:138.37.88.227:86400

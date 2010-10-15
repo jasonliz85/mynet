@@ -42,6 +42,19 @@ class MachineManager(models.Manager):
 					unique = False
 							
 		return unique, unique_error
+	def get_records_in_subnet(self, subnet):
+		'''
+		This function returns all the records that is covered by the subnet specified. subnet is of type IPNetwork
+		'''
+		record_list = []
+		empty_find = True
+		#define Q queries
+		ip_upper	= Q(ip_address__lt = subnet[-1])
+		ip_lower 	= Q(ip_address__gt = subnet[0])
+		#filter the ip block
+		record_list = self.filter(ip_upper and ip_lower)
+		
+		return record_list
 	def get_permitted_records(self, request, order_by, order_dir, change_dir):
 		"""
 		This function returns a queryset from the model DHCP_macgroupshine . The returned results are filtered by permitted
@@ -150,14 +163,44 @@ class IPPoolManager(models.Manager):
 				break
 							
 		return unique, unique_error
+	def get_records_in_subnet(self, subnet):
+		'''
+		This function returns all the records that is covered by the subnet specified. subnet is of type IPNetwork
+		'''
+		find_first = []
+		find_last = []
+		record_list = []
+		empty_find = True
+		#define Q queries
+		ip_first_upper	= Q(ip_first__lt = subnet[-1])
+		ip_first_lower 	= Q(ip_first__gt = subnet[0])
+		ip_last_upper 	= Q(ip_last__lt = subnet[-1])
+		ip_last_lower 	= Q(ip_last__gt = subnet[0])
+		#filter the ip block
+		find_first = self.filter(ip_first_upper and ip_first_lower)
+		find_last  = self.filter(ip_last_lower and ip_last_upper)
+		#combine results
+		record_list = find_first & find_last
 		
-	def get_permitted_records(self, request):
+		return record_list
+	def get_permitted_records(self, request, order_by, order_dir, change_dir):
 		"""
 		This function returns a queryset from the model DHCP_ip_pool . The returned results are filtered by permitted
-		ip_blocks that the user is able to access. 
+		ip_blocks that the user is able to access.
+		 order_by - order by ip:ip_address, mac:mac_address, time:time_created
+		order_dir - asc:ascending or desc:descending
+		change_dir - 
 		"""
+		if order_by == 'ip':
+			var = "ip_first"
+		elif order_by == 'vers':
+			var = "is_ipv6"
+		else:
+			var = "time_created"
+			
+		if order_dir == 'desc':
+			var = "-"+var
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		#[net_groups, ip_blocks, dns_exprs] = get_permissions_to_session(request)
 		ip_blocks = get_address_blocks_managed_by(request.user)
 		find_first = []
 		find_last = []
@@ -170,8 +213,8 @@ class IPPoolManager(models.Manager):
 			ip_last_lower 	= Q(ip_last__gt = ip_block[0])
 			#filter the ip block
 			#finds = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
-			find_first = self.filter(ip_first_upper and ip_first_lower)
-			find_last  = self.filter(ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
+			find_first = self.filter(ip_first_upper and ip_first_lower).order_by(var)
+			find_last  = self.filter(ip_last_lower and ip_last_upper).order_by(var) #& (ip_last_lower, ip_last_upper)
 			finds = find_first&find_last
 			if block == 0:
 				total_ip_finds = finds

@@ -173,13 +173,17 @@
 			</tr>
 		{% endfor %}
 		</tbody>
-		<tfoot>
-		</tfoot>
 		</table>
-		<p class="paginator">
+		<table>
+		<tfoot>
+			<tr><td>
+			<p class="paginator">
 			{% load paginator %}
 			{% paginator 4 %}
-		</p>
+			</p>
+			</td></tr>
+		</tfoot>
+		</table>
 	</form>
 	{% endif %}
 		

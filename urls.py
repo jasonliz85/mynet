@@ -21,16 +21,16 @@ urlpatterns = patterns('subnets.views',
 	##################Admin Pages########################
 	#####################################################
 urlpatterns += patterns('django.views.static',	
-	#work from qm
-	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
-	#work from home 
-	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/mynet/Media'}),
-	#production dungbeetle
-	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
-
+	#RunningOn = 'dev_at_QM'
 	(r'^admin/', include(admin.site.urls)),
 	(r'^accounts/login/$', login),
 	(r'^accounts/logout/$', logout),
+	#if RunningOn == 'dungbeetle': #work from dungbeetle
+	#	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
+	#elif RunningOn == 'dev_at_QM': #work from qm
+		(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
+	#elif RunningOn == 'dev_at_home': #work from home ##django.views.static
+	#	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
 )
 
 	#####################################################
@@ -48,9 +48,12 @@ urlpatterns += patterns('HistoryLog.views',
 	##################DNS Pages##########################
 	#####################################################
 urlpatterns += patterns('DNS.views',
-		
+	#Fetch all DNS records formatted for tiny-dns	
+	(r'dns/get-dns-data-txt','dns_fetch_records_txt'),
+	
 	#CRUD Registed DNS pairs - Create, Read, Update, Destroy
 	(r'^dns/pair/add$', 'dns_namepair_add'),							#dns -
+	(r'^dns/pair/list/$', 'dns_namepair_listing'),						#dns - 
 	(r'^dns/pair/list/default$', 'dns_namepair_listing'),				#dns - 
 	(r'^dns/pair/(\d{1,6})/view$', 'dns_namepair_view'),				#dns -
 	(r'^dns/pair/(\d{1,6})/edit$', 'dns_namepair_edit'),				#dns - 
@@ -62,6 +65,9 @@ urlpatterns += patterns('DNS.views',
 	##################DHCP Pages#########################
 	#####################################################
 urlpatterns += patterns('DHCP.views',
+	#Fetch all DHCP details belong to a subnet for dhcpd
+	('dhcp/get-pool-data$','dhcp_fetch_pool_data'),
+	('dhcp/get-host-data$','dhcp_fetch_host_data'),
 	
 	#CRUD Registered IP Pools- Create, Read, Update, Destroy
 	(r'^dhcp/pool/add$', 'dhcp_page_IP_range_add'),						#dhcp - 
@@ -73,16 +79,13 @@ urlpatterns += patterns('DHCP.views',
 	
 	#CRUD Registered Machfrom django.conf.urls.defaults import *ine- Create, Read, Update, Destroy
 	(r'^dhcp/machine/add$', 'dhcp_page_machine_add'),							#dhcp - register a machine
-	#url(r'^dhcp/machine/list/default/', 'dhcp_page_machine_listing'), 			#dhcp - registered machine listings
-	#?ot=asc&amp;o=1
 	(r'^dhcp/machine/list/$', 'dhcp_page_machine_listing'),						#dhcp - registered machine listings
-	#(r'^dhcp/machine/list/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing'), #dhcp - registered machine listings, x pages per record
 	(r'^dhcp/machine/(\d{1,6})/view$', 'dhcp_page_machine_view'),				#dhcp - view individual machine
 	(r'^dhcp/machine/(\d{1,6})/edit$', 'dhcp_page_machine_edit'),				#dhcp - edit an existing machine record
 	(r'^dhcp/machine/(\d{1,6})/delete$', 'dhcp_page_machine_delete_single'), 	#dhcp - delete existing machine record (single)
+	#(r'^dhcp/machine/list/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing'), #dhcp - registered machine listings, x pages per record
+	#url(r'^dhcp/machine/list/default/', 'dhcp_page_machine_listing'), 			#dhcp - registered machine listings
 	#(r'^dhcp/machine/list/(?P<sort_by>[a-z])/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing' ), 		
-	#(r'^dhcp/deletemachine/$', views.dhcp_page_machine_delete_multiple), 		#dhcp - delete existing machine record (multiple)
-	#(r'^dhcp/viewTest/$', views.dhcp_page_list_machines), 				#dhcp - delete existing machine record (multiple)	
 	
 )
 

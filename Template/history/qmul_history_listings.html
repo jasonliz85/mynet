@@ -8,38 +8,122 @@
 	<h2><a name="status">History</a></h2>
 	<p> Review and manage changes made to {% ifequal netgroupno 1 %} this network group{% else %} these network groups{% endifequal %}. </p>	
 	
-	{% if PermissionError%}
-	<ul class = "highlight"><li> You do not have permission to view these logs. </ul><li>
-	{% else %} 
-	{% if not historyLogs %}
+	{% if not historyLogs.object_list  %}
 	<ul class = "highlight"><li> There are no recent changes to this group </ul><li>
 	{% else %} 
 	<form method="post" class = viewbackform action="">	
-		<div class="actions">
-			
-			<label>Action: 
+		<div id = 'changelist' class = 'module'>
+			<div class="actions">			
+				<label>
+				Action: 
 				{{form.status}}
-			</label>
-			<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete?');" title="Run the selected action" class="button" type="submit" >Go</button>
-		</div>  
-		<br>
+				<button value="0" name="index" onclick="if( document.forms[0].status.selectedIndex == 1) 	return confirm('Are you sure you want to delete?');" title="Run the selected action" class="button" type="submit" >Go</button>
+				Show:	
+				<a href="?pi={{ historyLogs.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=50">50</a>,
+				<a href="?pi={{ historyLogs.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=100">100</a>,
+				<a href="?pi={{ historyLogs.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=200">200</a>,
+				<a href="?pi={{ historyLogs.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=400">400</a>, or 
+				<a href="?pi={{ historyLogs.number }}&amp;?ot={{sort.type_bef}}&amp;o={{sort.order}}&amp;len=0"> all</a> records per page
+				<p class="paginator">
+					{% load log_paginator %}
+					{% log_paginator 4 %}
+				</p>
+				</label>
+			</div>  
+		</div>
 		<table cellspacing="0">
 		<thead>
 			<tr>
 			<th>
 				<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
 			</th>
-			<th>
-				<a> Time Modified</a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Modified </a>
+			{%else%}
+				<th {% ifequal sort.order "time" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=time&amp;len={{list_size}}&amp;tog=yes"> Time Modified </a>
+			{%endif%}
 			</th>
-			<th>
-				<a> User </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "user" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=user&amp;len={{list_size}}&amp;tog=yes"> User </a>
+			{%else%}
+				<th {% ifequal sort.order "user" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=user&amp;len={{list_size}}&amp;tog=yes"> User </a>
+			{%endif%}
 			</th>
-			<th>
-				<a> Action </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "act" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=act&amp;len={{list_size}}&amp;tog=yes"> Action </a>
+			{%else%}
+				<th {% ifequal sort.order "act" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=act&amp;len={{list_size}}&amp;tog=yes"> Action </a>
+			{%endif%}
 			</th>
-			<th> 
-				<a> Table </a>
+			{% if sort.toggle %}
+				<th {% ifequal sort.order "tabl" %}
+						{% ifequal sort.type "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type}}&amp;o=tabl&amp;len={{list_size}}&amp;tog=yes"> Table </a>
+			{%else%}
+				<th {% ifequal sort.order "tabl" %}
+						{% ifequal sort.type_bef "asc" %}
+							class="sorted ascending"
+						{% else %}	
+							class="sorted descending"
+						{% endifequal %}
+					{% endifequal %} 
+				>
+				<a href="?ot={{sort.type_bef}}&amp;o=tabl&amp;len={{list_size}}&amp;tog=yes"> Table </a>
+			{%endif%}
 			</th>
 			<th>
 				<a> Changes </a>
@@ -47,7 +131,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		{% for historyLog in historyLogs %}
+		{% for historyLog in historyLogs.object_list  %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
 				<td><a href="/history/{{historyLog.id}}/view/single"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></td>
@@ -101,17 +185,18 @@
 			</tr>
 		{% endfor %}
 		</tbody>
+		</table>
+		<table>
 		<tfoot>
-			<tr> 
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
+			<tr><td>
+			<p class="paginator">
+			{% load log_paginator %}
+			{% log_paginator 4 %}
+			</p>
+			</td></tr>
 		</tfoot>
 		</table>
 	</form>
-	{% endif %}
 	{% endif %}
 	
 	

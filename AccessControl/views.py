@@ -121,5 +121,5 @@ def add_ip_subnet(values):
 		new_subnet.save()
 	except Exception, e:
 		return True, e
-	return False, Error
+	return False, ''
 

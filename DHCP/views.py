@@ -102,8 +102,8 @@ def dhcp_page_IP_range_listing(request):
 		sort['type_bef'] = 'asc'
 			
 	#get permitted records
-	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request)
-	#registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir, change_dir)
+	#registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request)
+	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request, order_by, order_dir, change_dir)
 	for i in range(len(registered_IP_pools)):#for display purposes
 		registered_IP_pools[i].ip1 = str(IPAddress(registered_IP_pools[i].ip_first))
 		registered_IP_pools[i].ip2 = str(IPAddress(registered_IP_pools[i].ip_last))
@@ -419,4 +419,36 @@ def dhcp_page_machine_add(request):
 		form = RegisterMachineForm(initial = {})
 		
 	return render_to_response('qmul_dhcp_createmachine.html', {'form':form })
+def dhcp_fetch_pool_data(request):
+	'''
+	'''
+	error = ''
+	records = ''
+	subnet = request.GET.get('subnet', '')
+	if len(subnet) == 0:
+		error = 'No subnet defined.'
+	else:
+		try:
+			print subnet
+			sb = IPNetwork(subnet)
+			records = DHCP_ip_pool.objects.get_records_in_subnet(sb)
+		except AddrFormatError:
+			error = 'Subnet format error.'
 	
+	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error})
+def dhcp_fetch_host_data(request):
+	'''
+	'''
+	error = ''
+	records = ''
+	subnet = request.GET.get('subnet', '')
+	if len(subnet) == 0:
+		error = 'No subnet defined.'
+	else:
+		try:
+			sb = IPNetwork(subnet)
+			records = DHCP_machine.objects.get_records_in_subnet(sb)
+		except AddrFormatError:
+			error = 'Subnet format error.'
+			
+	return render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error})

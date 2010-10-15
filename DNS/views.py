@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 #import models
 from subnets.DNS.models import *
 #import forms
@@ -121,11 +122,50 @@ def dns_namepair_add(request):
 #list all ip-name records in the model
 @login_required
 def dns_namepair_listing(request):
-	registered_pairs =  DNS_name.objects.get_permitted_records(request, True)
-	#for display purposes, convert ip from integer form to str form (i.e. 3232235521 -> '192.168.0.1')
-	for i in range(len(registered_pairs)):
+	#get order direction, and order type
+	order_dir = request.GET.get('ot', 'desc')
+	order_by = request.GET.get('o', 'ip')
+	toggle_order = request.GET.get('tog', 'no')
+	#get page index
+	try:
+		page_index = int(request.GET.get('pi', '1'))
+	except ValueError:
+		page_index = 1
+	#toggle sort type and specify sort order
+	sort = {}
+	sort['order'] = order_by
+	if toggle_order == 'yes':
+		change_dir = True
+		sort['toggle'] = change_dir
+	else:
+		change_dir = False
+		sort['toggle'] = False	
+	if order_dir == 'desc':
+		sort['type'] = 'asc'
+		sort['type_bef'] = 'desc'
+	else:
+		sort['type'] = 'desc'
+		sort['type_bef'] = 'asc'
+	#get permitted records
+	#registered_pairs =  DNS_name.objects.get_permitted_records(request, True)
+	registered_pairs =  DNS_name.objects.get_permitted_records(request, True, order_by, order_dir, change_dir)
+	for i in range(len(registered_pairs)):#for display purposes, convert ip from integer form to str form (i.e. 3232235521 -> '192.168.0.1')
 		registered_pairs[i].ip = str(registered_pairs[i].ip_address)
-		
+		registered_pairs[i].record_no = i + 1
+	#get number of records per page
+	try:
+		list_length = int(request.GET.get('len', '400'))
+	except ValueError:
+		list_length = 100
+	if not list_length:
+		list_length = len(registered_pairs) 
+	#set up pagination
+	paginator = Paginator(registered_pairs, list_length, 5)
+	try:
+		page = paginator.page(page_index)
+	except (EmptyPage, InvalidPage), e:
+		page = paginator.page(paginator.num_pages)
+	#get details from form and display	
 	if request.method == 'POST':
 		actionForm = ViewMachinesActionForm(request.POST)	
 		action = request.POST['status']
@@ -142,7 +182,7 @@ def dns_namepair_listing(request):
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						return render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : registered_pairs })
+						return render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
 					else:
 						regmachine = DNS_name.objects.get(id = item_selected[0])
 						regmachine.ip = str(regmachine.ip_address)
@@ -150,13 +190,13 @@ def dns_namepair_listing(request):
 						return render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine, 'machinelists':regServices})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs })	
+					return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs })	
+				return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : registered_pairs})
+		return render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
 	return render_to_response('qmul_dns_listings_namepair.html',{})
 
 #view a single ip-name pair 
@@ -245,7 +285,7 @@ def dns_namepair_edit(request, pair_id):
 				return render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists':regServices})
 			else:
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_type':info['dns_type'],'ip_address':info['ip_address'],'dscr':info['dscr'],'ttl': info['ttl'] })
-				return render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
+				return renderdns_fetch_records_txt_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
 	else:
 		try:
 			regpair = DNS_name.objects.get(id = pair_id)		
@@ -253,3 +293,12 @@ def dns_namepair_edit(request, pair_id):
 			return HttpResponseRedirect("/dns/pair/list/default")	
 		editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(regpair.ip_address),'dscr':regpair.description, 'dns_type': regpair.dns_type,'ttl': regpair.ttl })	
 	return render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})
+
+def dns_fetch_records_txt(request):
+	registered_pairs = DNS_name.objects.all()
+	for i in range(len(registered_pairs)):
+		if registered_pairs[i].dns_type == '3AN':
+			var = registered_pairs[i].ip_address.reverse_dns
+			registered_pairs[i].ip_reverse = var.rstrip('.')
+			
+	return render_to_response('qmul_dns_all_data.txt', {'records':registered_pairs})

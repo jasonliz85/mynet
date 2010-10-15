@@ -1,0 +1,11 @@
+{% for record in records %}	
+	{% ifequal record.dns_type '1BD' %}
+		={{record.name}}:{{record.ip_address}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}<br>
+	{% else %}
+		{% ifequal record.dns_type '2NA' %}
+			+{{record.name}}:{{record.ip_address}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}<br>
+		{% else %}
+			^{{record.ip_reverse}}:{{record.name}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}<br>
+		{% endifequal %}	
+	{% endifequal %}
+{% endfor %}

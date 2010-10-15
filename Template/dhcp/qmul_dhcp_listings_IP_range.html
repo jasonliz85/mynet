@@ -98,7 +98,7 @@
 						{% endifequal %}
 					{% endifequal %} 
 				>
-				<a href="?ot={{sort.type}}&amp;o=ver&amp;len={{list_size}}&amp;tog=yes"> IP Version </a>
+				<a href="?ot={{sort.type}}&amp;o=vers&amp;len={{list_size}}&amp;tog=yes"> IP Version </a>
 			{%else%}
 				<th {% ifequal sort.order "ver" %}
 						{% ifequal sort.type_bef "asc" %}
@@ -151,10 +151,16 @@
 		{% endfor %}
 		</tbody>
 		</table>
-		<p class="paginator">
+		<table>
+		<tfoot>
+			<tr><td>
+			<p class="paginator">
 			{% load paginator %}
 			{% paginator 4 %}
-		</p>
+			</p>
+			</td></tr>
+		</tfoot>
+		</table>
 	</form>
 	{% endif %}
 		

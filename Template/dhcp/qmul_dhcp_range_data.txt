@@ -1,0 +1,7 @@
+{% if error %}
+	ERROR: {{error}}
+{% else %}
+{% for record in records %}	
+	range {{record.ip_first}} {{record.ip_last}};<br>
+{% endfor %}
+{% endif %}

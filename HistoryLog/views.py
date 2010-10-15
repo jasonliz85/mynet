@@ -1,18 +1,19 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.contrib.auth.models import Group, User
 
 from subnets.AccessControl.models import *
 from subnets.HistoryLog.models import *
-
 from subnets.AccessControl.views import *
 from subnets.helper_views import *
-
-from django.contrib.auth.models import Group, User
 
 import datetime
 
 def UndoLogAction(SingleLog, username):
-	
+	'''
+	Not Completed!
+	'''
 	record_id = SingleLog.RecordID
 	table_name = get_table_name(SingleLog.TableName)
 	model_name = get_model_table(SingleLog.TableName)
@@ -182,8 +183,47 @@ def diff_values(table_number, val_bef, val_aft):
 def HistoryList(request):
 	#display all key informationcleaning my house uk
 	if request.user.is_staff:
+		#get order direction, and order type
+		order_dir = request.GET.get('ot', 'desc')
+		order_by = request.GET.get('o', 'time')
+		toggle_order = request.GET.get('tog', 'no')
+		#get page index
+		try:
+			page_index = int(request.GET.get('pi', '1'))
+		except ValueError:
+			page_index = 1
+		#toggle sort type and specify sort order
+		sort = {}
+		sort['order'] = order_by
+		if toggle_order == 'yes':
+			change_dir = True
+			sort['toggle'] = change_dir
+		else:
+			change_dir = False
+			sort['toggle'] = False	
+		if order_dir == 'desc':
+			sort['type'] = 'asc'
+			sort['type_bef'] = 'desc'
+		else:
+			sort['type'] = 'desc'
+			sort['type_bef'] = 'asc'
+			
+		#get permitted records		
 		historyLogs = log.objects.all() 
-	
+		#get number of records per page
+		try:
+			list_length = int(request.GET.get('len', '400'))
+		except ValueError:
+			list_length = 100
+		if not list_length:
+			list_length = len(historyLogs) 
+		#set up pagination
+		paginator = Paginator(historyLogs, list_length, 5)
+		try:
+			page = paginator.page(page_index)
+		except (EmptyPage, InvalidPage), e:
+			page = paginator.page(paginator.num_pages)
+		#get post details
 		#extract values from query dictionary and compare difference
 		changed_list = list()
 		log_values = log.objects.all().values() #not sure if this call if neccessary
@@ -193,7 +233,7 @@ def HistoryList(request):
 			table_no = log_values[i]['TableName']
 			changed_list.append(NewAndChangedKeys(table_no,bef,aft))
 		
-		return render_to_response('qmul_history_listings.html', {'historyLogs':historyLogs, 'netgroupno':1, 'changed_list':changed_list})
+		return render_to_response('qmul_history_listings.html', {'historyLogs':page, 'netgroupno':1, 'changed_list':changed_list, 'list_size':list_length, 'sort':sort })
 	else:
 		return render_to_response('qmul_history_listings.html', {'historyLogs':'', 'PermissionError': True})
 		

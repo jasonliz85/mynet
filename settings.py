@@ -32,7 +32,13 @@ elif RunningOn == 'dev_at_home':
     DATABASE_PASSWORD = ''         # Not used with sqlite3.
     DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
     DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
-
+elif RunningOn == 'DMP_at_QM':
+    DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+    DATABASE_NAME = '/home/davidp/Desktop/svn/Network/subnets/Database/database.db' # Or path to database file if using sqlite3.		
+    DATABASE_USER = ''             # Not used with sqlite3.
+    DATABASE_PASSWORD = ''         # Not used with sqlite3.
+    DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+    DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -90,7 +96,6 @@ else:
     )
 
 ROOT_URLCONF = 'subnets.urls'
-
 if RunningOn == 'dungbeetle':
 	TEMPLATE_DIRS = (
 	    '/home/django/django_projects/subnets/Template',
@@ -117,27 +122,14 @@ elif RunningOn == 'dev_at_QM':
 		    # Always use forward slashes, even on Windows.
 		    # Don't forget to use absolute paths, not relative paths.
 	)
+elif RunningOn == 'DMP_at_QM':
+	TEMPLATE_DIRS = (
+		'/home/davidp/Desktop/svn/Network/subnets/Template',
+		'/home/davidp/Desktop/svn/Network/subnets/Template/dhcp',
+		'/home/davidp/Desktop/svn/Network/subnets/Template/dns',
+		'/home/davidp/Desktop/svn/Network/subnets/Template/history',
+	)
 
-<<<<<<< HEAD
-ROOT_URLCONF = 'mynet.urls'
-
-TEMPLATE_DIRS = (
-	#work from home
-	'/home/jason/Projects/qm_projects/mynet/Template',
-	'/home/jason/Projects/qm_projects/mynet/Template/dhcp',
-	'/home/jason/Projects/qm_projects/mynet/Template/dns',
-	'/home/jason/Projects/qm_projects/mynet/Template/history',
-	#work from qm
-	#'/home/jasonl/svn/mynet/Template',
-	#'/home/jasonl/svn/mynet/Template/dhcp',
-	#'/home/jasonl/svn/mynet/Template/dns',
-	#'/home/jasonl/svn/mynet/Template/history',
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-=======
->>>>>>> 209bca9c28ac331be452231249a280608d85cf5d
 INSTALLED_APPS = (
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -147,12 +139,11 @@ INSTALLED_APPS = (
 	'subnets.AccessControl',
 	'subnets.DNS',
 	'subnets.DHCP',
-	'subnets.DHCP.templatetags.paginator',
 	'subnets.HistoryLog',
 	'subnets.NetaddrTest',
 )
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'django_IdCheck.auth.backends.IdCheckBackend',
-)
+if RunningOn == 'dungbeetle':
+	AUTHENTICATION_BACKENDS = (
+		'django.contrib.auth.backends.ModelBackend',
+		'django_IdCheck.auth.backends.IdCheckBackend',
+	)
