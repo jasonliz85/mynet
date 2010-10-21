@@ -102,7 +102,15 @@
 			#
 			#machine_registered.save()
 			
-						#regpool = DHCP_ip_pool.objects.get(id = ip_id)
+						#regpool = DHCP_		#----- experimenting -----
+		print len(total_AN_finds)
+		print len(total_NA_finds)
+		print len(total_BD_finds)
+		a = self.filter(reduce(operator.or_, complex_name_queries), dns_type = '1BD')
+		b = self.filter(reduce(operator.or_, complex_subnet_queries), dns_type = '1BD')
+		c = a&b
+		print c.count()
+		#----- end experimenting ------ip_pool.objects.get(id = ip_id)
 			#regpool.IP_pool1	= str(IPAddress(info['IP_range1']))
 			#regpool.IP_pool2	= str(IPAddress(info['IP_range2']))
 			#regpool.description	= info['dscr']
@@ -423,3 +431,189 @@
 #	except Exception, e:
 #		if isinstance(e, pickle.PicklingError):
 #			print "Error:%s..."% e
+
+		#------	
+		#foo( complex_subnet_queries[::2], complex_subnet_queries[1::2])
+		
+#		#first find all the ip addresses that the user has permission to control
+#		empty_find = True
+#		for block in range(len(ip_blocks)):
+#			ip_block = IPNetwork(str(ip_blocks[block]))
+#			ip_filter_upper = Q(ip_address__lte = ip_block[-1])
+#			ip_filter_lower = Q(ip_address__gte = ip_block[0])
+#			#filter the ip block
+#			finds = self.filter( ip_filter_upper, ip_filter_lower ).order_by(var)
+#			if block == 0:
+#				total_ip_finds = finds
+#				if len(finds) == 0:
+#					empty_find = True
+#				else:
+#					empty_find = False
+#			else:
+#				if len(finds) == 0:
+#					if empty_find:
+#						empty_find = True	
+#				else:
+#					if empty_find:
+#						total_ip_finds = finds
+#						empty_find = False
+#					else:
+#						total_ip_finds = finds|total_ip_finds
+#		#second, find all the dns names that the user can control
+#		empty_find = True
+#		for expression in range(len(dns_exprs)):
+#			dns_filter = Q(name__regex = ('\S' + str(dns_exprs[expression])))
+#			finds = self.filter( dns_filter ).order_by(var)
+#			if expression == 0:	
+#				total_name_finds = finds
+#				if len(finds) == 0:
+#					empty_find = True
+#				else:
+#					empty_find = False
+#			else:	
+#				if len(finds) == 0:
+#					if empty_find:
+#						empty_find = True	
+#				else:
+#					if empty_find:
+#						total_name_finds = finds
+#						empty_find = False
+#					else:
+#						total_name_finds = finds|total_name_finds
+
+
+#		#first find all the ip addresses that the user has permission to control
+#		empty_find = True
+#		for block in range(len(ip_blocks)):
+#			ip_block = IPNetwork(str(ip_blocks[block]))
+#			ip_filter_upper = Q(ip_address__lte = ip_block[-1])
+#			ip_filter_lower = Q(ip_address__gte = ip_block[0])
+#			#filter the ip block
+#			finds = self.filter( ip_filter_upper, ip_filter_lower ).order_by(var)
+#			if block == 0:
+#				total_ip_finds = finds
+#				if len(finds) == 0:
+#					empty_find = True
+#				else:
+#					empty_find = False
+#			else:
+#				if len(finds) == 0:
+#					if empty_find:
+#						empty_find = True	
+#				else:
+#					if empty_find:
+#						total_ip_finds = finds
+#						empty_find = False
+#					else:
+#						total_ip_finds = finds|total_ip_finds
+#		#second, find all the dns names that the user can control
+#		empty_find = True
+#		for expression in range(len(dns_exprs)):
+#			dns_filter = Q(name__regex = ('\S' + str(dns_exprs[expression])))
+#			finds = self.filter( dns_filter ).order_by(var)
+#			if expression == 0:	
+#				total_name_finds = finds
+#				if len(finds) == 0:
+#					empty_find = True
+#				else:
+#					empty_find = False
+#			else:	
+#				if len(finds) == 0:
+#					if empty_find:
+#						empty_find = True	
+#				else:
+#					if empty_find:
+#						total_name_finds = finds
+#						empty_find = False
+#					else:
+#						total_name_finds = finds|total_name_finds
+
+
+#def foo(x,y):
+#	return x[::2] or y[::2]
+
+		#----- experimenting -----
+		print len(total_AN_finds)
+		print len(total_NA_finds)
+		print len(total_BD_finds)
+		a = self.filter(reduce(operator.or_, complex_name_queries), dns_type = '1BD')
+		b = self.filter(reduce(operator.or_, complex_subnet_queries), dns_type = '1BD')
+		c = a&b
+		print c.count()
+		#----- end experimenting ------
+		
+				
+#		for block in range(len(ip_blocks)):
+#			ip_block = IPNetwork(str(ip_blocks[block]))
+#			ip_filter_upper = Q(ip_address__lt = ip_block[-1])
+#			ip_filter_lower = Q(ip_address__gt = ip_block[0])
+#			#filter the ip block
+#			finds = self.filter( ip_filter_upper, ip_filter_lower ).order_by(var)
+#			if block == 0:
+#				total_ip_finds = finds
+#				if len(finds) == 0:
+#					empty_find = True
+#				else:
+#					empty_find = False
+#			else:
+#				if len(finds) == 0:
+#					if empty_find:
+#						empty_find = True	
+#				else:
+#					if empty_find:
+#						total_ip_finds = finds
+#						empty_find = False
+#					else:
+#						total_ip_finds = finds|total_ip_finds
+
+#		if not empty_find:
+#			permitted_record = total_ip_finds
+#		else:
+#			permitted_record = list()
+
+#		find_first = []
+#		find_last = []
+#		empty_find = True
+#		for block in range(len(ip_blocks)):
+#			ip_block = IPNetwork(str(ip_blocks[block]))
+#			ip_first_upper	= Q(ip_first__lt = ip_block[-1])
+#			ip_first_lower 	= Q(ip_first__gt = ip_block[0])
+#			ip_last_upper 	= Q(ip_last__lt = ip_block[-1])
+#			ip_last_lower 	= Q(ip_last__gt = ip_block[0])
+#			#filter the ip block
+#			#finds = self.filter(ip_first_upper and ip_first_lower and ip_last_lower and ip_last_upper) #& (ip_last_lower, ip_last_upper)
+#			find_first = self.filter(ip_first_upper and ip_first_lower).order_by(var)
+#			find_last  = self.filter(ip_last_lower and ip_last_upper).order_by(var) #& (ip_last_lower, ip_last_upper)
+#			finds = find_first&find_last
+#			if block == 0:
+#				total_ip_finds = finds
+#				if len(finds) == 0:
+#					empty_find = True
+#				else:
+#					empty_find = False
+#			else:
+#				if len(finds) == 0:
+#					if empty_find:
+#						empty_find = True	
+#				else:
+#					if empty_find:
+#						total_ip_finds = finds
+#						empty_find = False
+#					else:
+#						total_ip_finds = finds|total_ip_finds
+
+#		if not empty_find:
+#			permitted_record = total_ip_finds
+#		else:
+#			permitted_record = list()
+
+#--------------------
+#		complex_subnet_queries = list()
+#		for ip_block in blocks:
+#		for block in range(len(ip_blocks)):
+#			ip_block = IPNetwork(str(ip_blocks[block]))#setting up Q's
+#			ip_filter_upper = Q(ip_address__lte = ip_block[-1])
+#			ip_filter_lower = Q(ip_address__gte = ip_block[0])
+#			complex_subnet_queries.append(ip_filter_upper&ip_filter_lower)#combining (&) and appending to list complex_subnet_queries
+#--------------------
+	

@@ -1,0 +1,11 @@
+{% if error %}
+	ERROR: {{error}}
+{% else %}
+{% if not records %}
+	ERROR: There are no subnets that are defined in the network resource
+{% else %}
+{% for record in records %}	
+	{{ record.ip_network }}<br>
+{% endfor %}
+{% endif %}
+{% endif %}

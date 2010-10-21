@@ -15,7 +15,10 @@ urlpatterns = patterns('subnets.views',
 	(r'^dhcp/$', 'dhcp_page'),						#dhcp - main dchp info page	
 	(r'^error/permission/$', 'permission_error'),
 	(r'^error/record/$', 'record_error'),
-	
+	(r'^temp/info$','time_info'),
+)
+urlpatterns += patterns('AccessControl.views',
+	(r'^subnets/get-subnet-data$', 'subnets_fetch_records_txt'),
 )
 	#####################################################
 	##################Admin Pages########################

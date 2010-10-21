@@ -14,7 +14,7 @@ class DNS_name(models.Model):							#DNS NAMING MODEL
 	ttl		= models.IntegerField('Time to Live', blank=True, null=True)					#DNS time to ive field
 	objects 	= NameManager()
 	def LogRepresentation(self):
-		return u'{\'name\':\'%s\', \'ip_address\':IPAddress(\'%s\'), \'dns_type\':\'%s\', \'description\':\'%s\', \'ttl\':\'%s\'}' % (self.name, self.ip_address, self.dns_type, self.description, self.ttl )
+		return u'{\'name\':\'%s\', \'ip_address\':IPAddress(\'%s\'), \'dns_type\':\'%s\', \'description\':\'%s\', \'ttl\':%s}' % (self.name, self.ip_address, self.dns_type, self.description, self.ttl )
 	def __unicode__(self):
 		return u'\'name\':\'%s\',\'ip_address\':\'%s\',\'is_ipv6\':\'%s\',\'dns_type\':\'%s\',\'description\':\'%s\''% (self.name, str(self.ip_address), self.is_ipv6, self.dns_type, self.description)
 	class Meta:

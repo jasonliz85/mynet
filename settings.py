@@ -57,15 +57,17 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/home/django/django_projects/subnets/Media/'
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://subnets.core-net.qmul.ac.uk/site_media/'
-
+if RunningOn == 'dungbeetle': 
+	# Absolute path to the directory that holds media.
+	# Example: "/home/media/media.lawrence.com/"
+	MEDIA_ROOT = '/home/django/django_projects/subnets/Media/'
+	# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+	# trailing slash if there is a path component (optional in other cases).
+	# Examples: "http://media.lawrence.com", "http://example.com/media/"
+	MEDIA_URL = 'http://subnets.core-net.qmul.ac.uk/site_media/'
+else:
+	MEDIA_ROOT = ''
+	MEDIA_URL = ''
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -102,6 +104,7 @@ if RunningOn == 'dungbeetle':
 	    '/home/django/django_projects/subnets/Template/dhcp',
 	    '/home/django/django_projects/subnets/Template/dns',
 	    '/home/django/django_projects/subnets/Template/history',
+	    '/home/django/django_projects/subnets/Template/accesscontrol',
 	)
 elif RunningOn  == 'dev_at_home':
 	TEMPLATE_DIRS = (
@@ -110,6 +113,7 @@ elif RunningOn  == 'dev_at_home':
 	    '/home/jason/Projects/qm_projects/subnets/Template/dhcp',
 	    '/home/jason/Projects/qm_projects/subnets/Template/dns',
 	    '/home/jason/Projects/qm_projects/subnets/Template/history',
+	    '/home/jason/Projects/qm_projects/subnets/Template/accesscontrol',
 	)
 elif RunningOn == 'dev_at_QM':
 	TEMPLATE_DIRS = (
@@ -118,6 +122,7 @@ elif RunningOn == 'dev_at_QM':
 		'/home/jasonl/svn/subnets/Template/dhcp',
 		'/home/jasonl/svn/subnets/Template/dns',
 		'/home/jasonl/svn/subnets/Template/history',
+		'/home/jasonl/svn/subnets/Template/accesscontrol',
 		    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 		    # Always use forward slashes, even on Windows.
 		    # Don't forget to use absolute paths, not relative paths.
@@ -128,6 +133,7 @@ elif RunningOn == 'DMP_at_QM':
 		'/home/davidp/Desktop/svn/Network/subnets/Template/dhcp',
 		'/home/davidp/Desktop/svn/Network/subnets/Template/dns',
 		'/home/davidp/Desktop/svn/Network/subnets/Template/history',
+		'/home/davidp/Desktop/svn/Network/subnets/Template/accesscontrol',
 	)
 
 INSTALLED_APPS = (

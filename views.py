@@ -43,6 +43,16 @@ def permission_error(request):
 	return render_to_response('qmul_permission_error.html', {})
 def record_error(request):
 	return render_to_response('qmul_permission_error.html', {})
+#-----Testing- To delete ----------
+def time_info(request):
+	dns_timing = {}
+	dns_timing['total'] = request.session["_dns_list_total_timing"]
+	dns_timing['view'] = request.session["_dns_list_view_timing"]
+	dns_timing['template'] = request.session["_dns_list_template_timing"]
+	dns_timing['t1t2'] = request.session["_dns_list_t1t2_timing"]
+	dns_timing['t2t3'] = request.session["_dns_list_t2t3_timing"]
+	return render_to_response('info.html', {'dns_timing':dns_timing})
+#----------------------------------
 ###########################################################################################
 ###########################################################################################
 ###########################################################################################

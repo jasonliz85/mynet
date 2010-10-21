@@ -1,11 +1,5 @@
-{% for record in records %}	
-	{% ifequal record.dns_type '1BD' %}
-		={{record.name}}:{{record.ip_address}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}<br>
-	{% else %}
-		{% ifequal record.dns_type '2NA' %}
-			+{{record.name}}:{{record.ip_address}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}<br>
-		{% else %}
-			^{{record.ip_reverse}}:{{record.name}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}<br>
-		{% endifequal %}	
-	{% endifequal %}
-{% endfor %}
+{% if not records %}ERROR: Found no records matching this subnet.{% else %}{% for record in records %}{% ifequal record.dns_type '1BD' %}	
+{% if record.is_ipv6 %}#{%endif%}={{record.name}}:{{record.ip_address}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}{% else %}{% ifequal record.dns_type '2NA' %}
+{% if record.is_ipv6 %}#{%endif%}+{{record.name}}:{{record.ip_address}}:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}{% else %}
+^{{record.ip_reverse}}:{{record.name}}.:{% ifequal record.ttl 0 %}86400{% else %}{{record.ttl}}{% endifequal %}{% endifequal %}{% endifequal %}{% endfor %}{% endif %}
+

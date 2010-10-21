@@ -205,7 +205,32 @@ def EditAndLogRecord(m_name_str, m_id, model_name, uname, values):
 		LogEvent('E',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, m_id)
 		
 	return mod_record.id
-	
+def edit_log_record(var):
+	"""
+	This function edits a Record in the database and logs the event in the HistoryLog db. Assumes the input 'var'
+	contains a list of three objects: var[0] - django model object, var[1] - django username object,
+	var[2] - table number (1 = DNS_names, 2 = , 3 = ), var[3] - is modified, var[4] - values before changes, var[5] - values after change
+	"""
+	values = {'mod_record': var[0], 'uname': var[1], 't_number': var[2], 'is_modified': var[3], 'valuesBefore':var[4], 'valuesAfter':var[5]}
+	if values['is_modified']:		
+		now = datetime.datetime.today()
+		values['mod_record'].time_modified = now
+		values['mod_record'].save()
+		print values['valuesBefore']
+		print values['valuesAfter']
+		LogEvent('E', values['valuesBefore'], values['valuesAfter'], False, values['uname'], "NetGroup:ToDo", values['t_number'], values['mod_record'].id)
+	return values['mod_record'].id
+def add_log_record(var):
+	"""
+	This function adds a Record in the database and logs the event in the HistoryLog db. Assumes the input 'var'
+	contains a list of three objects: var[0] - django model object, var[1] - django username object, var[2] - table number (1 = DNS_names, 2 = , 3 = )
+	"""
+	values = {'newRecord': var[0], 'uname': var[1], 't_number': var[2]}
+	init_values = "{}" 
+	values['newRecord'].save() 
+	final_values = values['newRecord'].LogRepresentation()
+	LogEvent('A',init_values, final_values, False, values['uname'], "NetGroup:ToDo", values['t_number'], values['newRecord'].id)
+	return values['newRecord'].id
 def AddAndLogRecord(m_name_str, model_name, uname, values):
 	"""
 	This function adds a Record in the database and logs the event in the HistoryLog db.
@@ -265,7 +290,7 @@ def AddAndLogRecord(m_name_str, model_name, uname, values):
 def DeleteAndLogRecord(m_id, Model_Name, uname, table_name, action):
 	"""
 	This function deletes a Re0cord in the database and logs the event in the HistoryLog db. It returns 
-	a list of the fields and values that were deleted.
+	a list test1.students.qmul.ac.ukof the fields and values that were deleted.
 		values: m_id = unique id of record in db, model_name = name of the table in db, uname =
 	"""
 	t_number = get_table_number(table_name)

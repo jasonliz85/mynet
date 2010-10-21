@@ -1,10 +1,5 @@
-{% if error %}
-	ERROR: {{error}}
-{% else %}
-{% for record in records %}	
-	host {{record.host}} {<br>
-		hardware ethernet {{record.mac_address}};<br>
-		fixed-address {{record.ip_address}};<br>
-	}<br>
-{% endfor %}
-{% endif %}
+{% if error %}ERROR: {{error}}{% else %}{% if not records %}ERROR: Found no records matching this subnet.{% else %}{% for record in records %}	
+host {{record.host}} {
+	hardware ethernet {{record.mac_address}};
+	fixed-address {{record.ip_address}};
+}{% endfor %}{% endif %}{% endif %}

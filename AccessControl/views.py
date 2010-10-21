@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.db import IntegrityError
+from django.shortcuts import render_to_response
 from subnets.AccessControl.models import *
 from netaddr import IPAddress, IPNetwork
 import datetime, re
@@ -9,7 +10,7 @@ __all__ = [	'get_netgroups_managed_by_user',
 		'get_address_blocks_managed_by',
 		'get_subnet_from_ip',
 		'is_ipaddress_in_netresource',
-		'is_name_in_netresource']
+		'is_name_in_netresource', 'is_subnet_in_netresource']
 ###############################################################################
 ############################# Useful Functions ################################
 ###############################################################################
@@ -107,9 +108,20 @@ def is_name_in_netresource(request, dns_name):
 		if re.match(dns_re, dns_name):
 			has_permission = True
 			break
-
 	return has_permission
-
+def is_subnet_in_netresource(subnet):
+	'''
+	returns true message if input subnet (IPNetwork object) matches the subnets specifies in the net resource group element
+	'''
+	error = False
+	ip_subnets = ip_subnet.objects.all()
+	#for each ip address block in all ip address blocks in the list...
+	for i in range(len(ip_subnets)):
+		#...check if ip_address is within range
+		if subnet == IPNetwork(str(ip_subnets[i])):
+			error = True
+			break
+	return error
 def add_ip_subnet(values):
 	'''
 	This function adds an ip subnet to the model ip_subnet. If record.save is not unique, return as Error = True
@@ -122,4 +134,10 @@ def add_ip_subnet(values):
 	except Exception, e:
 		return True, e
 	return False, ''
-
+def subnets_fetch_records_txt(request):
+	'''
+	returns a list of all the subnets that in the network resource subnet database
+	'''
+	ip_subnets = ip_subnet.objects.all()
+	
+	return render_to_response('qmul_subnets_all.txt', {'records': ip_subnets})

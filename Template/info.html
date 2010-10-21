@@ -1,0 +1,10 @@
+{% if dns_timing %}
+	DNS list page: <br>
+	total time = {{dns_timing.total}} seconds (view and template) <br>
+	template time = {{dns_timing.template}} seconds <br>
+	view time = {{dns_timing.view}} seconds <br>
+	t2-t1 time = {{dns_timing.t1t2}} seconds <br>
+	t3-t2 time = {{dns_timing.t2t3}} seconds <br>
+{% else %}
+	No timing information
+{% endif %}

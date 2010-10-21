@@ -21,6 +21,9 @@
 				<ul class = "errorlist"><li>{{c_error.message}}</ul></li>
 			{% endif %}
 		{% endfor %}
+		{% if c_errors%}
+			<ul class = "errorlist"><li>{{c_errors}}</ul></li>
+		{% endif %}
 		{% if u_error%}
 			<ul class = "errorlist"><li>{{u_error}}</ul><li>
 		{% endif %}

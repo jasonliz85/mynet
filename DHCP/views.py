@@ -429,13 +429,12 @@ def dhcp_fetch_pool_data(request):
 		error = 'No subnet defined.'
 	else:
 		try:
-			print subnet
 			sb = IPNetwork(subnet)
-			records = DHCP_ip_pool.objects.get_records_in_subnet(sb)
+			records,error = DHCP_ip_pool.objects.get_records_in_subnet(sb)
 		except AddrFormatError:
 			error = 'Subnet format error.'
 	
-	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error})
+	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')
 def dhcp_fetch_host_data(request):
 	'''
 	'''
@@ -447,8 +446,8 @@ def dhcp_fetch_host_data(request):
 	else:
 		try:
 			sb = IPNetwork(subnet)
-			records = DHCP_machine.objects.get_records_in_subnet(sb)
+			records, error = DHCP_machine.objects.get_records_in_subnet(sb)
 		except AddrFormatError:
 			error = 'Subnet format error.'
 			
-	return render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error})
+	return render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')

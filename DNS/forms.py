@@ -44,11 +44,11 @@ class Register_namepair_Form(forms.Form):
 class Register_service_Form(forms.Form):
 	service_name 	= forms.CharField(label = 'Machine Name', widget = forms.TextInput(attrs={'class':'special', 'size':'10'}))		#DNS name regular expression
 	dscr 		= forms.CharField(required = False, widget = forms.Textarea, label = 'Description')
-	ttl		= forms.IntegerField(label = 'Time to Live (seconds)')
+	ttl		= forms.IntegerField(required = False,label = 'Time to Live (seconds)')
 	def clean_service_name(self):
 		service_name = self.cleaned_data['service_name']		
 		service_name = service_name.replace(' ','')
-		return dns_expr
+		return service_name
 class ViewMachinesActionForm(forms.Form):
 	STATUS_CHOICES = ( 
 			('act', ''),

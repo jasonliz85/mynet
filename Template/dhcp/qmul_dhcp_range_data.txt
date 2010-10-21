@@ -1,7 +1,2 @@
-{% if error %}
-	ERROR: {{error}}
-{% else %}
-{% for record in records %}	
-	range {{record.ip_first}} {{record.ip_last}};<br>
-{% endfor %}
-{% endif %}
+{% if error %}ERROR: {{error}}{% else %}{% if not records %}ERROR: Found no records matching this subnet.{% else %}{% for record in records %}	
+range {{record.ip_first}} {{record.ip_last}};{% endfor %}{% endif %}{% endif %}
