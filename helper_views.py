@@ -118,94 +118,7 @@ def CompareDescriptions(dsrc1, dsrc2):
  				changed = bool(1)
 	return changed
 
-def EditAndLogRecord(m_name_str, m_id, model_name, uname, values): 
-	"""
-	This function edits a Record in the database and logs the event in the HistoryLog db
-		arguments: m_id = unique id of record in db, model_name = name of the table in db
-	"""
-	#initialize values
-	is_modified = bool(0)
-	try :
-		mod_record = model_name.objects.get(id = m_id)
-	except model_name.DoesNotExist:
-		return False
-		
-	valBef = mod_record.LogRepresentation()
-	t_number = get_table_number(m_name_str)
-	#switch to appropriete model and deal with each slightly differently
-	if m_name_str == "DNS_name":	
-		if not mod_record.name == values['name']: 
-			mod_record.name = values['name']
-			is_modified = bool(1)
-		if not mod_record.ttl == values['ttl']: 
-			mod_record.ttl = values['ttl']
-			is_modified = bool(1)
-		if not mod_record.description == values['description']:
-			if CompareDescriptions(mod_record.description, values['description']):
-				mod_record.description = values['description']
-				is_modified = bool(1)	
-		if not mod_record.dns_type == values['dns_type']:
-			tp = values['dns_type']
-			if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
-				tp = '1BD'
-			mod_record.dns_type = values['dns_type']
-			is_modified = bool(1)
-		if not mod_record.ip_address == values['ip_address']:
-			mod_record.ip_address = values['ip_address']
-			is_modified = bool(1)
-			if (values['ip_address'].version == 6):
-				ipVersion = bool(1)
-			else:
-				ipVersion = bool(0)
-			mod_record.is_ipv6 = ipVersion		
-	elif m_name_str == "DHCP_ip_pool":
-		if not mod_record.ip_first == values['ip_first']:
-			if values['ip_first'].version == 6:
-				ipVersion = bool(1)
-			else:
-				ipVersion = bool(0)
-			is_modified = bool(1)
-			mod_record.ip_first = values['ip_first']
-			mod_record.is_ipv6 = ipVersion
-		if not mod_record.ip_last == values['ip_last']:
-			mod_record.ip_last = values['ip_last']
-			is_modified = bool(1)
-		if not mod_record.description == values['description']:
-			if CompareDescriptions(mod_record.description, values['description']):
-				mod_record.description = values['description']
-				is_modified = bool(1)
-	elif m_name_str == "DHCP_machine":
-		if not mod_record.mac_address == str(EUI(values['mac_address'], dialect=mac_custom)):
-			mod_record.mac_address = str(EUI(values['mac_address'], dialect=mac_custom))
-			is_modified = bool(1)
-		if not mod_record.ip_address == values['ip_address']:
-			mod_record.ip_address = values['ip_address']
-			if values['ip_address'].version == 6:
-				ipVersion = bool(1)
-			else:
-				ipVersion = bool(0)
-			mod_record.is_ipv6 = ipVersion
-			is_modified = bool(1)
-		if not mod_record.host_name == values['host_name']:
-			mod_record.host_name = values['host_name']
-			is_modified = bool(1)
-		if not mod_record.description == values['description']:
-			if CompareDescriptions(mod_record.description, values['description']):
-				mod_record.description = values['description']
-				is_modified = bool(1)
-	else: 
-		return bool(0)
-		
-	if is_modified:		
-		now = datetime.datetime.today()
-		final_values = str(values)
-		init_values = str(valBef)
-		mod_record.time_modified = now
-		mod_record.save()
-		LogEvent('E',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, m_id)
-		
-	return mod_record.id
-def edit_log_record(var):
+def EditAndLogRecord(var):
 	"""
 	This function edits a Record in the database and logs the event in the HistoryLog db. Assumes the input 'var'
 	contains a list of three objects: var[0] - django model object, var[1] - django username object,
@@ -220,73 +133,20 @@ def edit_log_record(var):
 		print values['valuesAfter']
 		LogEvent('E', values['valuesBefore'], values['valuesAfter'], False, values['uname'], "NetGroup:ToDo", values['t_number'], values['mod_record'].id)
 	return values['mod_record'].id
-def add_log_record(var):
+def AddAndLogRecord(var):
 	"""
 	This function adds a Record in the database and logs the event in the HistoryLog db. Assumes the input 'var'
 	contains a list of three objects: var[0] - django model object, var[1] - django username object, var[2] - table number (1 = DNS_names, 2 = , 3 = )
 	"""
 	values = {'newRecord': var[0], 'uname': var[1], 't_number': var[2]}
 	init_values = "{}" 
+	final_values = values['newRecord'].LogRepresentation() #LogRepresentation should be defined in the model definitions model.py
+	#Save and LOG results
 	values['newRecord'].save() 
-	final_values = values['newRecord'].LogRepresentation()
 	LogEvent('A',init_values, final_values, False, values['uname'], "NetGroup:ToDo", values['t_number'], values['newRecord'].id)
+
 	return values['newRecord'].id
-def AddAndLogRecord(m_name_str, model_name, uname, values):
-	"""
-	This function adds a Record in the database and logs the event in the HistoryLog db.
-	"""
-	now = datetime.datetime.today()
-	t_number = get_table_number(m_name_str)
-	#check ip address if version 6
-	try: 
-		if (IPAddress(values['ip_address']).version == 6):
-			ipVersion = True
-		else:
-			ipVersion = False
-	except KeyError:
-		pass
-	if m_name_str == "DNS_name":
-		tp = values['dns_type']
-		if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
-			tp = '1BD'
-		newRecord = model_name( name	= values['name'],
-					ip_address	= values['ip_address'],
-					dns_type	= tp,
-					is_ipv6 	= ipVersion,
-					time_created 	= now,
-					time_modified	= now,
-					description 	= values['description'],
-					ttl 		= values['ttl']							
-					)
-	elif m_name_str == "DHCP_ip_pool":		
-		if (IPAddress(values['ip_first']).version == 6):
-			ipVersion = bool(1)
-		else:
-			ipVersion = bool(0)				
-		newRecord = model_name(	ip_first	= values['ip_first'],
-					ip_last		= values['ip_last'],
-					is_ipv6 	= ipVersion,
-					time_created 	= now,					
-					time_modified	= now,
-					description 	= values['description']								
-					)
-	elif m_name_str == "DHCP_machine":
-		newRecord = model_name(	mac_address 	= str(EUI(values['mac_address'], dialect=mac_custom)),
-					ip_address  	= values['ip_address'],
-					host_name  	= values['host_name'],
-					is_ipv6  	= ipVersion,
-					time_created 	= now,
-					time_modified	= now,
-					description 	= values['description']
-					)
-	else: 
-		return bool(0)
-	newRecord.save() #vals = model_name.objects.filter(id = newRecord.id).values() 
-	init_values = "{}" 
-	final_values = newRecord.LogRepresentation()#str(vals[0])
-	LogEvent('A',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, newRecord.id)
-	return newRecord.id
-		
+
 def DeleteAndLogRecord(m_id, Model_Name, uname, table_name, action):
 	"""
 	This function deletes a Re0cord in the database and logs the event in the HistoryLog db. It returns 

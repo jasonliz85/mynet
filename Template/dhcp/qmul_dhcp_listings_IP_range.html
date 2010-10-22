@@ -31,7 +31,7 @@
 			{{field.errors}}
 		{% endif %}
 	{% endfor %}
-	{% if not machinelists %}
+	{% if not machinelists.object_list %}
 		<ul class = "errorlist"><li> This table is empty </ul><li>	
 	{% else %}	
 	<form method="post" class = viewbackform action="">	
@@ -60,8 +60,8 @@
 			<th>
 			<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
 			</th>
-			<th>
-				<a>No.</a>
+			<th align = center>
+				<a>ID</a>
 			</th>
 			{% if sort.toggle %}
 				<th {% ifequal sort.order "ip" %}
@@ -139,10 +139,10 @@
 		{% for machinelist in machinelists.object_list %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<td>{{ forloop.counter }}</td>
-				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> {{ machinelist.ip1|lower }} </a></td>
-				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> - </td>
-				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> {{ machinelist.ip2|lower }} </td>
+				<td align = center>{{ machinelist.id}}{#{ forloop.counter }#}</td>
+				<td style= "BORDER-RIGHT: 0px;"><a href="/dhcp/pool/{{machinelist.id}}/view"> {{ machinelist.ip_first|lower }} </a></td>
+				<td style= "BORDER-RIGHT: 0px;"><a href="/dhcp/pool/{{machinelist.id}}/view"> - </td>
+				<td><a href="/dhcp/pool/{{machinelist.id}}/view"> {{ machinelist.ip_last|lower }} </td>
 				<td align = center >{% if machinelist.is_ipv6 %} 6 {% else %} 4 {% endif %}</td>
 				<td class="nowrap">
 				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 

@@ -8,12 +8,85 @@ from subnets.DHCP.models import *
 from subnets.DHCP.forms import *
 #-------import views
 from subnets.helper_views import *
-#from netaddr import *
 import datetime
+from netaddr import *
 
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
-
+def prepare_values(action, table_type, vals, uname, m_id):
+	'''
+	Prepares the values, so as to be returned to the funtion AddAndLogRecord or EditAndLogRecord
+	Arguments:
+		action - 'A' Adding, or 'E' editing
+		table_type - 'pool' or 'machine'
+		vals - values to add to the database
+		uname - django username objects
+		m_id - if editing, specified the id of the record to be modified
+	'''
+	now = datetime.datetime.today()
+	#initialising common values used for both 'E' and 
+	if table_type == 'pool':
+		values = {'ip_first':IPAddress(vals['IP_range1']), 'ip_last':IPAddress(vals['IP_range2']),'description':vals['dscr'] }
+		table_number = '2'
+		if values['ip_first'].version == 6 and values['ip_last'].version == 6:
+			ipVersion = True
+		else:
+			ipVersion = False
+	elif table_type == 'machine':
+		values = {'mac_address' :str(EUI(vals['mcID'], dialect=mac_custom)),'ip_address': IPAddress(vals['ipID']),'host_name':vals['pcID'],'description':vals['dscr'] }
+		table_number = '3'
+		if values['ip_address'].version == 6:
+			ipVersion = True
+		else:
+			ipVersion = False
+	#perform individual actions
+	if action == 'A':
+		if table_type == 'pool':
+			Record = DHCP_ip_pool( ip_first	= values['ip_first'],ip_last = values['ip_last'], is_ipv6 = ipVersion, 
+				time_created = now, time_modified = now, description = values['description'])
+		elif table_type == 'machine':
+			Record = DHCP_machine( mac_address = values['mac_address'], ip_address = values['ip_address'], host_name = values['host_name'],
+				is_ipv6 = ipVersion, time_created = now, time_modified = now, description = values['description'])
+		preparedValues = Record, uname, table_number	
+	elif action == 'E':
+		is_modified = False
+		if table_type == 'pool':
+			try :
+				ModifiedRecord = DHCP_ip_pool.objects.get(id = m_id)
+			except model_name.DoesNotExist:
+				return False
+			valuesBefore = ModifiedRecord.LogRepresentation()
+			if not ModifiedRecord.ip_first == values['ip_first']:
+				ModifiedRecord.ip_first = values['ip_first']
+				ModifiedRecord.is_ipv6 = ipVersion
+				is_modified = True
+			if not ModifiedRecord.ip_last == values['ip_last']:
+				ModifiedRecord.ip_last = values['ip_last']
+				is_modified = True
+		elif table_type == 'machine':
+			try :
+				ModifiedRecord = DHCP_machine.objects.get(id = m_id)
+			except model_name.DoesNotExist:
+				return False
+			valuesBefore = ModifiedRecord.LogRepresentation()
+			if not ModifiedRecord.mac_address == values['mac_address']:
+				ModifiedRecord.mac_address = values['mac_address']
+				is_modified = True
+			if not ModifiedRecord.ip_address == values['ip_address']:
+				ModifiedRecord.ip_address = values['ip_address']
+				ModifiedRecord.is_ipv6 = ipVersion
+				is_modified = True
+			if not ModifiedRecord.host_name == values['host_name']:
+				ModifiedRecord.host_name = values['host_name']
+				is_modified = True
+		#common field between pools and machines: description
+		if not ModifiedRecord.description == values['description']:
+			if CompareDescriptions(ModifiedRecord.description, values['description']):
+				ModifiedRecord.description = values['description']
+				is_modified = True
+		preparedValues = ModifiedRecord, uname, table_number, is_modified, valuesBefore, str(values)
+		
+	return preparedValues
 #################################################################################
 ####################### DHCP IP Pool ############################################
 #################################################################################
@@ -50,29 +123,25 @@ def ParameterChecks(user_object, ip1, ip2, mac, rid, is_ip_pools):
 #Add a IP range to the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_add(request):
+	'''
+	'''
 	if request.method == 'POST':
 		form = Register_IP_range_Form(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			ip_f = IPAddress(info['IP_range1'])
-			ip_l = IPAddress(info['IP_range2'])
-			[can_pass, custom_errors] = ParameterChecks(request, ip_f, ip_l, "", "", True)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['IP_range1']), IPAddress(info['IP_range2']), '', '', True)
 			if can_pass:
-				values = { 	'ip_first':ip_f, 'ip_last':ip_l,
-						'description':info['dscr'] }
-				registeredID = AddAndLogRecord('DHCP_ip_pool',  DHCP_ip_pool, request.user.username, values)
-				IP_pool_registered  = DHCP_ip_pool.objects.get(id = registeredID)
-				#for display purposes
-				IP_pool_registered.ip1 = str(IP_pool_registered.ip_first)
-				IP_pool_registered.ip2 = str(IP_pool_registered.ip_last)					
-				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': IP_pool_registered})
+				registeredID = AddAndLogRecord(prepare_values('A', 'pool', info, request.user.username, ''))
+				#redirect results
+				url = "/dhcp/pool/%s/view"%registeredID
+				response = HttpResponseRedirect(url)					
 			else:
 				form = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
+				response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
 	else:
 		form = Register_IP_range_Form(initial = {})
-
-	return render_to_response('qmul_dhcp_create_IP_range.html',{'form':form })
+		response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form })
+	return response 
 #List all IP range records in the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_listing(request):
@@ -102,12 +171,7 @@ def dhcp_page_IP_range_listing(request):
 		sort['type_bef'] = 'asc'
 			
 	#get permitted records
-	#registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request)
 	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request, order_by, order_dir, change_dir)
-	for i in range(len(registered_IP_pools)):#for display purposes
-		registered_IP_pools[i].ip1 = str(IPAddress(registered_IP_pools[i].ip_first))
-		registered_IP_pools[i].ip2 = str(IPAddress(registered_IP_pools[i].ip_last))
-		registered_IP_pools[i].record_no = i + 1
 	#get number of records per page
 	try:
 		list_length = int(request.GET.get('len', '400'))
@@ -134,26 +198,24 @@ def dhcp_page_IP_range_listing(request):
 					for item in item_selected:
 						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, c_user, 'DHCP_ip_pool', ''))
 					mlength = len(mDelete)
-					return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength})
+					response = render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						return render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
+						response = render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
 					else:
-						regmachine = DHCP_ip_pool.objects.get(id = item_selected[0])
-						regmachine.ip1 = str(regmachine.ip_first)
-						regmachine.ip2 = str(regmachine.ip_last)
-						return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine})
+						regmachine = DHCP_ip_pool.objects.get(idns_typed = item_selected[0])
+						response = render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
+					response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
+				response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
-	
+		response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
+	return response 
 #Viw a single IP range record on the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_view(request, ip_id):
@@ -165,8 +227,6 @@ def dhcp_page_IP_range_view(request, ip_id):
 	#check if id in database
 	try:
 		regpools = DHCP_ip_pool.objects.get(id = ip_id)
-		regpools.ip1 = str(regpools.ip_first)
-		regpools.ip2 = str(regpools.ip_last)
 	except DHCP_ip_pool.DoesNotExist:
 		return HttpResponseRedirect("/dhcp/pool/list/default")
 	#check if permitted
@@ -210,28 +270,23 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		editform = Register_IP_range_Form(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			ip_f = IPAddress(info['IP_range1'])
-			ip_l = IPAddress(info['IP_range2'])
-			[can_pass, custom_errors] = ParameterChecks(request, ip_f, ip_l, "", ip_id, True)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['IP_range1']), IPAddress(info['IP_range2']), "", ip_id, True)
 			if can_pass:
-				valAft = { 	'ip_first':ip_f, 'ip_last':ip_l,
-						'description' :info['dscr']	}
-				modID = EditAndLogRecord('DHCP_ip_pool', ip_id,  DHCP_ip_pool,request.user.username, valAft)
-				regpool = DHCP_ip_pool.objects.get(id = modID)
-				regpool.ip1 = str(regpool.ip_first)
-				regpool.ip2 = str(regpool.ip_last)
-				return render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpool})
+				modID = EditAndLogRecord(prepare_values('E', 'pool', info, request.user.username, ip_id))
+				#redirect response
+				url = "/dhcp/pool/%s/view" % modID
+				response = HttpResponseRedirect(url)
 			else:
 				editform = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
+				response = render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
 	else:
 		try:
 			regmachine = DHCP_ip_pool.objects.get(id = ip_id)	
+			editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.ip_first)),'IP_range2':str(IPAddress(regmachine.ip_last)),'dscr':regmachine.description})	
+			response = render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
 		except DHCP_ip_pool.DoesNotExist:
-			return HttpResponseRedirect("/dhcp/pool/list/default")	
-		editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.ip_first)),'IP_range2':str(IPAddress(regmachine.ip_last)),'dscr':regmachine.description})	
-	return render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
-
+			response = HttpResponseRedirect("/dhcp/pool/list/default")	
+	return response
 #################################################################################
 ####################### DHCP Machine Registration ###############################
 #################################################################################
@@ -252,26 +307,23 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = RegisterMachineForm(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			ip = IPAddress(info['ipID'])
-			[can_pass, custom_errors] = ParameterChecks(request, ip, '', str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['ipID']), '', str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
 			if can_pass:
-				valAft = { 	'mac_address' :info['mcID'],'ip_address': ip,
-						'host_name' :info['pcID'],'description' :info['dscr']	}
-				modID = EditAndLogRecord('DHCP_machine', m_id,  DHCP_machine,request.user.username, valAft)
-				regmachine = DHCP_machine.objects.get(id = modID)
-				regmachine.ip = regmachine.ip_address
-				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
+				modID = EditAndLogRecord(prepare_values('E', 'machine', info, request.user.username, m_id))
+				#redirect response
+				url = "/dhcp/machine/%s/view" % modID
+				response = HttpResponseRedirect(url)
 			else:
 				editform = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
+				response =  render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
 	else:
 		try:
 			regmachine = DHCP_machine.objects.get(id = m_id)		
+			editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(regmachine.ip_address), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
+			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
 		except DHCP_machine.DoesNotExist:
-			return HttpResponseRedirect("/dhcp/machine/list/")	
-		editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(regmachine.ip_address), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
-	return render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
-
+			response =  HttpResponseRedirect("/dhcp/machine/list/")	
+	return response
 #
 @login_required
 def dhcp_page_machine_listing(request):	
@@ -301,11 +353,7 @@ def dhcp_page_machine_listing(request):
 		sort['type_bef'] = 'asc'
 			
 	#get permitted records
-	#registeredmachines =  DHCP_machine.objects.get_permitted_records(request) 
 	registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir, change_dir)
-	for i in range(len(registeredmachines)): #for display purposes
-		registeredmachines[i].ip = str(IPAddress(registeredmachines[i].ip_address))
-		registeredmachines[i].record_no = i + 1
 	#get number of records per page
 	try:
 		list_length = int(request.GET.get('len', '400'))
@@ -332,25 +380,24 @@ def dhcp_page_machine_listing(request):
 					for item in item_selected:
 						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, c_user, 'DHCP_machine', ''))
 					mlength = len(mDelete)
-					return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
+					response = render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						return render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
+						response = render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
 					else:
 						regmachine = DHCP_machine.objects.get(id = item_selected[0])
-						regmachine.ip = str(regmachine.ip_address)
-						return render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
+						response = render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
+					response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
+				response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		return render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
-
+		response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
+	return response
 #Delete a single record in the DHCP registration model
 @login_required
 def dhcp_page_machine_delete_single(request, m_id):
@@ -387,7 +434,6 @@ def dhcp_page_machine_view(request, m_id):
 	#check if id in database
 	try:
 		regmachine = DHCP_machine.objects.get(id = m_id)
-		regmachine.ip = str(IPAddress(regmachine.ip_address))
 	except DHCP_machine.DoesNotExist:
 		return HttpResponseRedirect("/dhcp/machine/list/")
 	#check if permitted
@@ -403,22 +449,19 @@ def dhcp_page_machine_add(request):
 		form = RegisterMachineForm(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			ip = IPAddress(info['ipID'])
-			[can_pass, custom_errors] = ParameterChecks(request, ip, "", str(EUI(info['mcID'], dialect=mac_custom)), "", False)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['ipID']), "", str(EUI(info['mcID'], dialect=mac_custom)), "", False)
 			if can_pass:
-				values = { 	'mac_address' :info['mcID'],'ip_address' :ip,
-						'host_name'  :info['pcID'],'description':info['dscr'] }
-				registeredID = AddAndLogRecord('DHCP_machine',  DHCP_machine, request.user.username, values)
-				machine_registered  = DHCP_machine.objects.get(id = registeredID)
-				machine_registered.ip = str(machine_registered.ip_address)
-				return render_to_response('qmul_dhcp_viewmachine.html', {'machine': machine_registered})
+				registeredID = AddAndLogRecord(prepare_values('A', 'machine', info, request.user.username, ''))
+				#redirect results
+				url = "/dhcp/machine/%s/view"%registeredID
+				response = HttpResponseRedirect(url)
 			else:
 				form = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				return render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors})
+				response = render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors})
 	else:
 		form = RegisterMachineForm(initial = {})
-		
-	return render_to_response('qmul_dhcp_createmachine.html', {'form':form })
+		response = render_to_response('qmul_dhcp_createmachine.html', {'form':form })
+	return response
 def dhcp_fetch_pool_data(request):
 	'''
 	'''

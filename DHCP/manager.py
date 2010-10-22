@@ -14,13 +14,12 @@ class MachineManager(models.Manager):
 		unique_error = ''
 		#1. find subnet belonging to ip address	(ip)	
 		subnet = get_subnet_from_ip(user_obj, ip)
-		if not len(subnet):
+		if not subnet:
 			unique = False
 			unique_error = "You do not have permission to add/edit this IP address."
 			return unique, unique_error
 		#2. find all records that are also within this subnet
 		found_records = list() 
-		subnet = IPNetwork(subnet)
 		ip_filter_upper = Q(ip_address__lt = subnet[-1])
 		ip_filter_lower = Q(ip_address__gt = subnet[0])
 		try: 
@@ -65,6 +64,7 @@ class MachineManager(models.Manager):
 		change_dir - 
 		"""
 		import operator
+		permitted_record = []
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
 		ip_blocks = get_address_blocks_managed_by(request.user)
 		empty_find = True
@@ -79,13 +79,12 @@ class MachineManager(models.Manager):
 			
 		if order_dir == 'desc':
 			var = "-"+var
-		complex_subnet_queries = list()
-		for block in range(len(ip_blocks)):
-			ip_block = IPNetwork(str(ip_blocks[block]))
-			ip_filter_upper = Q(ip_address__lt = ip_block[-1])
-			ip_filter_lower = Q(ip_address__gt = ip_block[0])
-			complex_subnet_queries.append(ip_filter_upper&ip_filter_lower)
-		permitted_record =  self.filter(reduce(operator.or_, complex_subnet_queries)).order_by(var)
+
+		blocks = [ IPNetwork(str(b)) for b in ip_blocks ]
+		blocks = cidr_merge(blocks)
+		complex_subnet_queries = [ Q(ip_address__gt = ip_block[0]) & Q(ip_address__lt = ip_block[-1]) for ip_block in blocks ]	
+		if len(complex_subnet_queries):
+			permitted_record =  self.filter(reduce(operator.or_, complex_subnet_queries)).order_by(var)
 		return permitted_record
 	
 class IPPoolManager(models.Manager):
@@ -104,7 +103,7 @@ class IPPoolManager(models.Manager):
 		#Get subnet for ip_f and ip_l			
 		subnet1 = get_subnet_from_ip(user_obj, ip_f)
 		subnet2 = get_subnet_from_ip(user_obj, ip_l)
-		if not len(subnet1) or not len(subnet2):
+		if not subnet1 or not subnet2:
 			unique = False
 			unique_error = "You do not have permission to add/edit this IP address."
 			return unique, unique_error
@@ -114,8 +113,6 @@ class IPPoolManager(models.Manager):
 			return unique, unique_error
 		#Get records associated with these addresses. 
 		found_records = list() 
-		subnet1 = IPNetwork(subnet1)
-		subnet2 = IPNetwork(subnet2)
 		ip_first_upper	= Q(ip_first__lt = subnet1[-1])
 		ip_first_lower 	= Q(ip_first__gt = subnet1[0])
 		ip_last_upper 	= Q(ip_last__lt = subnet1[-1])
@@ -171,6 +168,7 @@ class IPPoolManager(models.Manager):
 		change_dir - 
 		"""
 		import operator
+		permitted_record = []
 		if order_by == 'ip':
 			var = "ip_first"
 		elif order_by == 'vers':
@@ -182,13 +180,9 @@ class IPPoolManager(models.Manager):
 			var = "-"+var
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
 		ip_blocks = get_address_blocks_managed_by(request.user)
-		complex_subnet_queries = list()
-		for block in range(len(ip_blocks)):
-			ip_block = IPNetwork(str(ip_blocks[block]))
-			ip_first_upper	= Q(ip_first__lt = ip_block[-1])
-			ip_first_lower 	= Q(ip_first__gt = ip_block[0])
-			ip_last_upper 	= Q(ip_last__lt = ip_block[-1])
-			ip_last_lower 	= Q(ip_last__gt = ip_block[0])
-			complex_subnet_queries.append(ip_first_upper & ip_first_lower & ip_last_upper & ip_last_lower)
-		permitted_record =  self.filter(reduce(operator.or_, complex_subnet_queries)).order_by(var)
+		blocks = [ IPNetwork(str(b)) for b in ip_blocks ]
+		blocks = cidr_merge(blocks)
+		complex_subnet_queries = [ Q(ip_first__gt = ip_block[0]) & Q(ip_last__gt = ip_block[0]) & Q(ip_first__lt = ip_block[-1])& Q(ip_last__lt = ip_block[-1]) for ip_block in blocks ]	
+		if len(complex_subnet_queries):
+			permitted_record =  self.filter(reduce(operator.or_, complex_subnet_queries)).order_by(var)
 		return permitted_record

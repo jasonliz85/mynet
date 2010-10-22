@@ -46,10 +46,9 @@ def prepare_values(action, vals, uname, m_id):
 		is_modified = bool(0)
 		try :
 			ModifiedRecord = DNS_name.objects.get(id = m_id)
-			valuesBefore = ModifiedRecord.LogRepresentation()
 		except model_name.DoesNotExist:
 			return False
-		valBef = ModifiedRecord.LogRepresentation()
+		valuesBefore = ModifiedRecord.LogRepresentation()
 		if not ModifiedRecord.name == values['name']: 
 			ModifiedRecord.name = values['name']
 			is_modified = bool(1)
@@ -132,14 +131,11 @@ def handlePopAdd(request, addForm, field, original_id):
 				#[canpass, custom_errors] = dns_permission_check(request, int(IPAddress(original_machine.ip_address)), newObject['service_name'], "2NA")
 				[can_pass, custom_errors] = ParameterChecks(request, IPAddress(original_machine.ip_address), newObject['service_name'], "2NA",  original_id, True)
 				if can_pass:
-					#values = { 	'name' :newObject['service_name'],'dns_type' :"2NA",
-					#		'ip_address' :original_machine.ip_address,'description':newObject['dscr'], 'ttl': newObject['ttl'] }
-					#AddAndLogRecord('DNS_name', DNS_name, request.user.username, values)	
 					newObject['dns_type'] = '2NA'
 					newObject['ip_address'] = original_machine.ip_address
 					newObject['dns_expr'] = newObject['service_name']
 					print newObject
-					add_log_record(prepare_values('A', newObject, request.user.username, ''))
+					AddAndLogRecord(prepare_values('A', newObject, request.user.username, ''))
 					display = "Added " + " " + newObject['service_name']
 					return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script> <p>Test to display.</p>' %\
 						(newObject, display )) #._get_pk_val()
@@ -166,10 +162,7 @@ def dns_namepair_add(request):
 			[can_pass, custom_errors] = ParameterChecks(request, ip, info['dns_expr'], info['dns_type'], '', True)
 			#check if this form is permitted first
 			if can_pass:
-				#values = { 	'name' :info['dns_expr'],'dns_type' :info['dns_type'],
-				#		'ip_address' :ip, 'description':info['dscr'], 'ttl': info['ttl'] }
-				#registeredID = AddAndLogRecord('DNS_name', DNS_name, request.user.username, values)
-				registeredID = add_log_record(prepare_values('A', info, request.user.username, ''))
+				registeredID = AddAndLogRecord(prepare_values('A', info, request.user.username, ''))
 				namepair_registered  = DNS_name.objects.get(id = registeredID)
 				namepair_registered.ip = str(namepair_registered.ip_address)
 				add_service = request.POST.getlist('service_add')
@@ -177,10 +170,7 @@ def dns_namepair_add(request):
 				if add_service:		
 					for item in add_service:
 						service_add = eval(item)
-						#values = { 	'name':service_add['dns_expr'],'dns_type':service_add['dns_type'],
-						#		'ip_address':IPAddress(service_add['ip_address']),'description':service_add['dscr'], 'ttl': service_add['ttl']}
-						#AddAndLogRecord('DNS_name', DNS_name, request.user.username, values)			
-						add_log_record(prepare_values('A', service_add, request.user.username, ''))
+						AddAndLogRecord(prepare_values('A', service_add, request.user.username, ''))
 				#find all other associated services and display them
 				tempFilter = DNS_name.objects.filter(ip_address = ip).exclude(id = registeredID)
 				regServices = list()
@@ -369,10 +359,7 @@ def dns_namepair_edit(request, pair_id):
 			ip = IPAddress(info['ip_address'])
 			[can_pass, custom_errors] = ParameterChecks(request, ip, info['dns_expr'], info['dns_type'], pair_id, True)
 			if can_pass:
-				#valAft = { 	'name' :info['dns_expr'],'dns_type':info['dns_type'],
-				#		'ip_address' :ip,'description' :info['dscr'], 'ttl': info['ttl'] 	}
-				#modID = EditAndLogRecord('DNS_name', pair_id,  DNS_name,request.user.username, valAft)
-				modID = edit_log_record(prepare_values('E', info, request.user.username, pair_id))
+				modID = EditAndLogRecord(prepare_values('E', info, request.user.username, pair_id))
 				regpair = DNS_name.objects.get(id = modID)				
 				tempFilter = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = modID)
 				regServices = list()
@@ -384,7 +371,7 @@ def dns_namepair_edit(request, pair_id):
 				response = HttpResponseRedirect(url)
 			else:
 				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_type':info['dns_type'],'ip_address':info['ip_address'],'dscr':info['dscr'],'ttl': info['ttl'] })
-				response = renderdns_fetch_records_txt_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
+				response = render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
 	else:
 		try:
 			regpair = DNS_name.objects.get(id = pair_id)		

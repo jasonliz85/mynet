@@ -55,7 +55,7 @@ def get_address_blocks_managed_by(user_obj):
 		#print address_blocks
 	return	user_obj._address_blocks
 
-def get_subnet_from_ip(user_obj, ip):
+def get_subnet_from_ip(user_obj, ip_address):
 	"""
 	Returns a subnet (as a string) that an ip belongs to. Returns an empty string if no subnets can be found.
 	"""
@@ -64,10 +64,9 @@ def get_subnet_from_ip(user_obj, ip):
 		address_blocks = [] #list containing all address blocks the user is allowed to change
 		for netgroup in get_netgroups_managed_by_user(user_obj):
 			for addressblock in netgroup.address_blocks.all():
-				sn = IPNetwork(str(addressblock))
-				if int(ip) > int(sn[0]) and int(ip) < int(sn[-1]):
-					subnet = str(sn)
-					
+				sn = addressblock.ip_network
+				if ip_address > sn[0] and ip_address < sn[-1]:
+					subnet = sn
 	return subnet
 	
 def is_ipaddress_in_netresource(request, ip_address):	
@@ -75,8 +74,6 @@ def is_ipaddress_in_netresource(request, ip_address):
 	returns true if the input ip address (ip_address) is within the ip blocks specified in the user's session, else returns false. 
 	It assumes the input ip address is of type IPAddress.
 	"""
-	#[blank1, ip_blocks, blank2] = get_permissions_to_session(request)
-	#ip_blocks = request.session['ip_blocks']
 	ip_blocks = get_address_blocks_managed_by(request.user)
 	ip_block_str = ''
 	has_permission = False

@@ -12,11 +12,11 @@
 		<label class="styled">IP Range</label>
 		{% if machine.is_ipv6 %}
 			<div class="thefield">
-				<textarea class ="ipv6" readonly="readonly">{{machine.ip1}} - {{machine.ip2}}</textarea>
+				<textarea class ="ipv6" readonly="readonly">{{machine.ip_first}} - {{machine.ip_last}}</textarea>
 			</div> <br>
 		{% else %} 
 			<div class="thefield"> 
-				{{machine.ip1}} - {{machine.ip2}}
+				{{machine.ip_first}} - {{machine.ip_last}}
 			</div> <br>
 		{% endif %}
 				

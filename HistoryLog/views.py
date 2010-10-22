@@ -228,15 +228,16 @@ def HistoryList(request):
 		changed_list = list()
 		log_values = log.objects.all().values() #not sure if this call if neccessary
 		for i in range(len(log_values)):
-			bef = eval(log_values[i]['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
-			aft = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
-			table_no = log_values[i]['TableName']
-			changed_list.append(NewAndChangedKeys(table_no,bef,aft))
+			if i >= page.start_index() and i <= page.end_index():
+				bef = eval(log_values[i]['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
+				aft = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
+				table_no = log_values[i]['TableName']
+				changed_list.append(NewAndChangedKeys(table_no,bef,aft))
 		
-		return render_to_response('qmul_history_listings.html', {'historyLogs':page, 'netgroupno':1, 'changed_list':changed_list, 'list_size':list_length, 'sort':sort })
+		response = render_to_response('qmul_history_listings.html', {'historyLogs':page, 'netgroupno':1, 'changed_list':changed_list, 'list_size':list_length, 'sort':sort })
 	else:
-		return render_to_response('qmul_history_listings.html', {'historyLogs':'', 'PermissionError': True})
-		
+		response = render_to_response('qmul_history_listings.html', {'historyLogs':'', 'PermissionError': True})
+	return response 
 @login_required
 def HistoryView(request, h_id):
 	if request.user.is_staff:

@@ -66,8 +66,8 @@
 			<th>
 			<input type="checkbox" value="on" name="allbox" onclick="checkAll();"/> 
 			</th>
-			<th>
-				<a>No.</a>
+			<th align = center>
+				<a>ID</a>
 			</th>
 			{% if sort.toggle %}
 				<th {% ifequal sort.order "mac" %}
@@ -163,9 +163,9 @@
 		{% for machinelist in machinelists.object_list %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<td>{{ machinelist.record_no }} {#{ forloop.counter }#}</td>
+				<td align = center>{{ machinelist.id }} {#{ forloop.counter }#}</td>
 				<td><a href="/dhcp/machine/{{machinelist.id}}/view"> {{ machinelist.mac_address|upper }} </a></td>
-				<td name="IP">{{ machinelist.ip }}</td>
+				<td name="IP">{{ machinelist.ip_address}}</td>
 				<td>{{ machinelist.host_name }}</td>
 				<td class="nowrap">
 				{{ machinelist.time_created|date:"D d M Y" }}, {{ machinelist.time_created|time:"H:i" }} 
