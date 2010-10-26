@@ -7,6 +7,43 @@ from django.contrib.auth.models import User
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
 
+def prepare_values(action, table_type, values, uname, m_id):
+	'''
+	Prepares the values, so as to be returned to the funtion AddAndLogRecord or EditAndLogRecord
+	Arguments:
+		action - 'A' Adding, or 'E' editing
+		table_type - 'pool' or 'machine'
+		vals - values to add to the database
+		uname - django username objects
+		m_id - if editing, specified the id of the record to be modified
+	'''
+	now = datetime.datetime.today()
+	#initialising common values used for both 'E' and 
+	if table_type == 'pool':
+		#values = {'ip_first':IPAddress(vals['ip_first']), 'ip_last':IPAddress(vals['ip_last']),'description':vals['description'] }
+		table_number = '2'
+		if values['ip_first'].version == 6 and values['ip_last'].version == 6:
+			ipVersion = True
+		else:
+			ipVersion = False
+	elif table_type == 'machine':
+		#values = {'mac_address' :str(EUI(vals['mac_address'], dialect=mac_custom)),'ip_address': IPAddress(vals['ip_address']),'host_name':vals['host_name'],'description':vals['description'] }
+		table_number = '3'
+		if values['ip_address'].version == 6:
+			ipVersion = True
+		else:
+			ipVersion = False
+	#perform individual actions
+	if action == 'A':
+		if table_type == 'pool':
+			Record = DHCP_ip_pool( ip_first	= values['ip_first'],ip_last = values['ip_last'], is_ipv6 = ipVersion, 
+				time_created = now, time_modified = now, description = values['description'])
+		elif table_type == 'machine':
+			Record = DHCP_machine( mac_address = values['mac_address'], ip_address = values['ip_address'], host_name = values['host_name'],
+				is_ipv6 = ipVersion, time_created = now, time_modified = now, description = values['description'])
+		preparedValues = Record, uname, table_number	
+			
+	return preparedValues
 def extractHostName(hn):
 	'''
 	Extracts the host name from the input hn. Assumes input will be the format u'host <host-name> {'
@@ -249,7 +286,8 @@ class Command(LabelCommand):
 									if record[0] == 'machine':
 										[unique, unique_error] = DHCP_machine.objects.is_unique(adminUser, record[i]['ip_address'], record[i]['mac_address'], '')
 										if unique:
-											AddAndLogRecord('DHCP_machine', DHCP_machine, 'admin', record[i])
+											#AddAndLogRecord('DHCP_machine', DHCP_machine, 'admin', record[i])
+											AddAndLogRecord(prepare_values('A', 'machine', record[i], 'admin', ''))
 											#print record[i]
 										 	line_count = line_count + 1
 										else:
@@ -260,7 +298,8 @@ class Command(LabelCommand):
 									elif record[0] == 'ip_pool':
 										[unique, unique_error] = DHCP_ip_pool.objects.is_unique(adminUser, record[i]['ip_first'], record[i]['ip_last'], '')
 										if unique:
-											AddAndLogRecord('DHCP_ip_pool', DHCP_ip_pool, 'admin', record[i])
+											#AddAndLogRecord('DHCP_ip_pool', DHCP_ip_pool, 'admin', record[i])
+											AddAndLogRecord(prepare_values('A', 'pool', record[i], 'admin', ''))
 											#print record[i]
 										 	line_count = line_count + 1
 										else:

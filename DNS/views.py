@@ -102,7 +102,6 @@ def ParameterChecks(user_object, ip, name, dt, rid, enable_softcheck):
 	else:
 		[is_valid, error_msg] = DNS_name.objects.is_unique(ip, name, dt, rid, enable_softcheck)
 	return is_valid, error_msg
-
 #DNS_name pair
 @login_required
 def dns_namepair_simpleAdd(request, pair_id):

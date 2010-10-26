@@ -4,6 +4,38 @@ from netaddr import *
 import datetime
 from subnets.DNS.models import *
 from subnets.helper_views import AddAndLogRecord
+
+def prepare_values(action, vals, uname, m_id):
+	'''
+	Prepares the values, so as to be returned to the funtion AddAndLogRecord or EditAndLogRecord
+	Arguments:
+		action - 'A' Adding, or 'E' editing
+		vals - values to add to the database
+		uname - django username objects
+		m_id - if editing, specified the id of the record to be modified
+	'''
+	now = datetime.datetime.today()
+	table_number = '1' #for logging purposes
+	values = { 'name':vals['name'],'dns_type':vals['dns_type'],
+		'ip_address':IPAddress(vals['ip_address']),'description':vals['description'],'ttl': vals['ttl'] }
+		
+	if action == 'A':
+		if values['ip_address'].version == 6:
+			ipVersion = True
+		else:
+			ipVersion = False
+		tp = values['dns_type']
+		if not (tp == '1BD' or tp == '2NA' or tp == '3AN'):
+			tp = '1BD'
+		Record = DNS_name( 		name = values['name'], 	ip_address = values['ip_address'],
+								dns_type = tp, 			is_ipv6 = ipVersion,
+								time_created = now,		time_modified = now,
+								ttl = values['ttl'], 	description = values['description']							
+					)
+		preparedValues = Record, uname, table_number
+		
+	return preparedValues
+	
 def CheckIPAddress(section):
 	'''
 	Returns True if 'section' is a valid ip version 4 address (ip address must be not be version 6)
@@ -196,7 +228,8 @@ class Command(LabelCommand):
 						for record in dns_list:		
 							[unique, unique_error] = DNS_name.objects.is_unique(record['ip_address'],record['name'],record['dns_type'], '', True)	
 							if unique:
-								AddAndLogRecord('DNS_name', DNS_name, 'admin', record)
+								#AddAndLogRecord('DNS_name', DNS_name, 'admin', record)
+								AddAndLogRecord(prepare_values('A', record, 'admin', ''))
 							 	line_count = line_count + 1
 							else:
 								error_count = error_count + 1

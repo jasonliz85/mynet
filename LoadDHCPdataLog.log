@@ -1,5 +1,36 @@
-2010-10-11 17:40:49.635085: Successfully scanned file test-data/dhcpd.conf.vlan53
-2010-10-11 17:40:49.635085: No errors founded during initial scan :o) 
-Total DHCP records: 8
-Total Successfully created: 9
-Total in Error: 0
+2010-10-25 12:30:06.666879: Successfully scanned file test-data/dhcpd.conf.admin
+2010-10-25 12:30:06.666879: Error in formatting - could not add the following records:
+Line:5|subnet 138.37.16.0 netmask 255.255.255.0 {|Could not find IP range or IP addresses are invalid
+Line:7|subnet 138.37.20.0 netmask 255.255.255.0 {|Could not find IP range or IP addresses are invalid
+Line:11|subnet 138.37.17.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:13|subnet 138.37.18.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:15|subnet 138.37.19.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:17|subnet 138.37.24.0 netmask 255.255.252.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:21|subnet 138.37.192.192 netmask 255.255.255.192 {|Could not find IP range or IP addresses are invalid
+Line:23|subnet 10.192.192.0 netmask 255.255.255.252 {|Could not find IP range or IP addresses are invalid
+Line:25|subnet 10.192.193.0 netmask 255.255.255.252 {|Could not find IP range or IP addresses are invalid
+Line:29|subnet 138.37.194.0 netmask 255.255.255.128 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:31|subnet 138.37.194.128 netmask 255.255.255.192 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:34|subnet 172.21.2.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:1C:7E:54:B1:B6, IP Address: 138.37.24.18 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:00:74:F3:6A:38, IP Address: 138.37.24.19 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:11:11:ED:83:6B, IP Address: 138.37.27.33 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:1E:68:8C:4F:F8, IP Address: 138.37.17.140 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:1E:68:8C:50:00, IP Address: 138.37.17.141 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:27:0E:0B:21:65, IP Address: 138.37.194.5 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:27:0E:0B:41:10, IP Address: 138.37.19.75 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:30:6E:C8:C0:38, IP Address: 138.37.19.82 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:16:76:6A:63:84, IP Address: 138.37.19.45 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:E0:29:0F:5D:E3, IP Address: 138.37.16.31 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:11:11:40:AF:0A, IP Address: 138.37.16.238 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:03:47:FB:B3:D7, IP Address: 138.37.16.239 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:11:85:5D:DF:8B, IP Address: 138.37.16.1 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:11:85:5D:DF:8B, IP Address: 138.37.17.253 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:11:85:5D:DF:8B, IP Address: 138.37.18.238 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:11:85:5D:DF:8B, IP Address: 138.37.19.253 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:0C:F1:4B:A5:9C, IP Address: 138.37.16.2 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:C0:17:72:04:9B, IP Address: 138.37.16.240 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+2010-10-25 12:30:06.666879|Error|: MAC Address 00:C0:17:72:04:9B, IP Address: 138.37.18.240 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
+Total DHCP records: 1107
+Total Successfully created: 1107
+Total in Error: 19

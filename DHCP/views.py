@@ -474,7 +474,7 @@ def dhcp_fetch_pool_data(request):
 		try:
 			sb = IPNetwork(subnet)
 			records,error = DHCP_ip_pool.objects.get_records_in_subnet(sb)
-		except AddrFormatError:
+		except:
 			error = 'Subnet format error.'
 	
 	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')
@@ -490,7 +490,7 @@ def dhcp_fetch_host_data(request):
 		try:
 			sb = IPNetwork(subnet)
 			records, error = DHCP_machine.objects.get_records_in_subnet(sb)
-		except AddrFormatError:
+		except:
 			error = 'Subnet format error.'
 			
 	return render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')

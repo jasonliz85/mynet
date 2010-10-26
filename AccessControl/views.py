@@ -137,4 +137,4 @@ def subnets_fetch_records_txt(request):
 	'''
 	ip_subnets = ip_subnet.objects.all()
 	
-	return render_to_response('qmul_subnets_all.txt', {'records': ip_subnets})
+	return render_to_response('qmul_subnets_all.txt', {'records': ip_subnets}, mimetype = 'text/plain')
