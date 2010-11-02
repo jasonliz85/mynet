@@ -50,14 +50,13 @@ def get_address_blocks_managed_by(user_obj):
 			for addressblock in netgroup.address_blocks.all():
 				if addressblock not in address_blocks: 
 					address_blocks.append(addressblock)
-					#print address_blocks
 		user_obj._address_blocks = address_blocks
-		#print address_blocks
 	return	user_obj._address_blocks
 
 def get_subnet_from_ip(user_obj, ip_address):
 	"""
-	Returns a subnet (as a string) that an ip belongs to. Returns an empty string if no subnets can be found.
+	Returns the subnet that the input ip address (IPNetwork object) belongs to. If not subnets are fount, this function will return
+	an empty string.
 	"""
 	subnet = ''
 	if not hasattr(user_obj, '_address_blocks') or True:
@@ -71,54 +70,43 @@ def get_subnet_from_ip(user_obj, ip_address):
 	
 def is_ipaddress_in_netresource(request, ip_address):	
 	"""
-	returns true if the input ip address (ip_address) is within the ip blocks specified in the user's session, else returns false. 
-	It assumes the input ip address is of type IPAddress.
+	Returns true if the input ip address (ip_address) is within the ip blocks specified in the user's session, else returns false. 
+	Function also returns the subnet which this ip address in within. This function assumes the input ip address is of type IPAddress.
 	"""
 	ip_blocks = get_address_blocks_managed_by(request.user)
-	ip_block_str = ''
+	subnet = ''
 	has_permission = False
-	#for each ip address block in all ip address blocks in the list...
-	for block in range(len(ip_blocks)):
-		ip_block = IPNetwork(str(ip_blocks[block]))
-		#...check if ip_address is within range
-		if int(ip_address) < int(ip_block[-1]) and int(ip_address) > int(ip_block[0]):
+	for block in ip_blocks: #for each ip address block in all ip address blocks in the list...
+		ip_block = block.ip_network
+		if ip_address < ip_block[-1] and ip_address > ip_block[0]: #...check if ip_address is within range
 			has_permission = True			
-			ip_block_str = str(ip_blocks[block])
+			subnet = ip_block
 			break
-
-	return has_permission, ip_block_str
+	return has_permission, subnet
 
 def is_name_in_netresource(request, dns_name):
 	"""
-	returns true if the input machine name (dns_name) the dns expression specified in the user's session, else returns false. 
+	Returns true if the input machine name (dns_name) the dns expression specified in the user's session, else returns false. 
 	"""
-	#[blank1, blank2, dns_expressions] = get_permissions_to_session(request)
-	#request.session['dns_expressions']
-	dns_expressions  = get_dns_patterns_managed_by(request.user)
 	has_permission = False
-	#for each dns expression in all dns expressions in the list...
-	for expression in range(len(dns_expressions)):
-		#...modify expression...
-		temp = '\S' + str(dns_expressions[expression])
-		dns_re = re.compile(temp)
-		#... and check if matches with input dns_name
-		if re.match(dns_re, dns_name):
+	dns_expressions  = get_dns_patterns_managed_by(request.user)
+	for item in dns_expressions: #for each dns expression in all dns expressions in the list...
+		temp = '\S' + item.expression #...modify expression...
+		if re.match(re.compile(temp), dns_name): #... and check if matches with input dns_name
 			has_permission = True
 			break
 	return has_permission
 def is_subnet_in_netresource(subnet):
 	'''
-	returns true message if input subnet (IPNetwork object) matches the subnets specifies in the net resource group element
+	Returns True if input subnet (IPNetwork object) matches the subnets specifies in the network resource database
 	'''
-	error = False
+	is_present = False
 	ip_subnets = ip_subnet.objects.all()
-	#for each ip address block in all ip address blocks in the list...
-	for i in range(len(ip_subnets)):
-		#...check if ip_address is within range
-		if subnet == IPNetwork(str(ip_subnets[i])):
-			error = True
+	for sn in ip_subnets: #for each ip address block in all ip address blocks in the list...
+		if sn.ip_network == subnet: #...check if ip_address is within range
+			is_present = True
 			break
-	return error
+	return is_present
 def add_ip_subnet(values):
 	'''
 	This function adds an ip subnet to the model ip_subnet. If record.save is not unique, return as Error = True
@@ -133,7 +121,7 @@ def add_ip_subnet(values):
 	return False, ''
 def subnets_fetch_records_txt(request):
 	'''
-	returns a list of all the subnets that in the network resource subnet database
+	Returns a list of all the subnets that in the network resource subnet database
 	'''
 	ip_subnets = ip_subnet.objects.all()
 	

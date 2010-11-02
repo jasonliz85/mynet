@@ -4,11 +4,18 @@ from subnets.AccessControl.models import * # DHCP_machine, test_machine, DHCP_ip
 from subnets.AccessControl.models import NetGroup
 
 class NetGroup_Admin(admin.ModelAdmin):
+	list_display = ('id', 'name')
 	filter_horizontal = ('address_blocks', 'dns_patterns', 'managed_by')
+	#list_filter = ('address_blocks','dns_patterns')
 	def format_date(self, obj):
 		return obj.date.strftime('%d %b %Y %H:%M')
+class subnet_Admin(admin.ModelAdmin):
+	list_display = ('id', 'ip_network', 'vlan')
+	fields = ('ip_network', 'vlan', 'description')
+class dns_Admin(admin.ModelAdmin):
+	list_display = ('id', 'expression')
 
 admin.site.register(NetGroup, NetGroup_Admin)
-admin.site.register(dns_expression)
-admin.site.register(ip_subnet)
+admin.site.register(dns_expression, dns_Admin)
+admin.site.register(ip_subnet, subnet_Admin)
 

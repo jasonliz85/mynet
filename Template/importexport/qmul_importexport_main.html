@@ -1,0 +1,25 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET Import/Export{% endblock %}
+
+{% block content %}
+	<script src="/site_media/js/RelatedObjectLookups.js" type="text/javascript"></script>
+	<h2><a name="status">Import/Export subnet records</a></h2>
+	<ul class = "highlight"><li>What would you like to do?</li></ul> 
+	<p class = "small-indented"> 
+	<a href = '#'>Export DNS</a> records from your network group.<br>
+	<a href = '#'>Export DHCP</a> records from your network group.<br>
+	<a href = '/dns/import'>Import DNS</a> records from your network group.<br>
+	<a href = '#'>Import DHCP</a> records from your network group.<br>
+	</p>
+	<ul class = "highlight"><li>Other useful links</li></ul>
+	<p class = "small-indented">
+	<a href = '/dhcp/machine/add'>Add</a> a machine to your network group.<br>
+	<a href = '/dhcp/pool/add'>Add</a> an ip pool to your network group.<br>
+	<a href = '/dns/pair/add'>Register</a> a DNS name-ip pair to your network group.<br>
+	<a href = '/dhcp/machine/list?pi=1'>View</a> all registered machines on your network group.<br>
+	<a href = '/dhcp/pool/list?pi=1'>View</a> all registered pools on your network group.<br>
+	<a href = '/dns/pair/list?pi=1'>View</a> all registered DNS name-ip pairs on your network group.<br>
+	<a href = '/history/?len=50'>View</a> log information on this network. <br>
+	</p>
+{% endblock %}

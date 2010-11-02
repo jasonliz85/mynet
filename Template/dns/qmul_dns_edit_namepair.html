@@ -7,7 +7,7 @@
 	<h2><a name="status">Edit IP-Name Pair, ID: {{ip_id}}</a></h2>
 	<p>Please edit the information below.</p>
 	
-    	{% if c_errors%}
+	{% if c_errors%}
 		<ul class = "errorlist"><li>{{c_errors}}</ul></li>
 	{% endif %}
 	<form class="feedbackform" action="" method="post">
@@ -22,6 +22,7 @@
 			</p>
 		</div>
 	{% endfor %}
+	
 	<br>
 	<input type="submit" value="Register">  | <a href="/dns/pair/{{ip_id}}/view">Cancel</a><br/>	
 

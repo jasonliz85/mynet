@@ -105,6 +105,7 @@ if RunningOn == 'dungbeetle':
 	    '/home/django/django_projects/subnets/Template/dns',
 	    '/home/django/django_projects/subnets/Template/history',
 	    '/home/django/django_projects/subnets/Template/accesscontrol',
+	    '/home/django/django_projects/subnets/Template/importexport',
 	)
 elif RunningOn  == 'dev_at_home':
 	TEMPLATE_DIRS = (
@@ -114,6 +115,7 @@ elif RunningOn  == 'dev_at_home':
 	    '/home/jason/Projects/qm_projects/subnets/Template/dns',
 	    '/home/jason/Projects/qm_projects/subnets/Template/history',
 	    '/home/jason/Projects/qm_projects/subnets/Template/accesscontrol',
+	    '/home/jason/Projects/qm_projects/subnets/Template/importexport',
 	)
 elif RunningOn == 'dev_at_QM':
 	TEMPLATE_DIRS = (
@@ -123,6 +125,7 @@ elif RunningOn == 'dev_at_QM':
 		'/home/jasonl/svn/subnets/Template/dns',
 		'/home/jasonl/svn/subnets/Template/history',
 		'/home/jasonl/svn/subnets/Template/accesscontrol',
+		'/home/jasonl/svn/subnets/Template/importexport',
 		    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 		    # Always use forward slashes, even on Windows.
 		    # Don't forget to use absolute paths, not relative paths.

@@ -168,8 +168,9 @@ def FindValuesFromSplittedLines(splitted_lines, dtype):
 	return values
 	
 class Command(LabelCommand):
-	def handle_label(self, label,**options):
+	def handle_label(self, label, **options):
 		print 'Adding data from file: %s' % label
+		username = 'admin'
 		line_count = 0
 		found_list = list()
 		not_added = list()
@@ -245,7 +246,7 @@ class Command(LabelCommand):
 			logstring = '%s: Successfully scanned file %s\n' % (now, label)
 			FILE.write(logstring)
 			confirm = True
-			adminUser = User.objects.get(username__exact = 'admin')
+			adminUser = User.objects.get(username__exact = username)
 			#add to DHCP database
 			if not_added:
 				logstring = '%s: Error in formatting - could not add the following records:\n' % now
@@ -287,7 +288,7 @@ class Command(LabelCommand):
 										[unique, unique_error] = DHCP_machine.objects.is_unique(adminUser, record[i]['ip_address'], record[i]['mac_address'], '')
 										if unique:
 											#AddAndLogRecord('DHCP_machine', DHCP_machine, 'admin', record[i])
-											AddAndLogRecord(prepare_values('A', 'machine', record[i], 'admin', ''))
+											AddAndLogRecord(prepare_values('A', 'machine', record[i], username, ''))
 											#print record[i]
 										 	line_count = line_count + 1
 										else:
@@ -299,7 +300,7 @@ class Command(LabelCommand):
 										[unique, unique_error] = DHCP_ip_pool.objects.is_unique(adminUser, record[i]['ip_first'], record[i]['ip_last'], '')
 										if unique:
 											#AddAndLogRecord('DHCP_ip_pool', DHCP_ip_pool, 'admin', record[i])
-											AddAndLogRecord(prepare_values('A', 'pool', record[i], 'admin', ''))
+											AddAndLogRecord(prepare_values('A', 'pool', record[i], username, ''))
 											#print record[i]
 										 	line_count = line_count + 1
 										else:

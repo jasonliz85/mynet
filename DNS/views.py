@@ -24,10 +24,16 @@ def prepare_values(action, vals, uname, m_id):
 		uname - django username objects
 		m_id - if editing, specified the id of the record to be modified
 	'''
+	print vals['ttl']
 	now = datetime.datetime.today()
 	table_number = '1' #for logging purposes
 	values = { 'name':vals['dns_expr'],'dns_type':vals['dns_type'],
 		'ip_address':IPAddress(vals['ip_address']),'description':vals['dscr'],'ttl': vals['ttl'] }
+	try:
+		values['ttl'] = int(values['ttl'])
+	except:
+		values['ttl'] = 0
+		
 	if action == 'A':
 		if values['ip_address'].version == 6:
 			ipVersion = True
@@ -79,7 +85,7 @@ def prepare_values(action, vals, uname, m_id):
 		preparedValues = ModifiedRecord, uname, table_number, is_modified, valuesBefore, str(values)
 	else:
 		pass
-		
+		#add is_bulk to this list if present
 	return preparedValues
 def ParameterChecks(user_object, ip, name, dt, rid, enable_softcheck):
 	"""
@@ -141,8 +147,10 @@ def handlePopAdd(request, addForm, field, original_id):
 				else:
 					pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(ip_address),'c_errors': custom_errors}
 					return render_to_response("qmul_dns_create_simple.html", pageContext)
+			else:
+				response = render_to_response('qmul_dns_create_simple.html',{'form':form })
 	else:		
-		form = addForm(initial = {})
+		form = addForm()#initial = {})
 	pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(ip_address) }
 	return render_to_response("qmul_dns_create_simple.html", pageContext)
 
@@ -154,7 +162,8 @@ def dns_namepair_add(request):
 	function.
 	'''
 	if request.method == 'POST':
-		form = Register_namepair_Form(request.POST) 
+		form = Register_namepair_Form(request.POST)
+		print form 
 		if form.is_valid():
 			info = form.cleaned_data
 			ip = IPAddress(info['ip_address'])
@@ -181,10 +190,11 @@ def dns_namepair_add(request):
 				url = "/dns/pair/%s/view"%registeredID
 				response = HttpResponseRedirect(url)
 			else:
-				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_type':info['dns_type'],'ip_address':info['ip_address'],'dscr':info['dscr'],'ttl': info['ttl'] })
 				response = render_to_response('qmul_dns_create_namepair.html',{'form':form ,'c_errors': custom_errors})
+		else:
+			response = render_to_response('qmul_dns_create_namepair.html',{'form':form })
 	else:
-		form = Register_namepair_Form(initial = {})
+		form = Register_namepair_Form()#initial = {})
 		response = render_to_response('qmul_dns_create_namepair.html',{'form':form })
 	return response
 
@@ -256,7 +266,7 @@ def dns_namepair_listing(request):
 					response = render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength' : mlength})
 				elif action == 'vue':
 					if len(item_selected) > 1:
-						actionForm = ViewMachinesActionForm(initial = {})
+						actionForm = ViewMachinesActionForm()#initial = {})
 						time_middle = time.time()
 						response = render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
 					else:
@@ -266,15 +276,15 @@ def dns_namepair_listing(request):
 						time_middle = time.time()
 						response = render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine, 'machinelists':regServices})
 				else:
-					actionForm = ViewMachinesActionForm(initial = {})
+					actionForm = ViewMachinesActionForm()#initial = {})
 					time_middle = time.time()
 					response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
 			else:		
-				actionForm = ViewMachinesActionForm(initial = {})
+				actionForm = ViewMachinesActionForm()#initial = {})
 				time_middle = time.time()
 				response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
 	else:
-		actionForm = ViewMachinesActionForm(initial = {})
+		actionForm = ViewMachinesActionForm()#initial = {})
 		time_middle = time.time()
 		response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
 	#response = render_to_response('qmul_dns_listings_namepair.html',{})
@@ -369,8 +379,9 @@ def dns_namepair_edit(request, pair_id):
 				url = "/dns/pair/%s/view" % modID
 				response = HttpResponseRedirect(url)
 			else:
-				form = Register_namepair_Form(initial = {'dns_expr':info['dns_expr'],'dns_type':info['dns_type'],'ip_address':info['ip_address'],'dscr':info['dscr'],'ttl': info['ttl'] })
 				response = render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
+		else:
+			response = render_to_response('qmul_dns_edit_namepair.html',{'form':form })
 	else:
 		try:
 			regpair = DNS_name.objects.get(id = pair_id)		

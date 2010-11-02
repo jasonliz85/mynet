@@ -62,7 +62,7 @@
 						<li><a href="/dhcp/pool/add">Register IP Range</a></li>							
 						</ul>						
 					</li>
-					<li><a href="#">Import/Export</a></li>
+					<li><a href="/importexport/">Import/Export</a></li>
 					<li><a href="/history/?len=50">History</a></li>
 					<li><a href="/accounts/logout">Logout</a></li>
 					</ul>
@@ -82,12 +82,12 @@
 					<a href="/">Home</a> | 
 					<a href="/dns">DNS</a> | 
 					<a href="/dhcp">DHCP</a> | 
-					<a href="#">Import/Export</a> |
+					<a href="/importexport/">Import/Export</a> |
 					<a href="/accounts/logout">Logout</a> 
 				{% endblock %}
 				</p>
 			</div>
-			<h1 class="title">MyNET {% block groupname %} {% endblock %} </h1>		
+			<h1 class="title">Devolved Subnet Management {% block groupname %} {% endblock %} </h1>		
 			</div>
 		</div>
 		<div id="maincontent">
@@ -95,6 +95,9 @@
 			{% block content %}
 			{% endblock %}
 			{% block footer %}
+			<br>
+			<br>
+			<p class = 'footer'>Developed by Jason Lizarraga &copy; Queen Mary, University of London, 2010 </p>
 			{% endblock %}			
 			</div>
 		</div>					

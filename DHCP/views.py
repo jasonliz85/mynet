@@ -136,8 +136,9 @@ def dhcp_page_IP_range_add(request):
 				url = "/dhcp/pool/%s/view"%registeredID
 				response = HttpResponseRedirect(url)					
 			else:
-				form = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
 				response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
+		else:
+			response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form })
 	else:
 		form = Register_IP_range_Form(initial = {})
 		response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form })
@@ -279,6 +280,8 @@ def dhcp_page_IP_range_edit(request, ip_id):
 			else:
 				editform = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
 				response = render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
+		else:
+			response = render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
 	else:
 		try:
 			regmachine = DHCP_ip_pool.objects.get(id = ip_id)	
@@ -316,6 +319,8 @@ def dhcp_page_machine_edit(request, m_id):
 			else:
 				editform = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
 				response =  render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
+		else:	
+			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})	
 	else:
 		try:
 			regmachine = DHCP_machine.objects.get(id = m_id)		
@@ -456,8 +461,9 @@ def dhcp_page_machine_add(request):
 				url = "/dhcp/machine/%s/view"%registeredID
 				response = HttpResponseRedirect(url)
 			else:
-				form = RegisterMachineForm(initial = { 'mcID' :info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
 				response = render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors})
+		else:
+			response = render_to_response('qmul_dhcp_createmachine.html', {'form':form })
 	else:
 		form = RegisterMachineForm(initial = {})
 		response = render_to_response('qmul_dhcp_createmachine.html', {'form':form })
@@ -468,13 +474,13 @@ def dhcp_fetch_pool_data(request):
 	error = ''
 	records = ''
 	subnet = request.GET.get('subnet', '')
+	print IPNetwork(subnet)
 	if len(subnet) == 0:
 		error = 'No subnet defined.'
 	else:
 		try:
-			sb = IPNetwork(subnet)
-			records,error = DHCP_ip_pool.objects.get_records_in_subnet(sb)
-		except:
+			records,error = DHCP_ip_pool.objects.get_records_in_subnet(IPNetwork(subnet))
+		except Exception, e:
 			error = 'Subnet format error.'
 	
 	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')

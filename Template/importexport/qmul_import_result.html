@@ -1,0 +1,23 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}MyNET Import Results{% endblock %}
+
+{% block content %}
+	<script src="/site_media/js/RelatedObjectLookups.js" type="text/javascript"></script>
+	<h2><a name="status">Results </a></h2>
+	{% if error %}
+		<ul class="errorlist"><li> Error: {{ errortype }}</li></ul>
+	{% else %}
+		<ul class="successlist"><li>Success: Records successfully added.</li></ul>
+	{% endif %}
+	<p>Log: <br>
+	<textarea class= 'logdisplay' readonly="readonly" wrap = "off">{% if error %}{% for msg in errormessage %}{{ msg }}{% endfor %}{% else %}{% for line in log %}{{ line }}{% endfor %}{% endif %}</textarea>
+	</p>
+	<p class = "EditDeleteBack"> 
+		{% if error %}
+		<a href="/{{type|lower}}/import"> Retry?<a> |
+		{% else %}
+		{% endif %}
+		<a href="/importexport"> Back to Menu<a> 
+	</p>
+{% endblock %}

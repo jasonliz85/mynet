@@ -131,7 +131,11 @@ def EditAndLogRecord(var):
 		values['mod_record'].save()
 		print values['valuesBefore']
 		print values['valuesAfter']
-		LogEvent('E', values['valuesBefore'], values['valuesAfter'], False, values['uname'], "NetGroup:ToDo", values['t_number'], values['mod_record'].id)
+		try:
+			is_bulk = var[6]
+		except IndexError:
+			is_bulk = False
+		LogEvent('E', values['valuesBefore'], values['valuesAfter'], is_bulk, values['uname'], "NetGroup:ToDo", values['t_number'], values['mod_record'].id)
 	return values['mod_record'].id
 def AddAndLogRecord(var):
 	"""
@@ -143,7 +147,11 @@ def AddAndLogRecord(var):
 	final_values = values['newRecord'].LogRepresentation() #LogRepresentation should be defined in the model definitions model.py
 	#Save and LOG results
 	values['newRecord'].save() 
-	LogEvent('A',init_values, final_values, False, values['uname'], "NetGroup:ToDo", values['t_number'], values['newRecord'].id)
+	try:
+		is_bulk = var[3]
+	except IndexError:
+		is_bulk = False
+	LogEvent('A',init_values, final_values, is_bulk, values['uname'], "NetGroup:ToDo", values['t_number'], values['newRecord'].id)
 
 	return values['newRecord'].id
 

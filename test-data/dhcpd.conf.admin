@@ -1068,6 +1068,21 @@ host ieu-32010 {
 	fixed-address 138.37.17.162;
 }
 
+host scs-30998 {
+	hardware ethernet 00:23:18:64:f7:7c;
+	fixed-address 138.37.17.163;
+}
+
+host scs-30999 {
+	hardware ethernet 00:23:18:52:f9:7c;
+	fixed-address 138.37.17.164;
+}
+
+host scs-32137 {
+	hardware ethernet 00:26:6c:82:b8:85;
+	fixed-address 138.37.17.165;
+}
+
 host fin34-pr {
 	hardware ethernet 00:00:74:f3:6a:38;
 	fixed-address 138.37.18.1, 138.37.24.19;
@@ -1801,6 +1816,11 @@ host fin-30774 {
 host fin-30775 {
 	hardware ethernet 00:1c:c0:cb:fd:43;
 	fixed-address 138.37.18.232;
+}
+
+host fin-30346 {
+	hardware ethernet 00:1c:c0:82:14:98;
+	fixed-address 138.37.18.233;
 }
 
 host fin14-pr {
@@ -2603,6 +2623,11 @@ host cs-19118 {
 	fixed-address 138.37.24.130;
 }
 
+host cs-21252 {
+	hardware ethernet 00:16:76:b0:86:ea;
+	fixed-address 138.37.24.131;
+}
+
 host CSSLJ5-pr {
 	hardware ethernet 00:30:6e:c8:c0:38;
 	fixed-address 138.37.24.137, 138.37.19.82;
@@ -3043,11 +3068,6 @@ host ccrs-21807 {
 	fixed-address 138.37.24.251;
 }
 
-host ccrs-21810 {
-	hardware ethernet 00:16:76:43:ff:9d;
-	fixed-address 138.37.24.253;
-}
-
 host ccrs-16795 {
 	hardware ethernet 00:0c:6e:36:b2:ff;
 	fixed-address 138.37.24.254;
@@ -3103,8 +3123,8 @@ host scs-21328 {
 	fixed-address 138.37.25.10;
 }
 
-host scs-30346 {
-	hardware ethernet 00:1c:c0:82:14:98;
+host scs-30993 {
+	hardware ethernet 70:71:bc:3c:0b:c3;
 	fixed-address 138.37.25.11;
 }
 
@@ -3328,6 +3348,11 @@ host scs-30949 {
 	fixed-address 138.37.25.56;
 }
 
+host scs-30992 {
+	hardware ethernet 70:71:bc:3c:0b:7f;
+	fixed-address 138.37.25.57;
+}
+
 host scs3-pr {
 	hardware ethernet 00:30:6e:f7:85:79;
 	fixed-address 138.37.25.63;
@@ -3528,6 +3553,11 @@ host admis-30980 {
 	fixed-address 138.37.25.102;
 }
 
+host admis-32044 {
+	hardware ethernet 70:71:bc:3c:0b:ab;
+	fixed-address 138.37.25.103;
+}
+
 host reg-19035 {
 	hardware ethernet 00:1c:c0:77:54:cf;
 	fixed-address 138.37.25.105;
@@ -3558,6 +3588,11 @@ host reg-21323 {
 	fixed-address 138.37.25.111;
 }
 
+host reg-32138 {
+	hardware ethernet 70:71:bc:3c:0b:df;
+	fixed-address 138.37.25.112;
+}
+
 host reg-21428 {
 	hardware ethernet 00:19:d1:7f:ea:7d;
 	fixed-address 138.37.25.113;
@@ -3586,6 +3621,11 @@ host reg-21342 {
 host reg-21271 {
 	hardware ethernet 00:19:d1:7f:e0:e8;
 	fixed-address 138.37.25.118;
+}
+
+host reg-32139 {
+	hardware ethernet 70:71:bc:3c:0b:7a;
+	fixed-address 138.37.25.119;
 }
 
 host reg-21423 {
@@ -3621,6 +3661,11 @@ host reg-19038 {
 host reg-16722 {
 	hardware ethernet 00:0c:f1:6c:21:dc;
 	fixed-address 138.37.25.126;
+}
+
+host reg-32140 {
+	hardware ethernet 70:71:bc:3c:0b:fe;
+	fixed-address 138.37.25.127;
 }
 
 host reg-20117 {
@@ -3691,6 +3736,11 @@ host reg-19241 {
 host reg-19247 {
 	hardware ethernet 00:1c:c0:41:13:cb;
 	fixed-address 138.37.25.141;
+}
+
+host reg-32141 {
+	hardware ethernet 70:71:bc:3c:0b:40;
+	fixed-address 138.37.25.142;
 }
 
 host reg-16853 {
@@ -4593,11 +4643,6 @@ host extrel-21438 {
 	fixed-address 138.37.26.103;
 }
 
-host extrel-21206 {
-	hardware ethernet 00:16:76:44:a4:76;
-	fixed-address 138.37.26.107;
-}
-
 host extrel-16964 {
 	hardware ethernet 00:07:e9:bf:79:3d;
 	fixed-address 138.37.26.108;
@@ -4631,11 +4676,6 @@ host eduliaison4-ps {
 host cs-19604 {
 	hardware ethernet 00:1c:c0:40:f0:31;
 	fixed-address 138.37.26.129;
-}
-
-host cs-21252 {
-	hardware ethernet 00:16:76:b0:86:ea;
-	fixed-address 138.37.26.131;
 }
 
 host cs-18678 {
@@ -4766,6 +4806,11 @@ host cs-30787 {
 host cs-30808 {
 	hardware ethernet 00:1c:c0:cb:fd:33;
 	fixed-address 138.37.26.163;
+}
+
+host cs-30756 {
+	hardware ethernet 00:1c:c0:cb:ea:f1;
+	fixed-address 138.37.26.164;
 }
 
 host ieu-16127 {
@@ -5448,6 +5493,16 @@ host ward-PWDavies {
 	fixed-address 138.37.27.155;
 }
 
+host ward-31000 {
+	hardware ethernet 70:71:bc:3c:0c:0d;
+	fixed-address 138.37.27.162;
+}
+
+host ward-32136 {
+	hardware ethernet 70:71:bc:3c:0b:cf;
+	fixed-address 138.37.27.164;
+}
+
 host ward-18314 {
 	hardware ethernet 00:11:85:f1:59:96;
 	fixed-address 138.37.27.169;
@@ -5906,5 +5961,25 @@ host llu-30934 {
 host llu4-pr {
 	hardware ethernet 00:1b:8b:25:82:09;
 	fixed-address 138.37.194.124;
+}
+
+host dds-30044 {
+	hardware ethernet 00:1c:c0:be:43:79;
+	fixed-address 138.37.194.129;
+}
+
+host dds-30045 {
+	hardware ethernet 00:1c:c0:be:43:87;
+	fixed-address 138.37.194.130;
+}
+
+host dds-30046 {
+	hardware ethernet 00:1c:c0:be:45:85;
+	fixed-address 138.37.194.131;
+}
+
+host dds-30051 {
+	hardware ethernet 00:1c:c0:ae:28:ae;
+	fixed-address 138.37.194.132;
 }
 

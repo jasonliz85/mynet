@@ -1,0 +1,18 @@
+#Testing file for import DNS
+#<DNS type>:<Machine Name>:<IP Address>:<TTL>:<Description>
+#=====================================================================================
+#Network Resource Group-Name: Physics Servers
+#-------------------------------------------------------------------------------------
+^:ParticleCanon-number-2.physics.qmul.ac.uk:138.37.1.0::secondary particle collider
++:ParticleCanon-number-3.physics.qmul.ac.uk:138.37.1.1:90000:standby particle collider
+=:ParticleCanon-number-1.physics.qmul.ac.uk:138.37.1.2:84500:main particle collider
+#Network Resource Group-Name: Central Servers
+#-------------------------------------------------------------------------------------
+=:dungbeetle1.server.qmul.ac.uk:192.168.0.1:900000:main particle collider 1
+=:dungbeetle2.server.qmul.ac.uk:138.37.6.2:900000:main particle collider 2
+=:dungbeetle3.server.qmul.ac.uk:138.37.6.3:900000:main particle collider 3
+=:dungbeetle4.server.qmul.ac.bz:138.37.6.4:900000:main particle collider 4 
+=:dungbeetle5.server.qmul.ac.uk:138.37.6.5:900000:main particle collider 5 
+=:dungbeetle6.server.qmul.ac.uk:136.37.6.6:900000:main particle collider 6
+=:yar:138.37.6.7:main particle collider 7
+

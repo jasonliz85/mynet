@@ -143,7 +143,7 @@ class NetaddrIPNetworkField(models.Field):
 			return value
 		try:
 			version = int(value[0])
-			prefixlen = int(value[36:38])
+			prefixlen = int(value[35:38])
 			value = int(value[2:34], 16)
 			address = netaddr.IPAddress(value, version=version)
 			network = netaddr.IPNetwork(address)

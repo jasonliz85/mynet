@@ -15,7 +15,7 @@ def extractSubnet(sn):
 	subnet = subnet.replace('\t','')
 	try:
 		IPNetwork(subnet)
-	except AddrFormatError:
+	except:
 		return False
 	return subnet
 def extractDescription(dscr):

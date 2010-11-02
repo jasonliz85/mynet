@@ -15,6 +15,7 @@ urlpatterns = patterns('subnets.views',
 	(r'^dhcp/$', 'dhcp_page'),						#dhcp - main dchp info page	
 	(r'^error/permission/$', 'permission_error'),
 	(r'^error/record/$', 'record_error'),
+	(r'^importexport/$','importexport_main'),
 	(r'^temp/info$','time_info'),
 )
 urlpatterns += patterns('AccessControl.views',
@@ -29,11 +30,11 @@ urlpatterns += patterns('django.views.static',
 	(r'^accounts/login/$', login),
 	(r'^accounts/logout/$', logout),
 	#if RunningOn == 'dungbeetle': #work from dungbeetle
-	#	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
+	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
 	#elif RunningOn == 'dev_at_QM': #work from qm
-		(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
+	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
 	#elif RunningOn == 'dev_at_home': #work from home ##django.views.static
-	#	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
+	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
 )
 
 	#####################################################
@@ -50,19 +51,19 @@ urlpatterns += patterns('HistoryLog.views',
 	#####################################################
 	##################DNS Pages##########################
 	#####################################################
-urlpatterns += patterns('DNS.views',
+urlpatterns += patterns('DNS',
 	#Fetch all DNS records formatted for tiny-dns	
-	(r'dns/get-dns-data-txt','dns_fetch_records_txt'),
+	(r'dns/get-dns-data-txt','views.dns_fetch_records_txt'),
 	
 	#CRUD Registed DNS pairs - Create, Read, Update, Destroy
-	(r'^dns/pair/add$', 'dns_namepair_add'),							#dns -
-	(r'^dns/pair/list/$', 'dns_namepair_listing'),						#dns - 
-	(r'^dns/pair/list/default$', 'dns_namepair_listing'),				#dns - 
-	(r'^dns/pair/(\d{1,6})/view$', 'dns_namepair_view'),				#dns -
-	(r'^dns/pair/(\d{1,6})/edit$', 'dns_namepair_edit'),				#dns - 
-	(r'^dns/pair/(\d{1,6})/delete$', 'dns_namepair_delete'),			#dns - 
-	(r'^dns/add/(\d{1,6})/$', 'dns_namepair_simpleAdd'),
-
+	(r'^dns/pair/add$', 'views.dns_namepair_add'),							#dns -
+	(r'^dns/pair/list/$', 'views.dns_namepair_listing'),						#dns - 
+	(r'^dns/pair/list/default$', 'views.dns_namepair_listing'),				#dns - 
+	(r'^dns/pair/(\d{1,6})/view$', 'views.dns_namepair_view'),				#dns -
+	(r'^dns/pair/(\d{1,6})/edit$', 'views.dns_namepair_edit'),				#dns - 
+	(r'^dns/pair/(\d{1,6})/delete$', 'views.dns_namepair_delete'),			#dns - 
+	(r'^dns/add/(\d{1,6})/$', 'views.dns_namepair_simpleAdd'),
+	(r'^dns/import$', 'import.import_dns'),
 )
 	#####################################################
 	##################DHCP Pages#########################

@@ -11,8 +11,8 @@ class NameManager(models.Manager):
 		By default, this function will perform a hard check based on a strict non-duplicated record (i.e. if ip, mname and dt are not already
 		in the database). If enable_softcheck is True, this function will also perform the following:
 		#3. Apply softer check, in three parts
-		# a.if type is address to name, must check that the ip address is NOT mapped to another name (i.e. one address to one name)
-		# b.if type is name to address, must check that the name is NOT mapped to another ip address (i.e. one name to one address)
+		# a.if type is address to name, must check that the ip address is NOT mapped to another name (i.e. one address -> one name)
+		# b.if type is name to address, must check that the name is NOT mapped to another ip address (i.e. one name -> one address)
 		# c.if type is bi-directional, must check for both conditions a AND b
 		'''
 		#Algorithm
@@ -76,7 +76,7 @@ class NameManager(models.Manager):
 		"""
 		This function checks the name, ipaddress and dns type to see the record is allowed to be created. There are three check, stated below:
 			bi-directional - two checks on each record is needed | permission for both ip address and machine name
-			address to name - check only pefrom subnets.DNS.models import *rmission for ip address
+			address to name - check only permission for ip address
 			name to address - check only permisiion for machine name
 		"""
 		has_permission = False	
@@ -90,7 +90,7 @@ class NameManager(models.Manager):
 			if check1 == True and check2  == True:
 				has_permission = True
 			if not check1:
-				errors = "IPAddress: " + str(IPAddress(ip_address))
+				errors = "IPAddress: " + str(ip_address)
 			if not check2:
 				if len(errors) > 0:
 					errors = errors + " and Machine Name: " + name
@@ -105,7 +105,7 @@ class NameManager(models.Manager):
 			if check1 == True:
 				has_permission = True
 			if not check1:
-				errors = "IPAddress: " + str(IPAddress(ip_address))
+				errors = "IPAddress: " + str(ip_address)
 	
 		custom_errors = msg1 + errors + msg2
 		return has_permission, custom_errors
@@ -149,8 +149,8 @@ class NameManager(models.Manager):
 			dns_filter = Q(name__regex = ('\S' + str(dns_exprs[expression])))
 			complex_name_queries.append(dns_filter)
 		#3.Second, apply three database queries, 
-		#	1: for all records with dns type address to name, apply complex_subnet_queries #operator.or_
-		#	2: for al564 records in total l records with dns type name to address, apply complex_name_queries
+		#	1: for all records with dns type address to name, apply complex_subnet_queries
+		#	2: for all records with dns type name to address, apply complex_name_queries
 		#	3: for all records with dns type bidirectional, apply complex_subnet_queries and complex_name_queries
 		if len(complex_subnet_queries):
 			total_AN_finds = self.filter(reduce(operator.or_, complex_subnet_queries),	dns_type = '3AN')
@@ -166,3 +166,4 @@ class NameManager(models.Manager):
 			permitted_records = permitted_records.order_by(var)								
 
 		return permitted_records
+

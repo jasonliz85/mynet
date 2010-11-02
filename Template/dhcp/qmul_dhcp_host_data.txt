@@ -1,5 +1,5 @@
 {% if error %}ERROR: {{error}}{% else %}{% if not records %}ERROR: Found no records matching this subnet.{% else %}{% for record in records %}	
-host {{record.host}} {
+host {{record.host_name}} {
 	hardware ethernet {{record.mac_address}};
 	fixed-address {{record.ip_address}};
 }{% endfor %}{% endif %}{% endif %}

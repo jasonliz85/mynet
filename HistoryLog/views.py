@@ -157,7 +157,7 @@ def diff_values(table_number, val_bef, val_aft):
 			before = val_bef[key]
 		except KeyError:
 			before = ''
-		#check if after values acleaning my house ukre empty
+		#check if after values are empty
 		try:
 			after = val_aft[key]
 		except KeyError:
@@ -181,7 +181,7 @@ def diff_values(table_number, val_bef, val_aft):
 
 @login_required
 def HistoryList(request):
-	#display all key informationcleaning my house uk
+	#display all key information
 	if request.user.is_staff:
 		#get order direction, and order type
 		order_dir = request.GET.get('ot', 'desc')

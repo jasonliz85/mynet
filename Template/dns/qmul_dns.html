@@ -5,7 +5,20 @@
 {% block content %}
 
 	<h2><a name="status">DNS</a></h2>
+	<ul class = "highlight"><li>What would you like to do?</li></ul> 
+	<p class = "small-indented"> 
+	<a href = '/dns/pair/add'>Register</a> a DNS name-ip pair to your network group.<br>
+	<a href = '/dns/pair/list?pi=1'>View</a> all registered DNS name-ip pairs on your network group.<br>
+	<a href = '#'>Import</a> records into your network group.<br>
+	<a href = '#'>Export</a> records from your network group.<br>
+	</p>	
+	<ul class = "highlight"><li>Other useful links</li></ul>
+	<p class = "small-indented">
+	<a href = '/dhcp/machine/add'>Add</a> a machine to your network group.<br>
+	<a href = '/dhcp/pool/add'>Add</a> an ip pool to your network group.<br>
+	<a href = '/dhcp/machine/list?pi=1'>View</a> all registered machines on your network group.<br>
+	<a href = '/dhcp/pool/list?pi=1'>View</a> all registered pools on your network group.<br>
+	<a href = '/history/?len=50'>View</a> log information on this network. <br>
+	
 	</p>
-	<p> DNS information for this page </p>
-		
 {% endblock %}
