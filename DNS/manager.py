@@ -145,8 +145,8 @@ class NameManager(models.Manager):
 		complex_subnet_queries = [ Q(ip_address__gte = ip_block[0]) & Q(ip_address__lte = ip_block[-1]) for ip_block in blocks ]
 		#b.dns expressions
 		complex_name_queries = list()
-		for expression in range(len(dns_exprs)):
-			dns_filter = Q(name__regex = ('\S' + str(dns_exprs[expression])))
+		for dns_expr in dns_exprs:
+			dns_filter = Q(name__regex = dns_expr.expression)#dns_filter = Q(name__regex = ('\S' + str(expression)))
 			complex_name_queries.append(dns_filter)
 		#3.Second, apply three database queries, 
 		#	1: for all records with dns type address to name, apply complex_subnet_queries
@@ -159,9 +159,23 @@ class NameManager(models.Manager):
 		if len(complex_subnet_queries) and len(complex_name_queries):
 			total_BD_finds = self.filter(reduce(operator.or_, complex_name_queries), 	reduce(operator.or_, complex_subnet_queries), 
 										dns_type = '1BD')
-		#4.combine records and order
-		if len(total_AN_finds) or len(total_NA_finds) or len(total_BD_finds):
+		#4.combine records 
+		if len(total_AN_finds) and len(total_NA_finds) and len(total_BD_finds):
 			permitted_records = total_AN_finds | total_NA_finds | total_BD_finds
+		elif not len(total_AN_finds) and len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_NA_finds | total_BD_finds
+		elif len(total_AN_finds) and not len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_AN_finds | total_BD_finds
+		elif not len(total_AN_finds) and not len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_BD_finds
+		elif len(total_AN_finds) and len(total_NA_finds) and not len(total_BD_finds):
+			permitted_records = total_AN_finds | total_NA_finds 
+		elif not len(total_AN_finds) and len(total_NA_finds) and not len(total_BD_finds):
+			permitted_records = total_NA_finds 
+		elif len(total_AN_finds) and not len(total_NA_finds) and not len(total_BD_finds):
+			permitted_records = total_AN_finds
+			
+		#5.order records
 		if len(permitted_records):
 			permitted_records = permitted_records.order_by(var)								
 

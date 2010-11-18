@@ -1,6 +1,6 @@
 {% extends "qmul_doc_base.html" %}
 
-{% block title %}MyNET Home Page{% endblock %}
+{% block title %}Home Page{% endblock %}
 
 {% block groupname %}  {% endblock %}
 
@@ -68,7 +68,7 @@
 				{%for iprange in IPRanges %}
 				<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 					{% ifequal forloop.counter 1 %}
-						<td align = center>IP Ranges:</td>
+						<td align = center width = "30%">IP Subnets:</td>
 					{% else %}
 						<td></td>
 					{% endifequal %}
@@ -81,7 +81,7 @@
 				{%for dnsexpression in DNSExpressions %}
 				<tr  class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 					{% ifequal forloop.counter 1 %}
-						<td align = center>DNS Expressions:</td>
+						<td align = center width = "30%">DNS Expressions (ending with):</td>
 					{% else %}
 						<td></td>
 					{% endifequal %}

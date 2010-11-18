@@ -71,26 +71,30 @@ def get_table_number(table_name):
 		table_number = False		
 	return table_number
 	
-def LogEvent(action,val_bef, val_aft, is_bulk, uname, gname, tname, tid):
+def LogEvent(action,val_bef, val_aft, is_bulk, uname, nr_ip_subnets, nr_dns_expressions, tname, tid):
 	"""
 	This function logs an event  a Record in the database and logs the event in the HistoryLog db. It returns 
 	a list of the fields and values that were deleted.
 		values: m_id = unique id of record in db, model_name = name of the table in db
 	"""	
-	currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
+	#currentNetGroup = Group.objects.get(name = "Network Group")		#netgroup.objects.get(name = ngroup)
 	#print currentNetGroup
-	currentUser     = User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
+	currentUser     = uname #User.objects.get(username__exact = uname)	#usrname.objects.get(uname = user)
 	now = datetime.datetime.today()
-	newEvent = log( #NetGroupName 		= currentNetGroup,
-			NetUser		 	= currentUser,
-			TableName		= tname,
-			RecordID		= tid,
-			TimeOccured		= now,
-			ActionType		= action,	
-			ValuesBefore		= val_bef,
-			ValuesAfter		= val_aft,
-			IsBulk 			= is_bulk
+	newEvent = log( NetUser		 	= currentUser,
+					TableName		= tname,
+					RecordID		= tid,
+					TimeOccured		= now,
+					ActionType		= action,	
+					ValuesBefore	= val_bef,
+					ValuesAfter		= val_aft,
+					IsBulk 			= is_bulk
 		)	
+	newEvent.save()
+	for subnet in nr_ip_subnets:
+		newEvent.NetResource_ipsubnets.add(subnet)
+	for expression in nr_dns_expressions:
+		newEvent.NetResource_dnsexpressions.add(expression)
 	newEvent.save()
 	return 
 	
@@ -129,13 +133,13 @@ def EditAndLogRecord(var):
 		now = datetime.datetime.today()
 		values['mod_record'].time_modified = now
 		values['mod_record'].save()
-		print values['valuesBefore']
-		print values['valuesAfter']
+		net_res_ip_subnets = get_address_blocks_managed_by(values['uname'])
+		net_res_ip_express = get_dns_patterns_managed_by(values['uname'])
 		try:
 			is_bulk = var[6]
 		except IndexError:
 			is_bulk = False
-		LogEvent('E', values['valuesBefore'], values['valuesAfter'], is_bulk, values['uname'], "NetGroup:ToDo", values['t_number'], values['mod_record'].id)
+		LogEvent('E', values['valuesBefore'], values['valuesAfter'], is_bulk, values['uname'], net_res_ip_subnets, net_res_ip_express, values['t_number'], values['mod_record'].id)
 	return values['mod_record'].id
 def AddAndLogRecord(var):
 	"""
@@ -147,11 +151,13 @@ def AddAndLogRecord(var):
 	final_values = values['newRecord'].LogRepresentation() #LogRepresentation should be defined in the model definitions model.py
 	#Save and LOG results
 	values['newRecord'].save() 
+	net_res_ip_subnets = get_address_blocks_managed_by(values['uname'])
+	net_res_ip_express = get_dns_patterns_managed_by(values['uname'])
 	try:
 		is_bulk = var[3]
 	except IndexError:
 		is_bulk = False
-	LogEvent('A',init_values, final_values, is_bulk, values['uname'], "NetGroup:ToDo", values['t_number'], values['newRecord'].id)
+	LogEvent('A',init_values, final_values, is_bulk, values['uname'], net_res_ip_subnets, net_res_ip_express, values['t_number'], values['newRecord'].id)
 
 	return values['newRecord'].id
 
@@ -170,10 +176,12 @@ def DeleteAndLogRecord(m_id, Model_Name, uname, table_name, action):
 	init_values = DeleteRecord.LogRepresentation() 	#init_values = str(vals[0]) 	#json.dumps(vals[0], sort_keys=True, indent=0) 	
 	final_values = "{}"				#json.dumps("{}", sort_keys=True, indent=0)   returnRecordList.append(DeleteRecord)
 	DeleteRecord.delete()
+	net_res_ip_subnets = get_address_blocks_managed_by(uname)
+	net_res_ip_express = get_dns_patterns_managed_by(uname)
 	if len(action) == 0:
 		action = 'D'
 	#log event 
-	LogEvent(action,init_values, final_values, False, uname, "NetGroup:ToDo", t_number, m_id)
+	LogEvent(action,init_values, final_values, False, uname, net_res_ip_subnets, net_res_ip_express, t_number, m_id)
 
 	return DeleteRecord
 	

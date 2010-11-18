@@ -4,7 +4,7 @@ from subnets.AccessControl import *#get_subnet_from_ip
 from netaddr import *
 
 class MachineManager(models.Manager):
-	def is_unique(self, user_obj, ip, mac, mid):
+	def is_unique(self, user_obj, ip, mac, host, mid):
 		'''
 		This funtion checks whether the input mac address is unique for the subnet specfied by the input
 		ip address. Returns True if unique, False otherwise. Assumes ip is the integer form of an ip addresses.
@@ -34,10 +34,12 @@ class MachineManager(models.Manager):
 			if record.mac_address == mac:
 				unique_error = "You cannot use this MAC Address, it has already been used for this subnet."
 				unique = False
-			else:
-				if record.ip_address == ip:
-					unique_error = "You cannot use this IP address, it has already been used for this subnet."
-					unique = False
+			elif record.ip_address == ip:
+				unique_error = "You cannot use this IP address, it has already been used for this subnet."
+				unique = False
+			elif record.host_name == host:
+				unique_error = "You cannot use this Host name, it has already been used for this subnet."
+				unique = False
 							
 		return unique, unique_error
 	def get_records_in_subnet(self, subnet):
@@ -53,7 +55,7 @@ class MachineManager(models.Manager):
 			#filter the ip block
 			record_list = self.filter(ip_upper&ip_lower)
 		else:
-			error = 'Input subnet does not match subnets in net resource elements'
+			error = 'Input subnet, %s, does not match subnets registered in the network resource elements.' % str(subnet)
 		return record_list, error
 	def get_permitted_records(self, request, order_by, order_dir, change_dir):
 		"""
@@ -157,7 +159,7 @@ class IPPoolManager(models.Manager):
 			#filter the ip block
 			record_list = self.filter(ip_first_upper & ip_first_lower & ip_last_lower & ip_last_upper)
 		else:
-			error = 'Input subnet does not match subnets in net resource elements'
+			error = 'Input subnet, %s, does not match subnets registered in the network resource elements.' % str(subnet)
 		return record_list, error
 	def get_permitted_records(self, request, order_by, order_dir, change_dir):
 		"""

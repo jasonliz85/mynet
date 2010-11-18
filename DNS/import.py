@@ -148,7 +148,7 @@ def handle_uploaded_file(request, f):
 		AddAndLogRecord()
 	for to_modify in to_modify_list:
 		EditAndLodRecord()
-		
+
 	return records, Error
 
 def import_dns(request):

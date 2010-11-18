@@ -1,6 +1,6 @@
 {% extends "qmul_doc_base.html" %}
 
-{% block title %}MyNET DNS Registration{% endblock %}
+{% block title %}DNS Edit Record ID:{{ip_id}} {% endblock %}
 
 {% block content %}
 
@@ -24,7 +24,7 @@
 	{% endfor %}
 	
 	<br>
-	<input type="submit" value="Register">  | <a href="/dns/pair/{{ip_id}}/view">Cancel</a><br/>	
+	<input type="submit" value="Amend">  | <a href="/dns/pair/{{ip_id}}/view">Cancel</a><br/>	
 
 	</form>
 

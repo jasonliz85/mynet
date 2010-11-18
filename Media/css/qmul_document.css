@@ -461,10 +461,12 @@ table.innertable {
 }
 table.innertable tr {
 	border: none; /*1px solid yellow;*/
+	padding: 2px;
 }
 table.innertable td {
 	width: 50%;
 	border: none; /*1px solid blue;*/
+	padding: 2px;
 }
 table thead th.sorted {				background-position:left bottom !important;	}
 table thead th.sorted a {			padding-right:13px;				}

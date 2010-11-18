@@ -91,8 +91,9 @@ def is_name_in_netresource(request, dns_name):
 	has_permission = False
 	dns_expressions  = get_dns_patterns_managed_by(request.user)
 	for item in dns_expressions: #for each dns expression in all dns expressions in the list...
-		temp = '\S' + item.expression #...modify expression...
-		if re.match(re.compile(temp), dns_name): #... and check if matches with input dns_name
+		#temp = '\S' + item.expression #...modify expression...
+		compiled_pattern = re.compile(item.expression)  #...modify expression...
+		if re.match(compiled_pattern, dns_name): #... and check if matches with input dns_name
 			has_permission = True
 			break
 	return has_permission
@@ -126,3 +127,4 @@ def subnets_fetch_records_txt(request):
 	ip_subnets = ip_subnet.objects.all()
 	
 	return render_to_response('qmul_subnets_all.txt', {'records': ip_subnets}, mimetype = 'text/plain')
+	

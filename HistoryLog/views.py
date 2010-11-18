@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.models import Group, User
+from django.http import HttpResponse, HttpResponseRedirect
 
 from subnets.AccessControl.models import *
 from subnets.HistoryLog.models import *
@@ -40,7 +41,7 @@ def NewAndChangedKeys(table_number, val_bef, val_aft):
 	If the length of the returned list is 1 and value is "EMPTYDICT", then one or both
 	of the input dictionaries are empty.
 	"""
-	model_name = get_model_table(table_number)
+	model_name = get_model_table(table_number)		 
 	if model_name == bool(0):
 		result = "EMPTYDICT"
 		return result
@@ -130,7 +131,7 @@ def MulitpleViewFormat(table_number, val_bef, val_aft):
 		
 	return result
 	
-def diff_values(table_number, val_bef, val_aft):
+def SingleViewFormat(table_number, val_bef, val_aft):
 	"""
 	This function compares two python dictionaries and returns the differences as a list in the following 
 	format: [FieldName,  valueBefore , valueAfter  , is_changed]
@@ -180,7 +181,7 @@ def diff_values(table_number, val_bef, val_aft):
 	return result
 
 @login_required
-def HistoryList(request):
+def HistoryList(request): 
 	#display all key information
 	if request.user.is_staff:
 		#get order direction, and order type
@@ -209,7 +210,9 @@ def HistoryList(request):
 			sort['type_bef'] = 'asc'
 			
 		#get permitted records		
-		historyLogs = log.objects.all() 
+		#historyLogs = log.objects.all() 
+		print order_dir, order_by
+		historyLogs =log.objects.get_permitted_logs(request.user, order_by, order_dir, change_dir)
 		#get number of records per page
 		try:
 			list_length = int(request.GET.get('len', '400'))
@@ -223,23 +226,24 @@ def HistoryList(request):
 			page = paginator.page(page_index)
 		except (EmptyPage, InvalidPage), e:
 			page = paginator.page(paginator.num_pages)
-		#get post details
-		#extract values from query dictionary and compare difference
 		changed_list = list()
-		log_values = log.objects.all().values() #not sure if this call if neccessary
-		for i in range(len(log_values)):
+		log_values = historyLogs.values()#log.objects.all().values() 
+		i = 1
+		for record_log in log_values:		#extract values from query dictionary and compare difference
 			if i >= page.start_index() and i <= page.end_index():
-				bef = eval(log_values[i]['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
-				aft = eval(log_values[i]['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
-				table_no = log_values[i]['TableName']
-				changed_list.append(NewAndChangedKeys(table_no,bef,aft))
-		
+				bef = eval(record_log['ValuesBefore'])		#a = json.loads(log_values[i]['ValuesBefore'])
+				aft = eval(record_log['ValuesAfter'])		#b = json.loads(log_values[i]['ValuesAfter'])
+				table_no = record_log['TableName']
+				var = NewAndChangedKeys(table_no,bef,aft)
+				changed_list.append(var)
+			i = i + 1
 		response = render_to_response('qmul_history_listings.html', {'historyLogs':page, 'netgroupno':1, 'changed_list':changed_list, 'list_size':list_length, 'sort':sort })
 	else:
-		response = render_to_response('qmul_history_listings.html', {'historyLogs':'', 'PermissionError': True})
+		response = HttpResponseRedirect("/error/permission/")
 	return response 
 @login_required
 def HistoryView(request, h_id):
+	view_type = request.GET.get('vt', 'single')
 	if request.user.is_staff:
 		try:
 			h_id = int(h_id)
@@ -248,52 +252,35 @@ def HistoryView(request, h_id):
 		try:
 			SingleLog = log.objects.get(id = h_id)
 		except log.DoesNotExist:
-			return HttpResponseRedirect("/history")
-	
-		#prepare before and after values for display
-		ChangeLog = list()
-		bef = eval(SingleLog.ValuesBefore)
-		aft = eval(SingleLog.ValuesAfter)
-		table_no = SingleLog.TableName
-		ChangeLog.append(diff_values(table_no, bef, aft))
-		#regServices = DNS_name.objects.filter(ip_pair = regpair.ip_pair).exclude(id = regpair.id)
-		return render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+			return HttpResponseRedirect("/error/record/")
+		if view_type == 'single':
+			ChangeLog = list()
+			bef = eval(SingleLog.ValuesBefore)
+			aft = eval(SingleLog.ValuesAfter)
+			table_no = SingleLog.TableName
+			ChangeLog.append(SingleViewFormat(table_no, bef, aft)) #prepare before and after values for display
+			response = render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+		elif view_type == 'multiple':
+			Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
+			ChangeLog = list()
+			for record_log in Logs:
+				ChangeLog.append(MulitpleViewFormat(record_log.TableName, eval(record_log.ValuesBefore), eval(record_log.ValuesAfter)))
+			response = render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
 	else:
-		return render_to_response('qmul_history_view.html', {'HistoryLog':'', 'PermissionError': True})
-		
-def HistoryView2(request, h_id):
-	if request.user.is_staff:
-		try:
-			h_id = int(h_id)
-		except ValueError:
-			raise Http404()	
-		try:
-			SingleLog = log.objects.get(id = h_id)
-		except log.DoesNotExist:
-			return HttpResponseRedirect("/history")
-		
-		Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
-		ChangeLog = list()
-		for i in range(len(Logs)):
-			bef = eval(Logs[i].ValuesBefore)
-			aft = eval(Logs[i].ValuesAfter)
-			table_no = Logs[i].TableName
-			ChangeLog.append(MulitpleViewFormat(table_no, bef, aft))
-		return render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
-	else:
-		return render_to_response('qmul_history_view_multiple.html', {'HistoryLog':'', 'PermissionError': True})
+		response = HttpResponseRedirect("/error/permission/")
+	return response
 @login_required
 def HistoryUndoAction(request, h_id):
 	try:
 		h_id = int(h_id)
 	except ValueError:
 		raise Http404()
-	historyRecords = list()
 	try:
 		SingleLog = log.objects.get(id = h_id)
 	except log.DoesNotExist:
-		return HttpResponseRedirect("/history")
+		return HttpResponseRedirect("/error/record/")
 		
+	historyRecords = list()
 	historyRecords.append(SingleLog)
 	
 	val = historyRecords[0]

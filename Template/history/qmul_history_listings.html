@@ -1,12 +1,12 @@
 {% extends "qmul_doc_base.html" %}
-{% block title %}MyNET Recent Activities{% endblock %}
+{% block title %}Log Recent Activities{% endblock %}
 
 {% block groupname %}  {% endblock %}
 
 {% block content %}
 
 	<h2><a name="status">History</a></h2>
-	<p> Review and manage changes made to {% ifequal netgroupno 1 %} this network group{% else %} these network groups{% endifequal %}. </p>	
+	<p> Review and manage individual changes made to {% ifequal netgroupno 1 %} this network group{% else %} these network groups{% endifequal %}. For imported records, click on the <a href = '#'>import log link<a>. </p>	
 	
 	{% if not historyLogs.object_list  %}
 	<ul class = "highlight"><li> There are no recent changes to this group </ul><li>
@@ -134,7 +134,7 @@
 		{% for historyLog in historyLogs.object_list  %}
 			<tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 				<td><input type="checkbox" name="{{form.cbox_id.html_name}}" value="{{machinelist.id}}" class="action-select"></td>
-				<td><a href="/history/{{historyLog.id}}/view/single"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></td>
+				<td><a href="/history/{{historyLog.id}}/view/?vt=single"> {{ historyLog.TimeOccured|date:"D d M Y" }}, {{ historyLog.TimeOccured|time:"H:i" }} <a></td>
 				<td align = center>
 					{{ historyLog.NetUser }}
 				</td>
@@ -143,8 +143,6 @@
 				</td>
 				<td>
 					{{historyLog.get_TableName_display}}
-				{#{ historyLog.ValuesBefore }#}
-				{#{ historlabelyLog.ValuesAfter }#}
 				</td>
 				<td class = "{% ifequal historyLog.ActionType 'E' %}TableInRow{% endifequal %}"> 
 				{% for list in changed_list  %}
@@ -161,7 +159,6 @@
 								{{ names }}:{{ values }}
 								{% if not forloop.last %},{% endif %}
 							{% endfor %}
-							{#{ list|truncatewords:"2" }#}
 						{% else %}
 							<table class = "innertable">
 								<tr width = "50%" align = left  >

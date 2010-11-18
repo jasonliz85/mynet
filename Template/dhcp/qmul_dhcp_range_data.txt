@@ -1,2 +1,2 @@
-{% if error %}ERROR: {{error}}{% else %}{% if not records %}ERROR: Found no records matching this subnet.{% else %}{% for record in records %}	
-range {{record.ip_first}} {{record.ip_last}};{% endfor %}{% endif %}{% endif %}
+{% if error %}ERROR: {{error}}{% else %}{% if not records %}#None{% else %}{% for record in records %}	
+range {{record.ip_first}} {{record.ip_last}};{% if record.description %} #{{record.description}} {% endif %}{% endfor %}{% endif %}{% endif %}

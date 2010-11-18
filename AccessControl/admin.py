@@ -6,7 +6,6 @@ from subnets.AccessControl.models import NetGroup
 class NetGroup_Admin(admin.ModelAdmin):
 	list_display = ('id', 'name')
 	filter_horizontal = ('address_blocks', 'dns_patterns', 'managed_by')
-	#list_filter = ('address_blocks','dns_patterns')
 	def format_date(self, obj):
 		return obj.date.strftime('%d %b %Y %H:%M')
 class subnet_Admin(admin.ModelAdmin):

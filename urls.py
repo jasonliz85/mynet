@@ -25,15 +25,14 @@ urlpatterns += patterns('AccessControl.views',
 	##################Admin Pages########################
 	#####################################################
 urlpatterns += patterns('django.views.static',	
-	#RunningOn = 'dev_at_QM'
 	(r'^admin/', include(admin.site.urls)),
 	(r'^accounts/login/$', login),
 	(r'^accounts/logout/$', logout),
-	#if RunningOn == 'dungbeetle': #work from dungbeetle
+	#work from dungbeetle
 	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
-	#elif RunningOn == 'dev_at_QM': #work from qm
+	#work from qm
 	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
-	#elif RunningOn == 'dev_at_home': #work from home ##django.views.static
+	 #work from home ##django.views.static
 	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
 )
 
@@ -41,10 +40,9 @@ urlpatterns += patterns('django.views.static',
 	##################History Pages######################
 	#####################################################
 urlpatterns += patterns('HistoryLog.views',
-	
+	#view pages for the HistoryLog APP
 	(r'^history/$','HistoryList'),
-	(r'^history/(\d{1,6})/view/single$','HistoryView'),
-	(r'^history/(\d{1,6})/view/multiple$', 'HistoryView2'),#'subnets.HistoryLog.views.HistoryView'), #(?P<vtype>\w{8})
+	(r'^history/(\d{1,6})/view/', 'HistoryView'),
 	(r'^history/(\d{1,6})/undo/$$','HistoryUndoAction'),
 )
 
@@ -87,9 +85,6 @@ urlpatterns += patterns('DHCP.views',
 	(r'^dhcp/machine/(\d{1,6})/view$', 'dhcp_page_machine_view'),				#dhcp - view individual machine
 	(r'^dhcp/machine/(\d{1,6})/edit$', 'dhcp_page_machine_edit'),				#dhcp - edit an existing machine record
 	(r'^dhcp/machine/(\d{1,6})/delete$', 'dhcp_page_machine_delete_single'), 	#dhcp - delete existing machine record (single)
-	#(r'^dhcp/machine/list/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing'), #dhcp - registered machine listings, x pages per record
-	#url(r'^dhcp/machine/list/default/', 'dhcp_page_machine_listing'), 			#dhcp - registered machine listings
-	#(r'^dhcp/machine/list/(?P<sort_by>[a-z])/(?P<page_index>\d+)/$', 'dhcp_page_machine_listing' ), 		
 	
 )
 

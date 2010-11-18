@@ -761,3 +761,60 @@
 #	LogEvent('A',init_values, final_values, False, uname, "NetGroup:ToDo", t_number, newRecord.id)
 #	return newRecord.id
 #		
+
+#def HistoryView2(request, h_id):
+#	if request.user.is_staff:
+#		try:
+#			h_id = int(h_id)
+#		except ValueError:
+#			raise Http404()	
+#		try:
+#			SingleLog = log.objects.get(id = h_id)
+#		except log.DoesNotExist:
+#			return HttpResponseRedirect("/history")
+#		
+#		Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
+#		ChangeLog = list()
+#		for i in range(len(Logs)):
+#			bef = eval(Logs[i].ValuesBefore)
+#			aft = eval(Logs[i].ValuesAfter)
+#			table_no = Logs[i].TableName
+#			ChangeLog.append(MulitpleViewFormat(table_no, bef, aft))
+#		response = render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
+#	else:
+#		response = HttpResponseRedirect("/error/permission/")
+##		return render_to_response('qmul_history_view_multiple.html', {'HistoryLog':'', 'PermissionError': True})
+#	return response 
+
+	model_name = get_model_table(table_number)
+	model_instance = model_name.objects.all()[0]
+	if val_aft and val_bef:
+		changes = 'The following changes were made:'
+		for (key,value) in val_aft.iteritems():
+			if key == 'dns_type':
+				dns_type = get_dns_type(value)	
+				val = ('Type', dns_type)
+			elif key == 'ttl':
+				changed = str(value) + ' changed to' + str(val_bef[key])
+	elif not val_aft:
+		changes = 'Deleted the following record- '
+		for (key,value) in val_bef.iteritems():
+			if key == 'dns_type':
+				dns_type = get_dns_type(value)	
+				var = 'type: ' + dns_type + ', '
+			else:
+				var = model_instance._meta.get_field(key).verbose_name + ': ' + str(value) + ', '
+			changes = changes + var
+		changes = changes.rstrip(', ')
+	elif not val_bef:
+		changes = 'Added the following record- '
+		for (key,value) in val_aft.iteritems():
+			if key == 'dns_type':
+				dns_type = get_dns_type(value)	
+				var = 'DNS type: ' + dns_type + ', '
+			else:
+				var = model_instance._meta.get_field(key).verbose_name + ': ' + str(value) + ', '
+			changes = changes + var
+		changes = changes.rstrip(', ')
+	
+	print changes 

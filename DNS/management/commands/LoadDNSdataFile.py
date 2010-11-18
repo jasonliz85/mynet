@@ -15,6 +15,7 @@ def prepare_values(action, vals, uname, m_id):
 		m_id - if editing, specified the id of the record to be modified
 	'''
 	now = datetime.datetime.today()
+	is_bulk = True
 	table_number = '1' #for logging purposes
 	values = { 'name':vals['name'],'dns_type':vals['dns_type'],
 		'ip_address':IPAddress(vals['ip_address']),'description':vals['description'],'ttl': vals['ttl'] }
@@ -32,7 +33,7 @@ def prepare_values(action, vals, uname, m_id):
 								time_created = now,		time_modified = now,
 								ttl = values['ttl'], 	description = values['description']							
 					)
-		preparedValues = Record, uname, table_number
+		preparedValues = Record, uname, table_number, is_bulk
 		
 	return preparedValues
 	
@@ -168,6 +169,7 @@ class Command(LabelCommand):
 		dns_list = list()
 		not_added = list()
 		f = open(label, 'r')
+		username = 'admin'
 		if f:
 			#Find All Records to be Added
 			for line in f:
@@ -188,6 +190,7 @@ class Command(LabelCommand):
 					pass
 			f.close()
 			filename = "LoadDNSdataLog.log"
+			adminUser = User.objects.get(username__exact = username)
 			FILE = open(filename,"w")
 			now = datetime.datetime.now()
 			logstring = '%s: Successfully scanned file %s\n' % (now, label)
@@ -229,7 +232,7 @@ class Command(LabelCommand):
 							[unique, unique_error] = DNS_name.objects.is_unique(record['ip_address'],record['name'],record['dns_type'], '', True)	
 							if unique:
 								#AddAndLogRecord('DNS_name', DNS_name, 'admin', record)
-								AddAndLogRecord(prepare_values('A', record, 'admin', ''))
+								AddAndLogRecord(prepare_values('A', record, adminUser, ''))
 							 	line_count = line_count + 1
 							else:
 								error_count = error_count + 1

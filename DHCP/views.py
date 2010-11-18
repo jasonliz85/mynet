@@ -1,4 +1,5 @@
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -90,7 +91,7 @@ def prepare_values(action, table_type, vals, uname, m_id):
 #################################################################################
 ####################### DHCP IP Pool ############################################
 #################################################################################
-def ParameterChecks(user_object, ip1, ip2, mac, rid, is_ip_pools):
+def ParameterChecks(user_object, ip1, ip2, mac, host, rid, is_ip_pools):
 	"""
 	This function calls is_unique and is_permitted dns test and consolidates errors. Returns True if there are no errors
 	and return False otherwise. If there are errors, error_msg will contain a message relating to the nature of the error
@@ -116,7 +117,7 @@ def ParameterChecks(user_object, ip1, ip2, mac, rid, is_ip_pools):
 		if is_ip_pools:
 			[is_valid, error_msg] = DHCP_ip_pool.objects.is_unique(user_object.user, ip1, ip2, rid)
 		else:
-			[is_valid, error_msg] = DHCP_machine.objects.is_unique(user_object.user, ip1, mac, rid)
+			[is_valid, error_msg] = DHCP_machine.objects.is_unique(user_object.user, ip1, mac, host, rid)
 			
 	return is_valid, error_msg
 	
@@ -129,19 +130,19 @@ def dhcp_page_IP_range_add(request):
 		form = Register_IP_range_Form(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['IP_range1']), IPAddress(info['IP_range2']), '', '', True)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['IP_range1']), IPAddress(info['IP_range2']), '', '', '', True)
 			if can_pass:
-				registeredID = AddAndLogRecord(prepare_values('A', 'pool', info, request.user.username, ''))
+				registeredID = AddAndLogRecord(prepare_values('A', 'pool', info, request.user, ''))
 				#redirect results
 				url = "/dhcp/pool/%s/view"%registeredID
 				response = HttpResponseRedirect(url)					
 			else:
-				response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors})
+				response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form ,'c_errors': custom_errors}, context_instance=RequestContext(request))
 		else:
-			response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form })
+			response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form }, context_instance=RequestContext(request))
 	else:
 		form = Register_IP_range_Form(initial = {})
-		response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form })
+		response = render_to_response('qmul_dhcp_create_IP_range.html',{'form':form }, context_instance=RequestContext(request))
 	return response 
 #List all IP range records in the DHCP IP pool model
 @login_required
@@ -195,27 +196,26 @@ def dhcp_page_IP_range_listing(request):
 			if item_selected:			
 				if action == 'del':
 					mDelete = list()	
-					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, c_user, 'DHCP_ip_pool', ''))
+						mDelete.append(DeleteAndLogRecord(item, DHCP_ip_pool, request.user, 'DHCP_ip_pool', ''))
 					mlength = len(mDelete)
-					response = render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength})
+					response = render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength' : mlength}, context_instance=RequestContext(request))
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						response = render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
+						response = render_to_response('qmul_dhcp_listings_IP_range.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))
 					else:
 						regmachine = DHCP_ip_pool.objects.get(idns_typed = item_selected[0])
-						response = render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine})
+						response = render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regmachine}, context_instance=RequestContext(request))
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
+					response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
+				response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
+		response = render_to_response('qmul_dhcp_listings_IP_range.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))
 	return response 
 #Viw a single IP range record on the DHCP IP pool model
 @login_required
@@ -234,7 +234,7 @@ def dhcp_page_IP_range_view(request, ip_id):
 	[is_valid, error_msg] = dhcp_permission_check(request, regpools.ip_first, regpools.ip_last, False)
 	if not is_valid:
 		return HttpResponseRedirect("/error/permission/")
-	return  render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpools})
+	return  render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpools}, context_instance=RequestContext(request))
 	
 #Delete a single IP range on the DHCP IP pool model
 @login_required
@@ -255,11 +255,11 @@ def dhcp_page_IP_range_delete(request, ip_id):
 		return HttpResponseRedirect("/error/permission/")
 	#delete record
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user.username, 'DHCP_ip_pool', ''))
+	mDelete.append(DeleteAndLogRecord(ip_id, DHCP_ip_pool, request.user, 'DHCP_ip_pool', ''))
 	if mDelete == False:
 		return HttpResponseRedirect("/dhcp/pool/list/default")
 	mlength = len(mDelete)
-	return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength':mlength})
+	return render_to_response('qmul_dhcp_delete_IP_range.html',{'machines':mDelete, 'mlength':mlength}, context_instance=RequestContext(request))
 #Edit a single IP range to the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_edit(request, ip_id):
@@ -271,22 +271,22 @@ def dhcp_page_IP_range_edit(request, ip_id):
 		editform = Register_IP_range_Form(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['IP_range1']), IPAddress(info['IP_range2']), "", ip_id, True)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['IP_range1']), IPAddress(info['IP_range2']), '', '', ip_id, True)
 			if can_pass:
-				modID = EditAndLogRecord(prepare_values('E', 'pool', info, request.user.username, ip_id))
+				modID = EditAndLogRecord(prepare_values('E', 'pool', info, request.user, ip_id))
 				#redirect response
 				url = "/dhcp/pool/%s/view" % modID
 				response = HttpResponseRedirect(url)
 			else:
 				editform = Register_IP_range_Form(initial = { 'IP_range1' :info['IP_range1'],'IP_range2' :info['IP_range2'],'dscr':info['dscr'] })
-				response = render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors})
+				response = render_to_response('qmul_dhcp_edit_IP_range.html',{'form':editform ,'ip_id': ip_id,'c_errors': custom_errors}, context_instance=RequestContext(request))
 		else:
-			response = render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
+			response = render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id}, context_instance=RequestContext(request))
 	else:
 		try:
 			regmachine = DHCP_ip_pool.objects.get(id = ip_id)	
 			editform = Register_IP_range_Form(initial = {'IP_range1':str(IPAddress(regmachine.ip_first)),'IP_range2':str(IPAddress(regmachine.ip_last)),'dscr':regmachine.description})	
-			response = render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id})
+			response = render_to_response('qmul_dhcp_edit_IP_range.html', {'form':editform, 'ip_id': ip_id}, context_instance=RequestContext(request))
 		except DHCP_ip_pool.DoesNotExist:
 			response = HttpResponseRedirect("/dhcp/pool/list/default")	
 	return response
@@ -297,7 +297,7 @@ def dhcp_page_IP_range_edit(request, ip_id):
 @login_required
 def dhcp_page_listings(request):
 	registeredmachines =  DHCP_machine.objects.all().order_by("ip_address")
-	return render_to_response('qmul_dhcp_listings.html', {'machinelists' : registeredmachines, 'viewmachine' : 'qmul_dhcp_viewmachine.html' })	
+	return render_to_response('qmul_dhcp_listings.html', {'machinelists' : registeredmachines, 'viewmachine' : 'qmul_dhcp_viewmachine.html' }, context_instance=RequestContext(request))	
 
 #Edit DHCP machine registered records 
 @login_required	
@@ -310,22 +310,22 @@ def dhcp_page_machine_edit(request, m_id):
 		editform = RegisterMachineForm(request.POST)
 		if editform.is_valid():
 			info = editform.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['ipID']), '', str(EUI(info['mcID'], dialect=mac_custom)), m_id, False)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['ipID']), '', str(EUI(info['mcID'], dialect=mac_custom)),info['pcID'], m_id, False)
 			if can_pass:
-				modID = EditAndLogRecord(prepare_values('E', 'machine', info, request.user.username, m_id))
+				modID = EditAndLogRecord(prepare_values('E', 'machine', info, request.user, m_id))
 				#redirect response
 				url = "/dhcp/machine/%s/view" % modID
 				response = HttpResponseRedirect(url)
 			else:
 				editform = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				response =  render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors})
+				response =  render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors}, context_instance=RequestContext(request))
 		else:	
-			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})	
+			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id}, context_instance=RequestContext(request))	
 	else:
 		try:
 			regmachine = DHCP_machine.objects.get(id = m_id)		
 			editform = RegisterMachineForm(initial = {'mcID':regmachine.mac_address,'ipID':str(regmachine.ip_address), 'pcID':regmachine.host_name,'dscr':regmachine.description})		
-			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id})
+			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id}, context_instance=RequestContext(request))
 		except DHCP_machine.DoesNotExist:
 			response =  HttpResponseRedirect("/dhcp/machine/list/")	
 	return response
@@ -381,27 +381,26 @@ def dhcp_page_machine_listing(request):
 			if item_selected:			
 				if action == 'del':
 					mDelete = list()
-					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, c_user, 'DHCP_machine', ''))
+						mDelete.append(DeleteAndLogRecord(item, DHCP_machine, request.user, 'DHCP_machine', ''))
 					mlength = len(mDelete)
-					response = render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
+					response = render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength}, context_instance=RequestContext(request))
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm(initial = {})
-						response = render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
+						response = render_to_response('qmul_dhcp_listings.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort}, context_instance=RequestContext(request))
 					else:
 						regmachine = DHCP_machine.objects.get(id = item_selected[0])
-						response = render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
+						response = render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine}, context_instance=RequestContext(request))
 				else:
 					actionForm = ViewMachinesActionForm(initial = {})
-					response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
+					response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort}, context_instance=RequestContext(request))	
 			else:		
 				actionForm = ViewMachinesActionForm(initial = {})
-				response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
+				response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort}, context_instance=RequestContext(request))	
 	else:
 		actionForm = ViewMachinesActionForm(initial = {})
-		response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
+		response = render_to_response('qmul_dhcp_listings.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort}, context_instance=RequestContext(request))
 	return response
 #Delete a single record in the DHCP registration model
 @login_required
@@ -422,11 +421,11 @@ def dhcp_page_machine_delete_single(request, m_id):
 		return HttpResponseRedirect("/error/permission/")
 	#delete record
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user.username, 'DHCP_machine', ''))
+	mDelete.append(DeleteAndLogRecord(m_id, DHCP_machine, request.user, 'DHCP_machine', ''))
 	if mDelete == False:
 		return HttpResponseRedirect("/dhcp/machine/list/")
 	mlength = len(mDelete)
-	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength})
+	return render_to_response('qmul_dhcp_deletemachine.html',{'machines':mDelete, 'mlength':mlength}, context_instance=RequestContext(request))
 
 #View a single registered machine in the DHCP model
 @login_required
@@ -445,7 +444,7 @@ def dhcp_page_machine_view(request, m_id):
 	[is_valid, error_msg] = dhcp_permission_check(request, regmachine.ip_address, "", False)
 	if not is_valid:
 		return HttpResponseRedirect("/error/permission/")
-	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine})
+	return  render_to_response('qmul_dhcp_viewmachine.html', {'machine': regmachine}, context_instance=RequestContext(request))
 
 #Add a machine to the DHCP registration model
 @login_required	
@@ -454,19 +453,19 @@ def dhcp_page_machine_add(request):
 		form = RegisterMachineForm(request.POST)
 		if form.is_valid():
 			info = form.cleaned_data
-			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['ipID']), "", str(EUI(info['mcID'], dialect=mac_custom)), "", False)
+			[can_pass, custom_errors] = ParameterChecks(request, IPAddress(info['ipID']), "", str(EUI(info['mcID'], dialect=mac_custom)), info['pcID'], '', False)
 			if can_pass:
-				registeredID = AddAndLogRecord(prepare_values('A', 'machine', info, request.user.username, ''))
+				registeredID = AddAndLogRecord(prepare_values('A', 'machine', info, request.user, ''))
 				#redirect results
 				url = "/dhcp/machine/%s/view"%registeredID
 				response = HttpResponseRedirect(url)
 			else:
-				response = render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors})
+				response = render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors}, context_instance=RequestContext(request))
 		else:
-			response = render_to_response('qmul_dhcp_createmachine.html', {'form':form })
+			response = render_to_response('qmul_dhcp_createmachine.html', {'form':form }, context_instance=RequestContext(request))
 	else:
 		form = RegisterMachineForm(initial = {})
-		response = render_to_response('qmul_dhcp_createmachine.html', {'form':form })
+		response = render_to_response('qmul_dhcp_createmachine.html', {'form':form }, context_instance=RequestContext(request))
 	return response
 def dhcp_fetch_pool_data(request):
 	'''
@@ -474,14 +473,13 @@ def dhcp_fetch_pool_data(request):
 	error = ''
 	records = ''
 	subnet = request.GET.get('subnet', '')
-	print IPNetwork(subnet)
 	if len(subnet) == 0:
-		error = 'No subnet defined.'
+		error = 'No input subnet defined.'
 	else:
 		try:
 			records,error = DHCP_ip_pool.objects.get_records_in_subnet(IPNetwork(subnet))
 		except Exception, e:
-			error = 'Subnet format error.'
+			error = 'Input subnet is incorrectly formatted.'
 	
 	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')
 def dhcp_fetch_host_data(request):
@@ -491,12 +489,12 @@ def dhcp_fetch_host_data(request):
 	records = ''
 	subnet = request.GET.get('subnet', '')
 	if len(subnet) == 0:
-		error = 'No subnet defined.'
+		error = 'No input subnet defined.'
 	else:
 		try:
 			sb = IPNetwork(subnet)
 			records, error = DHCP_machine.objects.get_records_in_subnet(sb)
 		except:
-			error = 'Subnet format error.'
+			error = 'Input subnet is incorrectly formatted.'
 			
 	return render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')

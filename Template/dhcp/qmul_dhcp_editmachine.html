@@ -1,6 +1,6 @@
 {% extends "qmul_doc_base.html" %}
 
-{% block title %}MyNET DHCP Registration{% endblock %}
+{% block title %}DHCP Edit Record ID:{{m_id}}{% endblock %}
 
 {% block content %}
 
@@ -20,7 +20,7 @@
 		</div>
 
 	{% endfor %}
-	<input type="submit" value="Submit"> | <a href="/dhcp/machine/{{m_id}}/view">Cancel</a><br/>	
+	<input type="submit" value="Amend"> | <a href="/dhcp/machine/{{m_id}}/view">Cancel</a><br/>	
 
 	</form>
 

@@ -37,7 +37,7 @@
 	</script>
 	{% block script %}{% endblock %}
 	<head>
-	    <title>{% block title %}{% endblock %}</title>
+	    <title>{% block projectname %} Subnet Management |{% endblock %} {% block title %}{% endblock %}</title>
 	    <link rel="stylesheet" type="text/css" href="/site_media/css/qmul_document.css" />
 	    {% block head %}{% endblock %}
 	</head>
@@ -83,11 +83,14 @@
 					<a href="/dns">DNS</a> | 
 					<a href="/dhcp">DHCP</a> | 
 					<a href="/importexport/">Import/Export</a> |
+					{% if user.is_staff %}
+					<a href="/admin/">Admin</a> |
+					{% endif %}
 					<a href="/accounts/logout">Logout</a> 
 				{% endblock %}
 				</p>
 			</div>
-			<h1 class="title">Devolved Subnet Management {% block groupname %} {% endblock %} </h1>		
+			<h1 class="title">QM Devolved Subnet Management {% block groupname %} {% endblock %} </h1>		
 			</div>
 		</div>
 		<div id="maincontent">

@@ -7,7 +7,7 @@ __all__ = ['NetGroup', 'ip_subnet', 'dns_expression']
 
 # ---- #
 class dns_expression(models.Model):
-	expression 	= models.CharField('Expression', max_length = 100, unique=True)		#Network Resource Regular Expression
+	expression 	= models.CharField('Expression', max_length = 100, unique=True, default = r'^([^.]+\.)*something\.qm(ul|w)\.ac\.uk$')		#Network Resource Regular Expression
 	description = models.TextField('Description', blank=True )			#Description of IP Subnet
 	def __unicode__(self):
 		return self.expression
@@ -15,10 +15,10 @@ class dns_expression(models.Model):
 		ordering = ['expression']
 
 class ip_subnet(models.Model):
-	ip_network 	= NetaddrCustomizations.models.NetaddrIPNetworkField('IP Network', unique=True)
+	ip_network 	= NetaddrCustomizations.models.NetaddrIPNetworkField('IP Network')#, unique=True)
 	@property
     	def ip_value(self): return str(self.ip_network)
-	vlan		= models.IntegerField('Virtual LAN', blank=True )		#Virtual LAN number
+	vlan		= models.IntegerField('Virtual LAN', blank=True, default = 0)		#Virtual LAN number
 	description = models.TextField('Description', blank=True )			#Description of IP Subnet
 	def __unicode__(self):
 		return str(self.ip_network)

@@ -1,4 +1,5 @@
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -24,7 +25,7 @@ def prepare_values(action, vals, uname, m_id):
 		uname - django username objects
 		m_id - if editing, specified the id of the record to be modified
 	'''
-	print vals['ttl']
+	is_bulk = False
 	now = datetime.datetime.today()
 	table_number = '1' #for logging purposes
 	values = { 'name':vals['dns_expr'],'dns_type':vals['dns_type'],
@@ -47,7 +48,7 @@ def prepare_values(action, vals, uname, m_id):
 								time_created = now,		time_modified = now,
 								ttl = values['ttl'], 	description = values['description']							
 					)
-		preparedValues = Record, uname, table_number
+		preparedValues = Record, uname, table_number, is_bulk
 	elif action == 'E':
 		is_modified = bool(0)
 		try :
@@ -82,10 +83,9 @@ def prepare_values(action, vals, uname, m_id):
 		if not ModifiedRecord.ttl == values['ttl']:
 			ModifiedRecord.ttl = values['ttl']
 			is_modified = bool(1)
-		preparedValues = ModifiedRecord, uname, table_number, is_modified, valuesBefore, str(values)
+		preparedValues = ModifiedRecord, uname, table_number, is_modified, valuesBefore, str(values), is_bulk
 	else:
 		pass
-		#add is_bulk to this list if present
 	return preparedValues
 def ParameterChecks(user_object, ip, name, dt, rid, enable_softcheck):
 	"""
@@ -140,19 +140,19 @@ def handlePopAdd(request, addForm, field, original_id):
 					newObject['ip_address'] = original_machine.ip_address
 					newObject['dns_expr'] = newObject['service_name']
 					print newObject
-					AddAndLogRecord(prepare_values('A', newObject, request.user.username, ''))
+					AddAndLogRecord(prepare_values('A', newObject, request.user, ''))
 					display = "Added " + " " + newObject['service_name']
 					return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script> <p>Test to display.</p>' %\
 						(newObject, display )) #._get_pk_val()
 				else:
 					pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(ip_address),'c_errors': custom_errors}
-					return render_to_response("qmul_dns_create_simple.html", pageContext)
+					return render_to_response("qmul_dns_create_simple.html", pageContext , context_instance=RequestContext(request))
 			else:
-				response = render_to_response('qmul_dns_create_simple.html',{'form':form })
+				response = render_to_response('qmul_dns_create_simple.html',{'form':form }, context_instance=RequestContext(request))
 	else:		
 		form = addForm()#initial = {})
 	pageContext = {'form': form, 'field': field, 'mach':mn_pair, 'ip':str(ip_address) }
-	return render_to_response("qmul_dns_create_simple.html", pageContext)
+	return render_to_response("qmul_dns_create_simple.html", pageContext, context_instance=RequestContext(request))
 
 #Add an IP-name pair to modelquery set
 @login_required
@@ -163,14 +163,13 @@ def dns_namepair_add(request):
 	'''
 	if request.method == 'POST':
 		form = Register_namepair_Form(request.POST)
-		print form 
 		if form.is_valid():
 			info = form.cleaned_data
 			ip = IPAddress(info['ip_address'])
 			[can_pass, custom_errors] = ParameterChecks(request, ip, info['dns_expr'], info['dns_type'], '', True)
 			#check if this form is permitted first
 			if can_pass:
-				registeredID = AddAndLogRecord(prepare_values('A', info, request.user.username, ''))
+				registeredID = AddAndLogRecord(prepare_values('A', info, request.user, ''))
 				namepair_registered  = DNS_name.objects.get(id = registeredID)
 				namepair_registered.ip = str(namepair_registered.ip_address)
 				add_service = request.POST.getlist('service_add')
@@ -178,7 +177,7 @@ def dns_namepair_add(request):
 				if add_service:		
 					for item in add_service:
 						service_add = eval(item)
-						AddAndLogRecord(prepare_values('A', service_add, request.user.username, ''))
+						AddAndLogRecord(prepare_values('A', service_add, request.user, ''))
 				#find all other associated services and display them
 				tempFilter = DNS_name.objects.filter(ip_address = ip).exclude(id = registeredID)
 				regServices = list()
@@ -187,15 +186,15 @@ def dns_namepair_add(request):
 					if is_service_permitted:
 						regServices.append(item)
 				#redirect results
-				url = "/dns/pair/%s/view"%registeredID
+				url = "/dns/pair/%s/view" % registeredID
 				response = HttpResponseRedirect(url)
 			else:
-				response = render_to_response('qmul_dns_create_namepair.html',{'form':form ,'c_errors': custom_errors})
+				response = render_to_response('qmul_dns_create_namepair.html',{'form':form ,'c_errors': custom_errors}, context_instance=RequestContext(request))
 		else:
-			response = render_to_response('qmul_dns_create_namepair.html',{'form':form })
+			response = render_to_response('qmul_dns_create_namepair.html',{'form':form }, context_instance=RequestContext(request))
 	else:
 		form = Register_namepair_Form()#initial = {})
-		response = render_to_response('qmul_dns_create_namepair.html',{'form':form })
+		response = render_to_response('qmul_dns_create_namepair.html',{'form':form }, context_instance=RequestContext(request))
 	return response
 
 #list all ip-name records in the model
@@ -258,35 +257,34 @@ def dns_namepair_listing(request):
 			if item_selected:			
 				if action == 'del':
 					mDelete = list()
-					c_user = request.user.username
 					for item in item_selected:
-						mDelete.append(DeleteAndLogRecord(item, DNS_name, c_user, 'DNS_name', ''))
+						mDelete.append(DeleteAndLogRecord(item, DNS_name, request.user, 'DNS_name', ''))
 					mlength = len(mDelete)
 					time_middle = time.time()
-					response = render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength' : mlength})
+					response = render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength' : mlength}, context_instance=RequestContext(request))
 				elif action == 'vue':
 					if len(item_selected) > 1:
 						actionForm = ViewMachinesActionForm()#initial = {})
 						time_middle = time.time()
-						response = render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })
+						response = render_to_response('qmul_dns_listings_namepair.html', {'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))
 					else:
 						regmachine = DNS_name.objects.get(id = item_selected[0])
 						regmachine.ip = str(regmachine.ip_address)
 						regServices = DNS_name.objects.filter(ip_address = regmachine.ip_address).exclude(id = regmachine.id)
 						time_middle = time.time()
-						response = render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine, 'machinelists':regServices})
+						response = render_to_response('qmul_dns_view_namepair.html', {'machine': regmachine, 'machinelists':regServices}, context_instance=RequestContext(request))
 				else:
 					actionForm = ViewMachinesActionForm()#initial = {})
 					time_middle = time.time()
-					response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})	
+					response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort}, context_instance=RequestContext(request))	
 			else:		
 				actionForm = ViewMachinesActionForm()#initial = {})
 				time_middle = time.time()
-				response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort })	
+				response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))	
 	else:
 		actionForm = ViewMachinesActionForm()#initial = {})
 		time_middle = time.time()
-		response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort})
+		response = render_to_response('qmul_dns_listings_namepair.html',{'form':actionForm, 'machinelists' : page, 'list_size':list_length, 'sort':sort}, context_instance=RequestContext(request))
 	#response = render_to_response('qmul_dns_listings_namepair.html',{})
 	time_stopped = time.time()
 	request.session["_dns_list_total_timing"] = str(time_stopped - time_started)
@@ -329,7 +327,7 @@ def dns_namepair_view(request, pair_id):
 		[is_service_permitted, msg] = DNS_name.objects.is_permitted(request,item.ip_address, item.name, item.dns_type)
 		if is_service_permitted:
 			regServices.append(item)
-	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists': regServices})
+	return  render_to_response('qmul_dns_view_namepair.html', {'machine': regpair, 'machinelists': regServices}, context_instance=RequestContext(request))
 
 #delete a single record 
 @login_required
@@ -350,9 +348,9 @@ def dns_namepair_delete(request, pair_id):
 		return HttpResponseRedirect("/error/permission/")
 	#delete record
 	mDelete = list()
-	mDelete.append(DeleteAndLogRecord(pair_id, DNS_name, request.user.username, 'DNS_name', ''))
+	mDelete.append(DeleteAndLogRecord(pair_id, DNS_name, request.user, 'DNS_name', ''))
 	mlength = len(mDelete) 
-	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength})
+	return render_to_response('qmul_dns_delete_namepair.html',{'machines':mDelete, 'mlength':mlength}, context_instance=RequestContext(request))
 	
 #edit a single record
 @login_required
@@ -368,7 +366,7 @@ def dns_namepair_edit(request, pair_id):
 			ip = IPAddress(info['ip_address'])
 			[can_pass, custom_errors] = ParameterChecks(request, ip, info['dns_expr'], info['dns_type'], pair_id, True)
 			if can_pass:
-				modID = EditAndLogRecord(prepare_values('E', info, request.user.username, pair_id))
+				modID = EditAndLogRecord(prepare_values('E', info, request.user, pair_id))
 				regpair = DNS_name.objects.get(id = modID)				
 				tempFilter = DNS_name.objects.filter(ip_address = regpair.ip_address).exclude(id = modID)
 				regServices = list()
@@ -379,14 +377,14 @@ def dns_namepair_edit(request, pair_id):
 				url = "/dns/pair/%s/view" % modID
 				response = HttpResponseRedirect(url)
 			else:
-				response = render_to_response('qmul_dns_edit_namepair.html',{'form':form ,'ip_id': pair_id, 'c_errors': custom_errors })
+				response = render_to_response('qmul_dns_edit_namepair.html',{'form':editform ,'ip_id': pair_id, 'c_errors': custom_errors }, context_instance=RequestContext(request))
 		else:
-			response = render_to_response('qmul_dns_edit_namepair.html',{'form':form })
+			response = render_to_response('qmul_dns_edit_namepair.html',{'form':editform }, context_instance=RequestContext(request))
 	else:
 		try:
 			regpair = DNS_name.objects.get(id = pair_id)		
 			editform = Register_namepair_Form(initial = {'dns_expr':regpair.name,'ip_address':str(regpair.ip_address),'dscr':regpair.description, 'dns_type': regpair.dns_type,'ttl': regpair.ttl })	
-			response = render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id})
+			response = render_to_response('qmul_dns_edit_namepair.html', {'form':editform, 'ip_id': pair_id}, context_instance=RequestContext(request))
 		except DNS_name.DoesNotExist:
 			response = HttpResponseRedirect("/dns/pair/list/default")	
 	return response

@@ -1,6 +1,5 @@
-2010-11-01 17:17:12.050322: Successfully scanned file test-data/dhcp3tabb
-2010-11-01 17:17:12.050322: No errors founded during initial scan :o) 
-2010-11-01 17:17:12.050322|Error|: MAC Address 00:0F:FE:5E:0D:3C, IP Address: 138.37.4.79 | could not save to database - You cannot use this MAC Address, it has already been used for this subnet..
-Total DHCP records: 135
-Total Successfully created: 134
-Total in Error: 1
+2010-11-08 16:38:05.018586: Successfully scanned file test-data/dhcpd.conf.testrange
+2010-11-08 16:38:05.018586: No errors founded during initial scan :o) 
+Total DHCP records: 9
+Total Successfully created: 11
+Total in Error: 0

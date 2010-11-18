@@ -18,16 +18,15 @@ def prepare_values(action, table_type, values, uname, m_id):
 		m_id - if editing, specified the id of the record to be modified
 	'''
 	now = datetime.datetime.today()
+	is_bulk = True
 	#initialising common values used for both 'E' and 
 	if table_type == 'pool':
-		#values = {'ip_first':IPAddress(vals['ip_first']), 'ip_last':IPAddress(vals['ip_last']),'description':vals['description'] }
 		table_number = '2'
 		if values['ip_first'].version == 6 and values['ip_last'].version == 6:
 			ipVersion = True
 		else:
 			ipVersion = False
 	elif table_type == 'machine':
-		#values = {'mac_address' :str(EUI(vals['mac_address'], dialect=mac_custom)),'ip_address': IPAddress(vals['ip_address']),'host_name':vals['host_name'],'description':vals['description'] }
 		table_number = '3'
 		if values['ip_address'].version == 6:
 			ipVersion = True
@@ -41,7 +40,7 @@ def prepare_values(action, table_type, values, uname, m_id):
 		elif table_type == 'machine':
 			Record = DHCP_machine( mac_address = values['mac_address'], ip_address = values['ip_address'], host_name = values['host_name'],
 				is_ipv6 = ipVersion, time_created = now, time_modified = now, description = values['description'])
-		preparedValues = Record, uname, table_number	
+		preparedValues = Record, uname, table_number, is_bulk	
 			
 	return preparedValues
 def extractHostName(hn):
@@ -285,10 +284,10 @@ class Command(LabelCommand):
 							for i in range(len(record)):
 								if not i == 0:	
 									if record[0] == 'machine':
-										[unique, unique_error] = DHCP_machine.objects.is_unique(adminUser, record[i]['ip_address'], record[i]['mac_address'], '')
+										[unique, unique_error] = DHCP_machine.objects.is_unique(adminUser, record[i]['ip_address'], record[i]['mac_address'],record[i]['host_name'], '')
 										if unique:
 											#AddAndLogRecord('DHCP_machine', DHCP_machine, 'admin', record[i])
-											AddAndLogRecord(prepare_values('A', 'machine', record[i], username, ''))
+											AddAndLogRecord(prepare_values('A', 'machine', record[i], adminUser, ''))
 											#print record[i]
 										 	line_count = line_count + 1
 										else:
@@ -297,10 +296,10 @@ class Command(LabelCommand):
 											FILE.write(logstring + '\n')
 											print logstring
 									elif record[0] == 'ip_pool':
-										[unique, unique_error] = DHCP_ip_pool.objects.is_unique(adminUser, record[i]['ip_first'], record[i]['ip_last'], '')
+										[unique, unique_error] = DHCP_ip_pool.objects.is_unique(adminUser, record[i]['ip_first'], record[i]['ip_last'],'')
 										if unique:
 											#AddAndLogRecord('DHCP_ip_pool', DHCP_ip_pool, 'admin', record[i])
-											AddAndLogRecord(prepare_values('A', 'pool', record[i], username, ''))
+											AddAndLogRecord(prepare_values('A', 'pool', record[i], adminUser, ''))
 											#print record[i]
 										 	line_count = line_count + 1
 										else:
