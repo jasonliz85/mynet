@@ -72,20 +72,20 @@
 					{% else %}
 						<td></td>
 					{% endifequal %}
-					<td>{{ iprange }} </td>
-				</tr>
+					<td>{{ iprange }}</td>
 				{% endfor %}
+				</tr>
 			{% endif %}
 			
 			{% if DNSExpressions %}
 				{%for dnsexpression in DNSExpressions %}
 				<tr  class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}"> 
 					{% ifequal forloop.counter 1 %}
-						<td align = center width = "30%">DNS Expressions (ending with):</td>
+						<td align = center width = "30%">DNS Expressions:</td>
 					{% else %}
 						<td></td>
 					{% endifequal %}
-					<td>{{ dnsexpression }} </td>
+					<td>{% if not dnsexpression.simple_expresssion %} {{ dnsexpression.complex_expression }} {% else %} {{ dnsexpression.simple_expresssion }}{% endif %}  </td>
 				</tr>
 				{% endfor %}
 			{% endif %}

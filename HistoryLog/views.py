@@ -1,4 +1,5 @@
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.models import Group, User
@@ -237,7 +238,7 @@ def HistoryList(request):
 				var = NewAndChangedKeys(table_no,bef,aft)
 				changed_list.append(var)
 			i = i + 1
-		response = render_to_response('qmul_history_listings.html', {'historyLogs':page, 'netgroupno':1, 'changed_list':changed_list, 'list_size':list_length, 'sort':sort })
+		response = render_to_response('qmul_history_listings.html', {'historyLogs':page, 'netgroupno':1, 'changed_list':changed_list, 'list_size':list_length, 'sort':sort }, context_instance=RequestContext(request))
 	else:
 		response = HttpResponseRedirect("/error/permission/")
 	return response 
@@ -259,13 +260,13 @@ def HistoryView(request, h_id):
 			aft = eval(SingleLog.ValuesAfter)
 			table_no = SingleLog.TableName
 			ChangeLog.append(SingleViewFormat(table_no, bef, aft)) #prepare before and after values for display
-			response = render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog})
+			response = render_to_response( 'qmul_history_view.html' , {'HistoryLog':SingleLog, 'ChangeLog':ChangeLog}, context_instance=RequestContext(request))
 		elif view_type == 'multiple':
 			Logs = log.objects.filter(TableName = SingleLog.TableName, RecordID = SingleLog.RecordID)
 			ChangeLog = list()
 			for record_log in Logs:
 				ChangeLog.append(MulitpleViewFormat(record_log.TableName, eval(record_log.ValuesBefore), eval(record_log.ValuesAfter)))
-			response = render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog})
+			response = render_to_response( 'qmul_history_view_multiple.html' , {'HistoryLogs':Logs, 'ChangeLog':ChangeLog}, context_instance=RequestContext(request))
 	else:
 		response = HttpResponseRedirect("/error/permission/")
 	return response
@@ -291,5 +292,5 @@ def HistoryUndoAction(request, h_id):
 	
 	hlength = len(historyRecords)
 	
-	return render_to_response('qmul_history_undo.html', {'historyRecords':historyRecords, 'Message':Message, 'hlength':hlength}) 
+	return render_to_response('qmul_history_undo.html', {'historyRecords':historyRecords, 'Message':Message, 'hlength':hlength}, context_instance=RequestContext(request)) 
 	

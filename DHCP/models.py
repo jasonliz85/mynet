@@ -8,7 +8,7 @@ import NetaddrCustomizations.models
 class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	mac_address	= models.CharField('MAC address', max_length = 40)					#DHCP MAC address
 	ip_address	= NetaddrCustomizations.models.NetaddrIPAddressField('IP Address')	#DHCP IP address 
-	host_name	= models.CharField('Host name', max_length = 63)					#DHCP Host name
+	host_name	= models.CharField('Host name', max_length = 63, unique = True)					#DHCP Host name
 	is_ipv6 	= models.BooleanField()												#DHCP bool check IP version 6
 	description 	= models.TextField('Description', blank=True)		#DHCP machine description of machine (optional)
 	time_created 	= models.DateTimeField()										#DHCP machine registration creation time	
@@ -75,3 +75,50 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 		has_permission = True
 
 	return has_permission, custom_errors
+def dhcp_host_name_unique():
+	return
+def dhcp_is_machine_name_overlapping_an(ip_range):
+	
+	return
+def dhcp_is_ip_range_overlapping(first_ip, last_ip, user_obj, pool_id):
+	'''
+	
+	'''
+	is_overlapped = False
+	error_msg = ''
+	ip_range_input = IPRange(first_ip, last_ip)
+	subnet = get_subnet_from_ip(user_obj, first_ip)
+	ip_pools_in_subnet, errors = DHCP_ip_pool.objects.get_records_in_subnet(subnet)
+	#check ip pool is not overlapping existing ip pools (or ip ranges)
+	for ip_pool in ip_pools_in_subnet:
+		if not ip_pool.id == pool_id:
+			ip_range = IPRange(ip_pool.ip_first, ip_pool.ip_last)
+			if ip_range in ip_range_input:
+				is_overlapped = True
+				error_msg = 'You cannot add this range, %s - %s. It is overlapping the existing range: %s - %s.' %(first_ip, last_ip, ip_pool.ip_first, ip_pool.ip_last)
+				break
+			elif ip_range_input in ip_range:
+				error_msg = 'You cannot add this range, %s - %s. It has been overlapped by the existing range: %s - %s.' %(first_ip, last_ip, ip_pool.ip_first, ip_pool.ip_last)
+				is_overlapped = True
+				break
+			else:
+				for ip in ip_range_input:
+					if ip in ip_range:
+						is_overlapped = True
+						error_msg = 'You cannot add this range, %s - %s, because one or more of it\'s IP address is overlapping the existing range: %s - %s.' %(first_ip, last_ip, ip_pool.ip_first, ip_pool.ip_last)
+						break
+	#now check if ip pool are overlapping any single machine-address allocations
+	if not is_overlapped:
+		complex_range_query_first = Q(ip_address__gt = first_ip)
+		complex_range_query_last  = Q(ip_address__lt = last_ip)
+		try:
+			found_machines = DHCP_machine.objects.filter(complex_range_query_first & complex_range_query_last).exclude(id = pool_id)
+		except ValueError:
+			found_machines = DHCP_machine.objects.filter(complex_range_query_first & complex_range_query_last)
+		
+		if found_machines:
+			error_msg = 'You cannot add this range, %s - %s, because it is overlapping %s fixed-address registration%s.' %(first_ip, last_ip, len(found_machines), '' if len(found_machines) == 1 else 's' )
+			is_overlapped = True
+		
+	return is_overlapped, error_msg
+

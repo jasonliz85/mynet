@@ -24,23 +24,29 @@ class MachineManager(models.Manager):
 		ip_filter_lower = Q(ip_address__gt = subnet[0])
 		try: 
 			found_records = self.filter(ip_filter_upper&ip_filter_lower).exclude(id = mid)
+			found_host_names = self.filter(host_name = host).exclude(id = mid)
 		except ValueError:
 			found_records = self.filter(ip_filter_upper&ip_filter_lower)
+			found_host_names = self.filter(host_name = host)
 		if not len(found_records):
 			return unique, unique_error
-		#3. for each record that was found, check their mac address with this mac address (mac) 
+		#3. for each record that was found, check the mac address and ip address are not present within the found_records 
 		for record in found_records:
-			#4. if record mac address is equal to input mac address, not unique
 			if record.mac_address == mac:
-				unique_error = "You cannot use this MAC Address, it has already been used for this subnet."
+				unique_error = "You cannot use this MAC Address, %s, it has already been used for this subnet." % mac
 				unique = False
 			elif record.ip_address == ip:
-				unique_error = "You cannot use this IP address, it has already been used for this subnet."
+				unique_error = "You cannot use this IP address, %s, it has already been used for this subnet." % ip
 				unique = False
-			elif record.host_name == host:
-				unique_error = "You cannot use this Host name, it has already been used for this subnet."
-				unique = False
-							
+		#4. Now check that there are not other hostnames with the same name in the entire table as this must be unique
+		if found_host_names and unique == True:
+			if ip.version == 4:
+				suggested_name = host + '-' + str(ip).replace('.', '_')
+			else:
+				suggested_name = host + '-' + str(ip).replace('::', '_').replace(':','_')
+			unique_error = {'message':'You cannot use this Host name, %s, it has already been used in this network and must be unique. Suggested host-name: %s' %(host,suggested_name)}
+			unique_error['suggested_name'] = suggested_name
+			unique = False
 		return unique, unique_error
 	def get_records_in_subnet(self, subnet):
 		'''
@@ -133,11 +139,11 @@ class IPPoolManager(models.Manager):
 				unique = False
 				break
 			elif record.ip_first == ip_f:
-				unique_error = "You cannot use this first IP address, it has already been used for this subnet."
+				unique_error = "You cannot use this first IP address, %s, it has already been used for this subnet." %record.ip_first 
 				unique = False
 				break
 			elif record.ip_last == ip_l:
-				unique_error = "You cannot use this last IP address, it has already been used for this subnet."
+				unique_error = "You cannot use this last IP address, %s, it has already been used for this subnet." %record.ip_last
 				unique = False
 				break
 							

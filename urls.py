@@ -52,7 +52,8 @@ urlpatterns += patterns('HistoryLog.views',
 urlpatterns += patterns('DNS',
 	#Fetch all DNS records formatted for tiny-dns	
 	(r'dns/get-dns-data-txt','views.dns_fetch_records_txt'),
-	
+	(r'dns/get-dns-data','views.dns_fetch_records_txt'),
+		
 	#CRUD Registed DNS pairs - Create, Read, Update, Destroy
 	(r'^dns/pair/add$', 'views.dns_namepair_add'),							#dns -
 	(r'^dns/pair/list/$', 'views.dns_namepair_listing'),						#dns - 

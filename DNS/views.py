@@ -11,7 +11,7 @@ from subnets.DNS.forms import *
 from subnets.helper_views import *
 
 from netaddr import *
-import datetime
+import datetime, json
 
 #################################################################################
 ####################### DNS NAME Pair ###########################################
@@ -393,7 +393,32 @@ def dns_fetch_records_txt(request):
 	Responsible for displaying all dns records in tinydns format (plain/text)
 	'''
 	registered_pairs = DNS_name.objects.all()
-	for registered_pair in registered_pairs:
-		if registered_pair.dns_type == '3AN':
-			registered_pair.ip_reverse = registered_pair.ip_address.reverse_dns.rstrip('.')
-	return render_to_response('qmul_dns_all_data.txt', {'records':registered_pairs}, mimetype = 'text/plain')
+	data_format = request.GET.get('format', 'txt')
+	if data_format == 'txt' or data_format == 'djb':
+		for registered_pair in registered_pairs:
+			if registered_pair.ttl == 0 or type(registered_pair.ttl) == type(None):
+				registered_pair.ttl = 86400 #default value
+			if registered_pair.dns_type == '3AN':
+				registered_pair.ip_reverse = registered_pair.ip_address.reverse_dns.rstrip('.')
+			if registered_pair.is_ipv6:
+				registered_pair.ip_address_v6 = hex(registered_pair.ip_address).lstrip('0x')
+		response = render_to_response('qmul_dns_all_data.txt', {'records':registered_pairs}, mimetype = 'text/plain')
+	elif data_format == 'json':
+		data = []
+		if not registered_pairs:
+			data = ['#None']
+		else:
+			for registered_pair in registered_pairs:
+				if registered_pair.ttl == 0 or type(registered_pair.ttl) == type(None):
+					ttl = 86400 #default value
+				else:
+					ttl = registered_pair.ttl
+				data.append({'name':registered_pair.name, 'ip_address':str(registered_pair.ip_address),
+							'ttl': ttl, 'description':registered_pair.description,
+							'dns_type':registered_pair.dns_type})
+		response = HttpResponse(json.dumps(data, indent=2), mimetype='application/json')
+	else:
+		error = 'Unknown format type - %s' %data_format
+		response = render_to_response('qmul_dns_all_data.txt', {'error':error}, mimetype = 'text/plain')
+	return response
+	

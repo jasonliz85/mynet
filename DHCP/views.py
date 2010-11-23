@@ -10,10 +10,14 @@ from subnets.DHCP.forms import *
 #-------import views
 from subnets.helper_views import *
 import datetime
+import json
 from netaddr import *
 
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
+def suggest_a_host_name(host_name,ip_address,mac_address):
+	#to Do
+	return suggested_host_name
 def prepare_values(action, table_type, vals, uname, m_id):
 	'''
 	Prepares the values, so as to be returned to the funtion AddAndLogRecord or EditAndLogRecord
@@ -116,6 +120,10 @@ def ParameterChecks(user_object, ip1, ip2, mac, host, rid, is_ip_pools):
 	else:
 		if is_ip_pools:
 			[is_valid, error_msg] = DHCP_ip_pool.objects.is_unique(user_object.user, ip1, ip2, rid)
+			if is_valid:
+				[is_overlapped, error_msg] = dhcp_is_ip_range_overlapping(ip1, ip2, user_object.user, rid)
+				if is_overlapped:
+					return False, error_msg
 		else:
 			[is_valid, error_msg] = DHCP_machine.objects.is_unique(user_object.user, ip1, mac, host, rid)
 			
@@ -235,7 +243,6 @@ def dhcp_page_IP_range_view(request, ip_id):
 	if not is_valid:
 		return HttpResponseRedirect("/error/permission/")
 	return  render_to_response('qmul_dhcp_view_IP_range.html', {'machine': regpools}, context_instance=RequestContext(request))
-	
 #Delete a single IP range on the DHCP IP pool model
 @login_required
 def dhcp_page_IP_range_delete(request, ip_id):
@@ -317,8 +324,12 @@ def dhcp_page_machine_edit(request, m_id):
 				url = "/dhcp/machine/%s/view" % modID
 				response = HttpResponseRedirect(url)
 			else:
-				editform = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':info['pcID'],'dscr':info['dscr'] })
-				response =  render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': custom_errors}, context_instance=RequestContext(request))
+				try:
+					e_errors = custom_errors['message']
+					editform = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':custom_errors['suggested_name'],'dscr':info['dscr'] })
+				except TypeError:
+					e_errors = custom_errors
+				response =  render_to_response('qmul_dhcp_editmachine.html',{'form':editform ,'m_id': m_id,'c_errors': e_errors}, context_instance=RequestContext(request))
 		else:	
 			response =  render_to_response('qmul_dhcp_editmachine.html', {'form':editform, 'm_id': m_id}, context_instance=RequestContext(request))	
 	else:
@@ -460,7 +471,12 @@ def dhcp_page_machine_add(request):
 				url = "/dhcp/machine/%s/view"%registeredID
 				response = HttpResponseRedirect(url)
 			else:
-				response = render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': custom_errors}, context_instance=RequestContext(request))
+				try:
+					e_errors = custom_errors['message']
+					form = RegisterMachineForm(initial = { 'mcID':info['mcID'],'ipID' :info['ipID'],'pcID':custom_errors['suggested_name'],'dscr':info['dscr'] })
+				except TypeError:
+					e_errors = custom_errors
+				response = render_to_response('qmul_dhcp_createmachine.html',{'form':form ,'c_errors': e_errors}, context_instance=RequestContext(request))
 		else:
 			response = render_to_response('qmul_dhcp_createmachine.html', {'form':form }, context_instance=RequestContext(request))
 	else:
@@ -473,28 +489,69 @@ def dhcp_fetch_pool_data(request):
 	error = ''
 	records = ''
 	subnet = request.GET.get('subnet', '')
+	data_format = request.GET.get('format', 'txt')
 	if len(subnet) == 0:
 		error = 'No input subnet defined.'
 	else:
 		try:
-			records,error = DHCP_ip_pool.objects.get_records_in_subnet(IPNetwork(subnet))
+			sb = IPNetwork(subnet)
+			records,error = DHCP_ip_pool.objects.get_records_in_subnet(sb)
+			if sb.version == 4:
+				is_ipv6_subnet = False
+			else:
+				is_ipv6_subnet = True
 		except Exception, e:
 			error = 'Input subnet is incorrectly formatted.'
-	
-	return render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')
+	if error:
+		response =render_to_response('qmul_dhcp_range_data.txt', { 'error':error, 'is_ipv6_subnet': is_ipv6_subnet}, mimetype = 'text/plain')
+	elif data_format == 'txt':
+		response =render_to_response('qmul_dhcp_range_data.txt', {'records':records, 'error':error, 'is_ipv6_subnet': is_ipv6_subnet}, mimetype = 'text/plain')
+	elif data_format == 'json':
+		data = []
+		if not records:
+			data = ['#None']
+		else:
+			for record in records:
+				data.append({'ip_first': str(record.ip_first),	'ip_last':str(record.ip_last),
+							'description':record.description})
+		response = HttpResponse(json.dumps(data, indent=2), mimetype='application/json')
+	else:
+		error = 'Unknown format type - %s' %data_format
+		response = render_to_response('qmul_dhcp_range_data.txt', {'error':error, 'is_ipv6_subnet': is_ipv6_subnet}, mimetype = 'text/plain')
+	return response
 def dhcp_fetch_host_data(request):
 	'''
 	'''
 	error = ''
 	records = ''
 	subnet = request.GET.get('subnet', '')
+	data_format = request.GET.get('format', 'txt')
 	if len(subnet) == 0:
 		error = 'No input subnet defined.'
 	else:
 		try:
 			sb = IPNetwork(subnet)
 			records, error = DHCP_machine.objects.get_records_in_subnet(sb)
+			if sb.version == 4:
+				is_ipv6_subnet = False
+			else:
+				is_ipv6_subnet = True
 		except:
 			error = 'Input subnet is incorrectly formatted.'
-			
-	return render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error}, mimetype = 'text/plain')
+	if error:
+		response = render_to_response('qmul_dhcp_host_data.txt', {'error':error, 'is_ipv6_subnet': is_ipv6_subnet}, mimetype = 'text/plain')
+	elif data_format == 'txt':
+		response = render_to_response('qmul_dhcp_host_data.txt', {'records':records, 'error':error, 'is_ipv6_subnet': is_ipv6_subnet}, mimetype = 'text/plain')
+	elif data_format == 'json':
+		data = []
+		if not records:
+			data = ['#None']
+		else:
+			for record in records:
+				data.append({'host_name':record.host_name, 'ip_address':str(record.ip_address),
+							'mac_address': record.mac_address, 'description':record.description})
+		response = HttpResponse(json.dumps(data, indent=2), mimetype='application/json')
+	else:
+		error = 'Unknown format type - %s' %data_format
+		response = render_to_response('qmul_dhcp_host_data.txt', {'error':error, 'is_ipv6_subnet': is_ipv6_subnet}, mimetype = 'text/plain')
+	return response

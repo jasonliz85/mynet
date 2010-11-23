@@ -1,5 +1,6 @@
 {% if error %}ERROR: {{error}}{% else %}{% if not records %}#None{% else %}{% for record in records %}	
-host {{record.host_name}} { {% if record.description %}#{{record.description}} {% endif %}
+{%if not is_ipv6_subnet %}host {{record.host_name}} { {% if record.description %}#{{record.description}} {% endif %}
 	hardware ethernet {{record.mac_address}};
 	fixed-address {{record.ip_address}};
-}{% endfor %}{% endif %}{% endif %}
+}{% else %}{{record.ip_address}} {{record.mac_address}} {{record.host_name}} #{{record.description}}{% endif %}{% endfor %}{% endif %}{% endif %}
+

@@ -16,7 +16,7 @@ def convert_normalised_to_easy_view(pattern_string):
 		suffix_pattern = match.group(1)
 		domain_suffix = re.sub(r'\\\.', '.', suffix_pattern)
 	else:
-		domain_suffix = pattern_string
+		domain_suffix = False
 	return domain_suffix
 def login(request):
     username = request.POST.get('username', '')
@@ -44,10 +44,19 @@ def home(request):
 	NetworkResources 	= get_netgroups_managed_by_user(request.user)
 	IPRanges 			= get_address_blocks_managed_by(request.user)
 	DNSExpressions 		= get_dns_patterns_managed_by(request.user)
+	simple_expresssions = []
 	for dns_expr in DNSExpressions:
-		dns_expr.expression = convert_normalised_to_easy_view(dns_expr.expression)
-		
-	context = Context({'userInfo': userInfo, 'Groups':Groups, 'NetworkResources':NetworkResources, 'IPRanges':IPRanges,'DNSExpressions':DNSExpressions })
+		result = convert_normalised_to_easy_view(dns_expr.expression)
+		if not result:
+			dns_expr.complex_expression = dns_expr.expression
+		else:
+			dns_expr.simple_expresssion = result
+	context = Context({'userInfo': userInfo,
+						'Groups':Groups, 
+						'NetworkResources':NetworkResources, 
+						'IPRanges':IPRanges,
+						'DNSExpressions':DNSExpressions,
+						'simple_expresssions':simple_expresssions })
 	return render_to_response('qmul_main.html', context, context_instance=RequestContext(request))
 	
 @login_required

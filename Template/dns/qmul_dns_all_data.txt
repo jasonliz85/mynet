@@ -1,5 +1,5 @@
-{% if not records %}#None{% else %}{% for record in records %}
-{% if record.description %}#{{record.description}}{% else %}#No description available{%endif%}
-{% ifequal record.dns_type '1BD' %}{% if record.is_ipv6 %}#{%endif%}={{record.name}}:{{record.ip_address}}:{% ifnotequal record.ttl 0 %}{{record.ttl}}{% endifnotequal %}{% else %}{% ifequal record.dns_type '2NA' %}{% if record.is_ipv6 %}#{%endif%}+{{record.name}}:{{record.ip_address}}:{% ifnotequal record.ttl 0 %}{{record.ttl}}{% endifnotequal %}{% else %}^{{record.ip_reverse}}:{{record.name}}.:{% ifnotequal record.ttl 0 %}{{record.ttl}}{% endifnotequal %}{% endifequal %}{% endifequal %}{% endfor %}
-{% endif %}
+{% if error %}ERROR: {{error}}{%else%}{% if not records %}#None{% else %}{% for record in records %}
+{% if record.description %}#{{record.description}}
+{%endif%}{% ifequal record.dns_type '1BD' %}{% if record.is_ipv6 %}#6{{record.name}}:{{record.ip_address_v6}}{%else%}={{record.name}}:{{record.ip_address}}{%endif%}:{% ifnotequal record.ttl 0 %}{{record.ttl}}{% endifnotequal %}{% else %}{% ifequal record.dns_type '2NA' %}{% if record.is_ipv6 %}#3{{record.name}}:{{record.ip_address_v6}}{% else %}+{{record.name}}:{{record.ip_address}}{%endif%}:{% ifnotequal record.ttl 0 %}{{record.ttl}}{% endifnotequal %}{% else %}^{{record.ip_reverse}}:{{record.name}}.:{% ifnotequal record.ttl 0 %}{{record.ttl}}{% endifnotequal %}{% endifequal %}{% endifequal %}{% endfor %}
+{% endif %}{% endif %}
 

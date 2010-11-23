@@ -4,7 +4,7 @@ from netaddr import *
 class RegisterMachineForm(forms.Form):
 	mcID = forms.CharField(max_length=40, min_length=5, label = 'MAC Address')
 	ipID = forms.CharField(label = 'IP Address', max_length = 40 )
-	pcID = forms.CharField(max_length=15, label = 'Host Name')
+	pcID = forms.CharField(max_length=63, label = 'Host Name')
 	dscr = forms.CharField(required=False, widget = forms.Textarea, label = 'Description')
 	def clean_ipID(self):
 		ipID = self.cleaned_data['ipID']
