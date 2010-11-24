@@ -126,7 +126,10 @@ def ParameterChecks(user_object, ip1, ip2, mac, host, rid, is_ip_pools):
 					return False, error_msg
 		else:
 			[is_valid, error_msg] = DHCP_machine.objects.is_unique(user_object.user, ip1, mac, host, rid)
-			
+			if is_valid:
+				[is_overlapped, error_msg] = dhcp_is_machine_name_overlapping_range(ip1, user_object.user)
+				if is_overlapped:
+					return False, error_msg
 	return is_valid, error_msg
 	
 #Add a IP range to the DHCP IP pool model

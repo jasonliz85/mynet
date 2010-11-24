@@ -77,12 +77,29 @@ def dhcp_permission_check(request, ip_address1, ip_address2, is_dhcp_pool):
 	return has_permission, custom_errors
 def dhcp_host_name_unique():
 	return
-def dhcp_is_machine_name_overlapping_an(ip_range):
+def dhcp_is_machine_name_overlapping_range(fixed_ip, user_obj):
+	'''
+	This function returns True if the input fixed-address registration is overlapping an existing ip range in the DHCP_ip_pool
+	database table.
+	'''
+	is_overlapped = False
+	error_msg = ''
+	subnet = get_subnet_from_ip(user_obj, fixed_ip)
+	subnet_records, error = DHCP_ip_pool.objects.get_records_in_subnet(subnet)
 	
-	return
+	if subnet_records:
+		for each_subnet in subnet_records:
+			if fixed_ip in IPRange(each_subnet.ip_first, each_subnet.ip_last):
+				is_overlapped = True
+				error_msg = 'You cannot add this IP address, %s, because an exisiting IP range, %s - %s, is overlapping this address.' %(fixed_ip, each_subnet.ip_first, each_subnet.ip_last )
+				break
+				
+	return is_overlapped, error_msg
 def dhcp_is_ip_range_overlapping(first_ip, last_ip, user_obj, pool_id):
 	'''
-	
+	This function returns True if the input ip range (first_ip - last_ip) is overlapping another existing ip range or 
+	another fixed-address registration. It will therefore makes checks on bother the DHCP_ip_pool and DHCP_machine database
+	tables. The pool_id argument is used to switch between edit and add functions in the dhcp view controller.
 	'''
 	is_overlapped = False
 	error_msg = ''
@@ -111,10 +128,10 @@ def dhcp_is_ip_range_overlapping(first_ip, last_ip, user_obj, pool_id):
 	if not is_overlapped:
 		complex_range_query_first = Q(ip_address__gt = first_ip)
 		complex_range_query_last  = Q(ip_address__lt = last_ip)
-		try:
-			found_machines = DHCP_machine.objects.filter(complex_range_query_first & complex_range_query_last).exclude(id = pool_id)
-		except ValueError:
-			found_machines = DHCP_machine.objects.filter(complex_range_query_first & complex_range_query_last)
+#		try:
+#			found_machines = DHCP_machine.objects.filter(complex_range_query_first & complex_range_query_last).exclude(id = pool_id)
+#		except ValueError:
+		found_machines = DHCP_machine.objects.filter(complex_range_query_first & complex_range_query_last)
 		
 		if found_machines:
 			error_msg = 'You cannot add this range, %s - %s, because it is overlapping %s fixed-address registration%s.' %(first_ip, last_ip, len(found_machines), '' if len(found_machines) == 1 else 's' )
