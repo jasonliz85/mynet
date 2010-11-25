@@ -109,7 +109,7 @@ class NameManager(models.Manager):
 	
 		custom_errors = msg1 + errors + msg2
 		return has_permission, custom_errors
-	def get_permitted_records(self, request, enable_type_filter, order_by, order_dir, change_dir):
+	def get_permitted_records(self, user_obj, enable_type_filter, order_by, order_dir, change_dir):
 		"""
 		This function return a queryset from the model table DNS_name. The returned results are filtered by permitted
 		ip_blocks, dns_expressions and dns_type that the user is able to access. If enable_type_filter is enabled, 
@@ -135,8 +135,8 @@ class NameManager(models.Manager):
 		if order_dir == 'desc':
 			var = "-"+var
 		#1.Get network groups, ip blocks and dns expressions which the user has permission to control
-		ip_blocks = get_address_blocks_managed_by(request.user)
-		dns_exprs = get_dns_patterns_managed_by(request.user)
+		ip_blocks = get_address_blocks_managed_by(user_obj)
+		dns_exprs = get_dns_patterns_managed_by(user_obj)
 
 		#2.First build complex query for subnets and dns expressions
 		#a.subnets
@@ -180,4 +180,55 @@ class NameManager(models.Manager):
 			permitted_records = permitted_records.order_by(var)								
 
 		return permitted_records
+	def get_records_in_subnet(self, user_obj, subnet):
+		'''
+		This function returns all the records that is covered by the subnet specified. subnet is of type IPNetwork
+		'''
+		import operator
+		total_AN_finds = []
+		total_NA_finds = []
+		total_BD_finds = []
+		permitted_records = []
+		#1.Get dns expressions which the user has permission to control
+		dns_exprs = get_dns_patterns_managed_by(user_obj)
 
+		#2.First build complex query for subnets and dns expressions
+		#a.subnets
+		complex_subnet_queries = [ Q(ip_address__gte = subnet[0]) & Q(ip_address__lte = subnet[-1]) ]
+		#b.dns expressions
+		complex_name_queries = list()
+		for dns_expr in dns_exprs:
+			dns_filter = Q(name__regex = dns_expr.expression)#dns_filter = Q(name__regex = ('\S' + str(expression)))
+			complex_name_queries.append(dns_filter)
+		#3.Second, apply three database queries, 
+		#	1: for all records with dns type address to name, apply complex_subnet_queries
+		#	2: for all records with dns type name to address, apply complex_name_queries
+		#	3: for all records with dns type bidirectional, apply complex_subnet_queries and complex_name_queries
+		if len(complex_subnet_queries):
+			total_AN_finds = self.filter(reduce(operator.or_, complex_subnet_queries),	dns_type = '3AN')
+		if len(complex_name_queries):
+			total_NA_finds = self.filter(reduce(operator.or_, complex_name_queries), reduce(operator.or_, complex_subnet_queries), dns_type = '2NA')
+		if len(complex_subnet_queries) and len(complex_name_queries):
+			total_BD_finds = self.filter(reduce(operator.or_, complex_name_queries), reduce(operator.or_, complex_subnet_queries), 
+										dns_type = '1BD')
+		#4.combine records 
+		if len(total_AN_finds) and len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_AN_finds | total_NA_finds | total_BD_finds
+		elif not len(total_AN_finds) and len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_NA_finds | total_BD_finds
+		elif len(total_AN_finds) and not len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_AN_finds | total_BD_finds
+		elif not len(total_AN_finds) and not len(total_NA_finds) and len(total_BD_finds):
+			permitted_records = total_BD_finds
+		elif len(total_AN_finds) and len(total_NA_finds) and not len(total_BD_finds):
+			permitted_records = total_AN_finds | total_NA_finds 
+		elif not len(total_AN_finds) and len(total_NA_finds) and not len(total_BD_finds):
+			permitted_records = total_NA_finds 
+		elif len(total_AN_finds) and not len(total_NA_finds) and not len(total_BD_finds):
+			permitted_records = total_AN_finds
+
+		if len(permitted_records):
+			permitted_records = permitted_records.order_by("ip_address", "name")	
+			
+		return permitted_records
+		

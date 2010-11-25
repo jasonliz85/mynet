@@ -232,7 +232,7 @@ def dns_namepair_listing(request):
 		sort['type_bef'] = 'asc'
 	#get permitted records
 	time_t1 = time.time()
-	registered_pairs =  DNS_name.objects.get_permitted_records(request, True, order_by, order_dir, change_dir)
+	registered_pairs =  DNS_name.objects.get_permitted_records(request.user, True, order_by, order_dir, change_dir)
 	time_t2 = time.time()
 	time_t3 = time.time()
 	#get number of records per page
@@ -390,7 +390,7 @@ def dns_namepair_edit(request, pair_id):
 	return response
 def dns_fetch_records_txt(request):
 	'''
-	Responsible for displaying all dns records in tinydns format (plain/text)
+	Responsible for displaying all dns records in tinydns format (plain/text).
 	'''
 	registered_pairs = DNS_name.objects.all()
 	data_format = request.GET.get('format', 'txt')

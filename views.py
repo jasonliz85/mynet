@@ -23,11 +23,12 @@ def login(request):
     password = request.POST.get('password', '')
     user = auth.authenticate(username=username, password=password)
     if user is not None and user.is_active:
-        auth.login(request, user)         # Correct password, and the user is marked "active"
-	return HttpResponseRedirect("/home/")         # Redirect to a success page.
+        if auth.login(request, user):        # Correct password, and the user is marked "active"
+			response = HttpResponseRedirect("/home/")         # Redirect to a success page.
     else:        
-        return HttpResponseRedirect("login.html") # Show an error page
-        
+        response = HttpResponseRedirect("login.html") # Show an error page
+    return response 
+    
 def logout_view(request, next_page):
     auth.logout(request)		# Redirect to a success page.    
     return HttpResponseRedirect("/loggedout/")
@@ -62,14 +63,16 @@ def home(request):
 @login_required
 def dhcp_page(request):
 	return render_to_response('qmul_dhcp.html', {}, context_instance=RequestContext(request))
+@login_required
 def dns_page(request):
 	return render_to_response('qmul_dns.html', {}, context_instance=RequestContext(request))
+@login_required
+def importexport_main(request):
+	return render_to_response('qmul_importexport_main.html', {}, context_instance=RequestContext(request))
 def permission_error(request):
 	return render_to_response('qmul_permission_error.html', {}, context_instance=RequestContext(request))
 def record_error(request):
 	return render_to_response('qmul_norecord_error.html', {}, context_instance=RequestContext(request))
-def importexport_main(request):
-	return render_to_response('qmul_importexport_main.html', {}, context_instance=RequestContext(request))
 #-----Testing- To delete ----------
 def time_info(request):
 	dns_timing = {}

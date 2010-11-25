@@ -56,36 +56,37 @@ urlpatterns += patterns('DNS',
 		
 	#CRUD Registed DNS pairs - Create, Read, Update, Destroy
 	(r'^dns/pair/add$', 'views.dns_namepair_add'),							#dns -
-	(r'^dns/pair/list/$', 'views.dns_namepair_listing'),						#dns - 
+	(r'^dns/pair/list/$', 'views.dns_namepair_listing'),					#dns - 
 	(r'^dns/pair/list/default$', 'views.dns_namepair_listing'),				#dns - 
 	(r'^dns/pair/(\d{1,6})/view$', 'views.dns_namepair_view'),				#dns -
 	(r'^dns/pair/(\d{1,6})/edit$', 'views.dns_namepair_edit'),				#dns - 
 	(r'^dns/pair/(\d{1,6})/delete$', 'views.dns_namepair_delete'),			#dns - 
 	(r'^dns/add/(\d{1,6})/$', 'views.dns_namepair_simpleAdd'),
 	(r'^dns/import$', 'import.import_dns'),
+	(r'^dns/export$', 'export.export_dns'),
 )
 	#####################################################
 	##################DHCP Pages#########################
 	#####################################################
-urlpatterns += patterns('DHCP.views',
+urlpatterns += patterns('DHCP',
 	#Fetch all DHCP details belong to a subnet for dhcpd
-	('dhcp/get-pool-data$','dhcp_fetch_pool_data'),
-	('dhcp/get-host-data$','dhcp_fetch_host_data'),
-	
+	('dhcp/get-pool-data$','views.dhcp_fetch_pool_data'),
+	('dhcp/get-host-data$','views.dhcp_fetch_host_data'),
+	(r'^dhcp/export$', 'export.export_dhcp'),
 	#CRUD Registered IP Pools- Create, Read, Update, Destroy
-	(r'^dhcp/pool/add$', 'dhcp_page_IP_range_add'),						#dhcp - 
-	(r'^dhcp/pool/list/$', 'dhcp_page_IP_range_listing'), 				#dhcp - 
-	(r'^dhcp/pool/list/default$', 'dhcp_page_IP_range_listing'), 		#dhcp - 
-	(r'^dhcp/pool/(\d{1,6})/view$', 'dhcp_page_IP_range_view'),			#dhcp - 
-	(r'^dhcp/pool/(\d{1,6})/edit$', 'dhcp_page_IP_range_edit'),			#dhcp - 
-	(r'^dhcp/pool/(\d{1,6})/delete$', 'dhcp_page_IP_range_delete'), 	#dhcp - 
+	(r'^dhcp/pool/add$', 'views.dhcp_page_IP_range_add'),						#dhcp - 
+	(r'^dhcp/pool/list/$', 'views.dhcp_page_IP_range_listing'), 				#dhcp - 
+	(r'^dhcp/pool/list/default$', 'views.dhcp_page_IP_range_listing'), 		#dhcp - 
+	(r'^dhcp/pool/(\d{1,6})/view$', 'views.dhcp_page_IP_range_view'),			#dhcp - 
+	(r'^dhcp/pool/(\d{1,6})/edit$', 'views.dhcp_page_IP_range_edit'),			#dhcp - 
+	(r'^dhcp/pool/(\d{1,6})/delete$', 'views.dhcp_page_IP_range_delete'), 	#dhcp - 
 	
 	#CRUD Registered Machfrom django.conf.urls.defaults import *ine- Create, Read, Update, Destroy
-	(r'^dhcp/machine/add$', 'dhcp_page_machine_add'),							#dhcp - register a machine
-	(r'^dhcp/machine/list/$', 'dhcp_page_machine_listing'),						#dhcp - registered machine listings
-	(r'^dhcp/machine/(\d{1,6})/view$', 'dhcp_page_machine_view'),				#dhcp - view individual machine
-	(r'^dhcp/machine/(\d{1,6})/edit$', 'dhcp_page_machine_edit'),				#dhcp - edit an existing machine record
-	(r'^dhcp/machine/(\d{1,6})/delete$', 'dhcp_page_machine_delete_single'), 	#dhcp - delete existing machine record (single)
+	(r'^dhcp/machine/add$', 'views.dhcp_page_machine_add'),							#dhcp - register a machine
+	(r'^dhcp/machine/list/$', 'views.dhcp_page_machine_listing'),						#dhcp - registered machine listings
+	(r'^dhcp/machine/(\d{1,6})/view$', 'views.dhcp_page_machine_view'),				#dhcp - view individual machine
+	(r'^dhcp/machine/(\d{1,6})/edit$', 'views.dhcp_page_machine_edit'),				#dhcp - edit an existing machine record
+	(r'^dhcp/machine/(\d{1,6})/delete$', 'views.dhcp_page_machine_delete_single'), 	#dhcp - delete existing machine record (single)
 	
 )
 

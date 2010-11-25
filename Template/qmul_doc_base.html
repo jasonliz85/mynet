@@ -64,7 +64,7 @@
 					</li>
 					<li><a href="/importexport/">Import/Export</a></li>
 					<li><a href="/history/?len=50">History</a></li>
-					<li><a href="/accounts/logout">Logout</a></li>
+					<li>{% if user.is_authenticated %}<a href="/accounts/logout">Logout</a> {% else %} <a href="/accounts/login/">Login</a> {% endif %}</li>
 					</ul>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 					{% if user.is_staff %}
 					<a href="/admin/">Admin</a> |
 					{% endif %}
-					<a href="/accounts/logout">Logout</a> 
+					{% if user.is_authenticated %}<a href="/accounts/logout">Logout</a> {% else %} <a href="/accounts/login/">Login</a> {% endif %}
 				{% endblock %}
 				</p>
 			</div>

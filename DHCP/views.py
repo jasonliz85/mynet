@@ -184,7 +184,7 @@ def dhcp_page_IP_range_listing(request):
 		sort['type_bef'] = 'asc'
 			
 	#get permitted records
-	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request, order_by, order_dir, change_dir)
+	registered_IP_pools = DHCP_ip_pool.objects.get_permitted_records(request.user, order_by, order_dir, change_dir)
 	#get number of records per page
 	try:
 		list_length = int(request.GET.get('len', '400'))
@@ -372,7 +372,7 @@ def dhcp_page_machine_listing(request):
 		sort['type_bef'] = 'asc'
 			
 	#get permitted records
-	registeredmachines =  DHCP_machine.objects.get_permitted_records(request, order_by, order_dir, change_dir)
+	registeredmachines =  DHCP_machine.objects.get_permitted_records(request.user, order_by, order_dir, change_dir)
 	#get number of records per page
 	try:
 		list_length = int(request.GET.get('len', '400'))

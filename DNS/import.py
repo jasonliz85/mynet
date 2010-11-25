@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from subnets.DNS.models import *
 from subnets.DNS.forms import UploadFileForm
 from subnets.AccessControl.views import get_address_blocks_managed_by, get_dns_patterns_managed_by
+from django.contrib.auth.decorators import login_required
 from netaddr import IPAddress
 import re
 def is_unique_custom(user, record_list, hard_check, soft_check):
@@ -150,7 +151,7 @@ def handle_uploaded_file(request, f):
 		EditAndLodRecord()
 
 	return records, Error
-
+@login_required
 def import_dns(request):
 	'''
 	Import DNS functional page and form. Passes file (specified by the user) to handle_uploaded_file function and deals 

@@ -63,7 +63,7 @@ class MachineManager(models.Manager):
 		else:
 			error = 'Input subnet, %s, does not match subnets registered in the network resource elements.' % str(subnet)
 		return record_list, error
-	def get_permitted_records(self, request, order_by, order_dir, change_dir):
+	def get_permitted_records(self, user_obj, order_by, order_dir, change_dir):
 		"""
 		This function returns a queryset from the model DHCP_macgroupshine . The returned results are filtered by permitted
 		ip_blocks that the user is able to access. 
@@ -74,7 +74,7 @@ class MachineManager(models.Manager):
 		import operator
 		permitted_record = []
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		ip_blocks = get_address_blocks_managed_by(request.user)
+		ip_blocks = get_address_blocks_managed_by(user_obj)
 		empty_find = True
 		if order_by == 'ip':
 			var = "ip_address"
@@ -100,8 +100,8 @@ class IPPoolManager(models.Manager):
 	def is_unique(self, user_obj, ip_f, ip_l, mid):
 		'''
 		This function performs a number of checks and returns true if all checks are true:
-		1. ip first and last must not overlap with other ip pools within the same subnet 		#todo
-		2. ip first and last must not overlap an ipaddress declared as a registered machine 	#todo
+		1. ip first and last must not overlap with other ip pools within the same subnet 		#implemented
+		2. ip first and last must not overlap an ipaddress declared as a registered machine 	#implemented
 		3. ip first and last is strictly unique for this given subnet							#implemented
 		Assumes ip_f and ip_l are integer forms of ip addresses
 		'''
@@ -167,7 +167,7 @@ class IPPoolManager(models.Manager):
 		else:
 			error = 'Input subnet, %s, does not match subnets registered in the network resource elements.' % str(subnet)
 		return record_list, error
-	def get_permitted_records(self, request, order_by, order_dir, change_dir):
+	def get_permitted_records(self, user_obj, order_by, order_dir, change_dir):
 		"""
 		This function returns a queryset from the model DHCP_ip_pool . The returned results are filtered by permitted
 		ip_blocks that the user is able to access.
@@ -187,7 +187,7 @@ class IPPoolManager(models.Manager):
 		if order_dir == 'desc':
 			var = "-"+var
 		#Get network groups, ip blocks and dns expressions which the user has permission to control
-		ip_blocks = get_address_blocks_managed_by(request.user)
+		ip_blocks = get_address_blocks_managed_by(user_obj)
 		blocks = [ IPNetwork(str(b)) for b in ip_blocks ]
 		blocks = cidr_merge(blocks)
 		complex_subnet_queries = [ Q(ip_first__gt = ip_block[0]) & Q(ip_last__gt = ip_block[0]) & Q(ip_first__lt = ip_block[-1])& Q(ip_last__lt = ip_block[-1]) for ip_block in blocks ]	

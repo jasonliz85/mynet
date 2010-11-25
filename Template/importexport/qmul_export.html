@@ -1,0 +1,37 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %} Export {{type}}{% endblock %}
+
+{% block content %}
+	<script src="/site_media/js/RelatedObjectLookups.js" type="text/javascript"></script>
+	{% if not PermissionError %}
+	<h2><a name="status">Export {{type}} Records</a></h2>
+	<p>To export a set of {{type}} records, please select the appropriate subnet you wish to export and submit the export form.</p>
+	<form class="feedbackform" action="" method="post">
+		<div class="fieldwrapper">
+			<label class="styled">Subnet</label>
+			<div class="thefield">
+				<select id = "id_status"  name = "subnets">
+					<option selected="selected" value = "none"></option>
+					<option value = "all">All</option>
+					{% for subnet in subnets%}
+					<option value = "{{ subnet }}" >{{subnet}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	<div class="fieldwrapper">
+	<div class="thefield">
+	{% ifequal type 'DNS'%}
+	
+	{% else %}{% ifequal type 'DHCP'%}
+		
+	{% endifequal %}{% endifequal %}
+	</div>
+	</div>
+	<input type="submit" value="Export">  | <a href="/importexport">Cancel</a><br/>	
+	</form>
+	{% else %}
+	<ul class="errorlist"><li> Error: You do not have permission to bulk import/export.</li></ul>
+	{% endif %}
+{% endblock %}
