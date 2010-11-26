@@ -25,7 +25,6 @@ def get_and_format_subnet_data( user_obj, subnet):
 	formatted_data = formatted_data + '####################  DHCP Machines ####################\n' 
 	if records_machines:
 		for each_record in records_machines:
-			print each_record
 			formatted_data = formatted_data + each_record.ExportRepresentation()
 	else:
 		formatted_data = formatted_data + '#None\n'
@@ -33,7 +32,6 @@ def get_and_format_subnet_data( user_obj, subnet):
 	formatted_data = formatted_data + '####################  DHCP Pools ####################\n' 
 	if records_pools:
 		for each_record in records_pools:
-			print each_record
 			formatted_data = formatted_data + each_record.ExportRepresentation()
 	else:
 		formatted_data = formatted_data + '#None\n'

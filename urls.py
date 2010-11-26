@@ -16,6 +16,7 @@ urlpatterns = patterns('subnets.views',
 	(r'^error/permission/$', 'permission_error'),
 	(r'^error/record/$', 'record_error'),
 	(r'^importexport/$','importexport_main'),
+	(r'^information/$','information_main'),
 	(r'^temp/info$','time_info'),
 )
 urlpatterns += patterns('AccessControl.views',
@@ -72,6 +73,7 @@ urlpatterns += patterns('DHCP',
 	#Fetch all DHCP details belong to a subnet for dhcpd
 	('dhcp/get-pool-data$','views.dhcp_fetch_pool_data'),
 	('dhcp/get-host-data$','views.dhcp_fetch_host_data'),
+	(r'^dhcp/import$', 'import.import_dhcp'),
 	(r'^dhcp/export$', 'export.export_dhcp'),
 	#CRUD Registered IP Pools- Create, Read, Update, Destroy
 	(r'^dhcp/pool/add$', 'views.dhcp_page_IP_range_add'),						#dhcp - 
