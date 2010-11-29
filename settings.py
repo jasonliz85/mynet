@@ -1,6 +1,5 @@
 # Django settings for subnets project.
-
-RunningOn = 'dev_at_QM'
+RunningOn = 'dev_at_home'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

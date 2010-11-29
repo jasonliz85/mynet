@@ -31,9 +31,9 @@ urlpatterns += patterns('django.views.static',
 	#work from dungbeetle
 	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/django/django_projects/subnets/Media'}),
 	#work from qm
-	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
+	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jasonl/svn/subnets/Media'}),
 	 #work from home ##django.views.static
-	#(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
+	(r'^site_media/(?P<path>.*)$', 'serve', {'document_root': '/home/jason/Projects/qm_projects/subnets/Media'}),
 )
 
 	#####################################################
