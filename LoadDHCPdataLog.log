@@ -1,5 +1,15 @@
-2010-11-08 16:38:05.018586: Successfully scanned file test-data/dhcpd.conf.testrange
-2010-11-08 16:38:05.018586: No errors founded during initial scan :o) 
-Total DHCP records: 9
-Total Successfully created: 11
-Total in Error: 0
+2010-11-30 18:10:26.978240: Successfully scanned file test-data/dhcpd.conf.admin
+2010-11-30 18:10:26.978240: Error in formatting - could not add the following records:
+Line:5|subnet 138.37.16.0 netmask 255.255.255.0 {|Could not find IP range or IP addresses are invalid
+Line:7|subnet 138.37.20.0 netmask 255.255.255.0 {|Could not find IP range or IP addresses are invalid
+Line:11|subnet 138.37.17.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:13|subnet 138.37.18.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:15|subnet 138.37.19.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:17|subnet 138.37.24.0 netmask 255.255.252.0 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:21|subnet 138.37.192.192 netmask 255.255.255.192 {|Could not find IP range or IP addresses are invalid
+Line:23|subnet 10.192.192.0 netmask 255.255.255.252 {|Could not find IP range or IP addresses are invalid
+Line:25|subnet 10.192.193.0 netmask 255.255.255.252 {|Could not find IP range or IP addresses are invalid
+Line:29|subnet 138.37.194.0 netmask 255.255.255.128 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:31|subnet 138.37.194.128 netmask 255.255.255.192 { authoritative;|Could not find IP range or IP addresses are invalid
+Line:34|subnet 172.21.2.0 netmask 255.255.255.0 { authoritative;|Could not find IP range or IP addresses are invalid
+User cancelled...

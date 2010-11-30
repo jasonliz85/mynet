@@ -1,9 +1,10 @@
 from django.core.management.base import LabelCommand
-from netaddr import *
-#from string import replace, lstrip, rstrip
-import datetime
+from django.contrib.auth.models import User
 from subnets.DNS.models import *
 from subnets.helper_views import AddAndLogRecord
+from netaddr import *
+import datetime
+#from string import replace, lstrip, add
 
 def prepare_values(action, vals, uname, m_id):
 	'''
@@ -165,11 +166,25 @@ def FindValuesFromSplittedLine(dns_type, splitted_line):
 class Command(LabelCommand):
 	def handle_label(self, label,**options):
 		print 'Adding data from file: %s' % label
+		username = 'bulk_import_user'
+		try:
+			adminUser = User.objects.get(username__exact = username)
+		except User.DoesNotExist:
+			print 'Warning: User %s does not exist\nCreating...' %username
+			try:
+				adminUser = User.objects.create_user(username, 'admin@qmul.ac.uk', 'password')
+				adminUser.save
+			except:
+				print 'Error: Problems creating user %s.'%username
+				return
+		try :
+			f = open(label, 'r')
+		except TypeError:
+			print 'Error: Incorrect file destination'
+			return
 		line_count = 0
 		dns_list = list()
 		not_added = list()
-		f = open(label, 'r')
-		username = 'admin'
 		if f:
 			#Find All Records to be Added
 			for line in f:
@@ -183,14 +198,12 @@ class Command(LabelCommand):
 					if not Values:
 						Error = 'Line:%s|%s|IP address or machine name is invalid.' % (line_count, line)
 						not_added.append(Error)
-						#=zedberry-edv999.core-net.qmul.ac.uk:172.22.1.0,226
 					else:
 						dns_list.append(Values)
 				else:
 					pass
 			f.close()
 			filename = "LoadDNSdataLog.log"
-			adminUser = User.objects.get(username__exact = username)
 			FILE = open(filename,"w")
 			now = datetime.datetime.now()
 			logstring = '%s: Successfully scanned file %s\n' % (now, label)

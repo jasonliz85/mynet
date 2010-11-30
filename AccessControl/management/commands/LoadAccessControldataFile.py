@@ -14,7 +14,9 @@ def extractSubnet(sn):
 	subnet = subnet.replace(',','')
 	subnet = subnet.replace('\t','')
 	try:
-		IPNetwork(subnet)
+		sb = IPNetwork(subnet)
+		if not sb.ip == sb[0]: #check if sb is a valid subnet
+			return = False
 	except:
 		return False
 	return subnet

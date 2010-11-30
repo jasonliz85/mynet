@@ -498,11 +498,15 @@ def dhcp_fetch_pool_data(request):
 	else:
 		try:
 			sb = IPNetwork(subnet)
-			records,error = DHCP_ip_pool.objects.get_records_in_subnet(sb)
-			if sb.version == 4:
+			if not sb.ip == sb[0]: #check if sb is a valid subnet
+				error = 'Input subnet is defined incorrectly.'
 				is_ipv6_subnet = False
 			else:
-				is_ipv6_subnet = True
+				records,error = DHCP_ip_pool.objects.get_records_in_subnet(sb)
+				if sb.version == 4:
+					is_ipv6_subnet = False
+				else:
+					is_ipv6_subnet = True
 		except Exception, e:
 			error = 'Input subnet is incorrectly formatted.'
 	if error:
@@ -534,11 +538,15 @@ def dhcp_fetch_host_data(request):
 	else:
 		try:
 			sb = IPNetwork(subnet)
-			records, error = DHCP_machine.objects.get_records_in_subnet(sb)
-			if sb.version == 4:
+			if not sb.ip == sb[0]: #check if sb is a valid subnet
 				is_ipv6_subnet = False
-			else:
-				is_ipv6_subnet = True
+				error = 'Input subnet is defined incorrectly.'
+			else:		
+				records, error = DHCP_machine.objects.get_records_in_subnet(sb)
+				if sb.version == 4:
+					is_ipv6_subnet = False
+				else:
+					is_ipv6_subnet = True
 		except:
 			error = 'Input subnet is incorrectly formatted.'
 	if error:

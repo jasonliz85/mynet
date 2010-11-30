@@ -1,9 +1,10 @@
 from django.core.management.base import LabelCommand
-from netaddr import *
-import datetime
+from django.contrib.auth.models import User
 from subnets.DHCP.models import *
 from subnets.helper_views import AddAndLogRecord
-from django.contrib.auth.models import User
+from netaddr import *
+import datetime
+
 class mac_custom(mac_unix): pass
 mac_custom.word_fmt = '%.2X'
 
@@ -169,12 +170,26 @@ def FindValuesFromSplittedLines(splitted_lines, dtype):
 class Command(LabelCommand):
 	def handle_label(self, label, **options):
 		print 'Adding data from file: %s' % label
-		username = 'admin'
+		username = 'bulk_import_user'
+		try:
+			adminUser = User.objects.get(username__exact = username)
+		except User.DoesNotExist:
+			print 'Warning: User %s does not exist\nCreating...' %username
+			try:
+				adminUser = User.objects.create_user(username, 'admin@qmul.ac.uk', 'password')
+				adminUser.save
+			except:
+				print 'Error: Problems creating user %s.'%username
+				return
+		try :
+			f = open(label, 'r')
+		except TypeError:
+			print 'Error: Incorrect file destination'
+			return
 		line_count = 0
 		found_list = list()
 		not_added = list()
 		dhcp_list = list()
-		f = open(label, 'r')
 		if f:
 			for line in f:
 				del found_list[:]
@@ -245,7 +260,6 @@ class Command(LabelCommand):
 			logstring = '%s: Successfully scanned file %s\n' % (now, label)
 			FILE.write(logstring)
 			confirm = True
-			adminUser = User.objects.get(username__exact = username)
 			#add to DHCP database
 			if not_added:
 				logstring = '%s: Error in formatting - could not add the following records:\n' % now

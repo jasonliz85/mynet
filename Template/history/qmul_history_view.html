@@ -66,8 +66,9 @@
 	</div>
 	
 	<p class = "EditDeleteBack"> 
-		<a  href="/history/{{ HistoryLog.id }}/undo" onclick="return confirm('Are you sure you want undo the changes to this record?');"> Undo Changes*<a> |		
+		<a  href="#" onclick="return confirm('Are you sure you want undo the changes to this record?');"> Undo Changes*<a> |		
 		<a href="/history"> Back<a> 
+		<!"/history/{{ HistoryLog.id }}/undo">
 	</p>
 	{% endif %}
 	      

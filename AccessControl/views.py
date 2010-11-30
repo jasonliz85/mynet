@@ -104,7 +104,7 @@ def is_subnet_in_netresource(subnet):
 	is_present = False
 	ip_subnets = ip_subnet.objects.all()
 	for sn in ip_subnets: #for each ip address block in all ip address blocks in the list...
-		if sn.ip_network == subnet: #...check if ip_address is within range
+		if sn.ip_network.ip == subnet.ip and sn.ip_network.cidr == subnet.cidr: #...check if ip_address is within range
 			is_present = True
 			break
 	return is_present
