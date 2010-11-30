@@ -6,7 +6,7 @@
 	<script src="/site_media/js/RelatedObjectLookups.js" type="text/javascript"></script>
 	{% if not PermissionError %}
 	<h2><a name="status">Import {{type}} Records</a></h2>
-	<p>To upload a set of {{type}} records, please specify the file path below. For more information about how the file should be formatted, click <a href ='#{{type}}'>here</a>.</p>
+	<p>To upload a set of {{type}} records, please specify the file path below. For more information about how the file should be formatted, click <a href ='/information/?info=import&amp;type={{type|lower}}'>here</a>.</p>
 	<form class="feedbackform" action="" method="post" enctype="multipart/form-data">
 	{% for field in form %}
 		<div class="fieldwrapper">
@@ -18,6 +18,18 @@
 			{% endif %}
 			</p>
 		</div>
+		<div class="fieldwrapper">
+			<label class="styled">Subnet</label>
+			<div class="thefield">
+				<select id = "id_status"  name = "subnets">
+					<option selected="selected" value = "none"></option>
+					<option value = "all">All</option>
+					{% for subnet in subnets%}
+					<option value = "{{ subnet }}" >{{subnet}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
 	{% endfor %}
 	<div class="fieldwrapper">
 	<div class="thefield">
@@ -25,10 +37,16 @@
 	<textarea readonly="readonly" >
 Each Record in the text file must be in the following format:
 -------------------------------------------------------------
-&lt;DNS type&gt;:&lt;Machine Name&gt;:&lt;IP Address&gt;:&lt;TTL&gt;:&lt;Description&gt;
+&lt;DNS type&gt; &lt;IP Address&gt; &lt;Machine Name&gt; &lt;TTL&gt; #&lt;Description&gt;
 	</textarea>
 	{% else %}
-	<textarea></textarea>
+	<textarea readonly="readonly" >
+Each Record in the text file must be in the following format:
+For hosts-
+host &lt;IPAddress&gt; &lt;MACAddress&gt; &lt;Host Name&gt; #&lt;Description&gt;
+For ranges/pools-
+pool &lt;IPAddress First&gt; &lt;IPAddress Last&gt; #&lt;Description&gt;
+	</textarea>
 	{% endifequal %}
 	</div>
 	</div>

@@ -78,4 +78,5 @@ class ViewMachinesActionForm(forms.Form):
 			raise forms.ValidationError("Please select at least one action")
 		return 
    	 
-
+class UploadFileForm(forms.Form):
+    file  = forms.FileField()

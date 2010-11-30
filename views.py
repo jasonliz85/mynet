@@ -73,6 +73,14 @@ def permission_error(request):
 	return render_to_response('qmul_permission_error.html', {}, context_instance=RequestContext(request))
 def record_error(request):
 	return render_to_response('qmul_norecord_error.html', {}, context_instance=RequestContext(request))
+def information_main(request):
+	information_page = request.GET.get('info', 'import')
+	info_type = request.GET.get('type', 'dns')
+	if information_page == 'import':
+		response = render_to_response('qmul_import_info.html', {'type':info_type}, context_instance=RequestContext(request))
+	else:	
+		response = render_to_response('qmul_information_main.html', context_instance=RequestContext(request))
+	return response
 #-----Testing- To delete ----------
 def time_info(request):
 	dns_timing = {}

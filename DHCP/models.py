@@ -15,7 +15,7 @@ class DHCP_machine(models.Model): 						#DHCP MACHINE REGISTRATION MODEL
 	time_modified	= models.DateTimeField()										#DHCP machine registration modification time	
 	objects 	= MachineManager()
 	def ExportRepresentation(self):
-		return u'host %s\t%s\t%s\t#%s\n' % (self.ip_address, self.mac_address, self.host_name, self.description)
+		return u'host\t%s\t%s\t%s\t#%s\n' % (self.ip_address, self.mac_address, self.host_name, self.description)
 	def LogRepresentation(self):
 		return u'{\'mac_address\':\'%s\', \'ip_address\':IPAddress(\'%s\'), \'host_name\':\'%s\', \'description\':\'%s\'}' % (self.mac_address, self.ip_address, self.host_name, self.description )
 	def __unicode__(self):
@@ -32,7 +32,7 @@ class DHCP_ip_pool(models.Model):						#DHCP IP ADDRESS POOL MODEL
 	time_modified	= models.DateTimeField()												#DHCP time IP pool modification time
 	objects		= IPPoolManager()
 	def ExportRepresentation(self):
-		return u'pool %s\t%s\t#%s\n' % (self.ip_first, self.ip_last, self.description)
+		return u'pool\t%s\t%s\t#%s\n' % (self.ip_first, self.ip_last, self.description)
 	def LogRepresentation(self):
 		return u'{\'ip_first\':IPAddress(\'%s\'), \'ip_last\':IPAddress(\'%s\'),\'description\':\'%s\'}' % (self.ip_first, self.ip_last,self.description )
 	def __unicode__(self):

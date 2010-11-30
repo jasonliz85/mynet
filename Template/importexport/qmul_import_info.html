@@ -1,0 +1,86 @@
+{% extends "qmul_doc_base.html" %}
+
+{% block title %}Import Information{% endblock %}
+
+{% block content %}
+	<h2><a name="status">{{type|upper}} Import Information </a></h2>
+	<p>When uploading a {{type}} file, the name of the imported file is unimportant. The format however must be consistent. If this is not preserved, then the file will not be uploaded and will result in a error log. </p>
+	<p>It is also important to consider that all records will first go through 3 stages of checks before it is eventually uploaded unto the database. The first check is the format check and all records must following the format below.  </p>
+	<p> A generic {{type}} file must have the following format:</p>
+	<p><textarea class= 'logdisplay' readonly="readonly" wrap = "off">
+	{% ifequal type 'dns'%}
+Each Record in the text file must be in the following format:
+-------------------------------------------------------------
+&lt;DNS type&gt; &lt;IP Address&gt; &lt;Machine Name&gt; &lt;TTL&gt; #&lt;Description&gt;
+-------------------------------------------------------------
+*note, spaces in between must be tabs (/t) and not white spaces
+&lt;DNS type&gt; - must be either:
+	'+' for name-address records, 
+	'^' for address-name records, or 
+	'=' for bidirectional records.
+	If a line begins with '#', it will be skipped.
+&lt;IP Address&gt; - can be either IP version 4 or 6
+&lt;Machine Name&gt; - must be a unique name within the database.
+&lt;TTL&gt; - time to live field (in seconds), default 86400 seconds.
+	If the ttl field is not present, the default wil be assumed.
+&lt;Description&gt; - option description for this record. Please note,
+	description must begin with '#'
+	{% else %}{% ifequal type 'dhcp'%}
+Each Record in the text file must be in the following format:
+=============================================================
+For hosts-
+-------------------------------------------------------------
+host &lt;IPAddress&gt; &lt;MACAddress&gt; &lt;Host Name&gt; #&lt;Description&gt;
+-------------------------------------------------------------
+*note, spaces in between must be tabs (/t) and not white spaces
+host - this specifies what type of record is being processed. 
+	In the case of 'host', we are defining an fixed-address machine in the
+	dhcp database.
+&lt;IPAddress&gt; - can be either IP version 4 or 6
+&lt;MACAddress&gt; - standard MAC address in the format 'AA:BB:CC:DD:EE:FF'
+&lt;Host Name&gt; - must be a unique name within the database.
+&lt;Description&gt; - option description for this record. Please note,
+	description must begin with '#'
+=============================================================
+For ranges/pools-
+-------------------------------------------------------------
+pool &lt;IPAddress First&gt; &lt;IPAddress Last&gt; #&lt;Description&gt;
+-------------------------------------------------------------
+*note, spaces in between must be tabs (/t) and not white spaces
+pool - this specifies what type of record is being processed. 
+	In the case of 'range', we are defining an IP pool/range in the
+	dhcp database.
+&lt;IPAddress First&gt; - Beginning IP address (version 4 or 6)
+&lt;IPAddress Last&gt; - Ending IP address (version 4 or 6)
+&lt;Description&gt; - option description for this record. Please note,
+	description must begin with '#'
+	{% endifequal %}{% endifequal %}
+	</textarea></p>
+	<p>The second check is a permission check. Any records that do not fit the user's permitted subnets and/or name expressions will not be uploaded and again result in an error. Remove the record or contact the site administrator to fix any errors related this second check. </p>
+	<p>The third check is a uniqueness check. Any records in the file that matches existing records in the live {{type}} database will be simply be updated, whilst records that aren't will be created. More importantly, under no circumstances will any records in the database be deleted. If there are such records that need to be deleted, the current method requires the user to delete it through the already available methods. </p>
+	<p>An example of a typical {{type}} file is shown below:</p>
+	<p><textarea class= 'logdisplay' readonly="readonly" wrap = "off">
+	{% ifequal type 'dns'%}
+=	138.37.1.12	test1.physics.qmul.ac.uk	1234523	#this is a description
+^	138.37.1.13	test1.student.qmul.ac.uk	86400	#another description
+=	138.37.1.13	animal.qmul.ac.uk	86400	#no comment
+=	138.37.1.55	test5.students.qmul.ac.uk	86400	
+^	138.37.1.122	jasonpc3.qmul.ac.uk	234	
++	138.37.7.80	qmul.ac.uk	86400	#Commenting is not always neccessary
++	138.37.10.36	pugio.henley.road.c-o.qmul.ac.uk	86400	#
+^	2001:630:11:f000::c8	whinberry-lo0.core-net.qmul.ac.uk	86400	#ip version 6 address
+^	2001:630:11:f000::c9	appleberry-lo0.core-net.qmul.ac.uk	86400	#
+{% else %}{% ifequal type 'dhcp'%}
+host 10.0.1.1 00:05:5D:A3:C5:C1 hostname1 #this is a test
+host 10.0.1.2 00:05:5D:A3:C5:C2 hostname2 #this is another test
+host 138.37.54.30 DA:BB:CC:DD:EE:FF host_test_name 
+host 138.37.194.124 00:1B:8B:25:82:09 AMSCITRIX1-138_37_194_124	#this is a description!
+host 2001:630:11:e000::1 AA:BB:CC:DD:EE:AE AABBCCDDEE #this is one description
+pool 10.0.2.21	10.0.2.40 #this pool should not be used
+pool 10.0.2.41	10.0.2.80 #this pool should be used
+pool 138.37.54.32 138.37.54.32 
+pool 2001:630:11:e000::5 2001:630:11:e000::6 #description two
+pool 2001:630:11:e000::7 2001:630:11:e000::8
+	{% endifequal %}{% endifequal %}
+	</textarea></p>
+{% endblock %}
