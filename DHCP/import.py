@@ -11,7 +11,9 @@ mac_custom.word_fmt = '%.2X'
 
 def FindValuesFromSplittedLine(splitted_line, l_no):
 	'''
-	To comment:
+	This function separates the elements in list that contains the values for each record (splitted_line) and converts 
+	into a python dictionary for easier processing later in the import process. It also provides a low level validation 
+	check for each value in the list. 
 	'''
 	#dns values to be populated, ttl is not neccessary and is optional
 	values = {'record_type':''}
@@ -166,7 +168,6 @@ def internal_unique_check(record_list):
 						errormsg.append(var)
 						record_list_host.remove(record_check)
 						break
-		#MUST check host_name and ip_address not global
 	if record_list_pool:
 		for record in record_list_pool:
 			is_unique = True
@@ -188,6 +189,35 @@ def internal_unique_check(record_list):
 		Error['Msg'] = errormsg
 		Error['is_error'] = True
 	return record_list_pool, record_list_host, Error
+	
+def host_name_check(subnet, record_list_host):
+	'''
+	This function checks the uniqueness of the dhcp machine host name, which must be unique.
+	Returns an error if a record is not unique.
+	'''
+	Error = {'Type': '', 'is_error': False, 'Msg':''} 
+	errormsg = list()
+	complex_host_name_queries = list()
+	import operator
+	if record_list_host:
+		for record in record_list_host:
+			complex_host_name_queries.append(Q(host_name = record['host_name']))
+	
+	complex_subnet_exclude = Q(ip_address__lt = subnet[-1])&Q(ip_address__gt = subnet[0])
+	if complex_host_name_queries:
+		found_like_host_names = DHCP_machine.objects.filter(reduce(operator.or_, complex_host_name_queries)).exclude(complex_subnet_exclude)
+	if found_like_host_names:
+		for each_record in found_like_host_names:
+			for record in record_list_host:
+				if record['host_name'] == each_record.host_name:
+					var = 'line %s, this Host Name - %s - has already been used in the database (record id:%s).\n' %(record['line_no'], record['host_name'], each_record.id)
+					errormsg.append(var)
+	if errormsg:
+		Error['Type'] = 'Uniqueness Error, one or more records in the database have the same host names.'
+		Error['Msg'] = errormsg
+		Error['is_error'] = True
+	return record_list_host, Error
+	
 def overlapping_check(record_list_pool, record_list_host):
 	'''
 	Checks for overlapping between pools and hosts.
@@ -195,11 +225,81 @@ def overlapping_check(record_list_pool, record_list_host):
 	'''
 	Error = {'Type': '', 'is_error': False, 'Msg':''} 
 	errormsg = list()
+	#1.First check if pools are overlapping another pool or another fixed-address record_check
+	#1a.ip pools
+	for ip_pool_check in record_list_pool: 
+		is_overlapped = False
+		try:
+			ip_range_check = IPRange(ip_pool_check['ip_first'], ip_pool_check['ip_last'])
+		except AddrFormatError:
+			errormsg.append('line %s, IP pool in error, lower bound IP greater than upper bound!\n'% ip_pool_check['line_no'])
+			record_list_pool.remove(ip_pool_check)
+			break
+		for ip_pool in record_list_pool:
+			if not ip_pool['line_no'] == ip_pool_check['line_no']:
+				try:
+					ip_range = IPRange(ip_pool['ip_first'], ip_pool['ip_last'])
+				except AddrFormatError:
+					errormsg.append('line %s, IP pool in error, lower bound IP greater than upper bound!\n'% ip_pool['line_no'])
+					record_list_pool.remove(ip_pool)
+					break
+				if ip_range in ip_range_check:
+					is_overlapped = True
+					var = 'line %s, You cannot add this range, %s - %s. It is overlapping the existing range: %s - %s.\n' %(ip_pool['line_no'], ip_pool_check['ip_first'], ip_pool_check['ip_last'], ip_pool['ip_first'], ip_pool['ip_last'])
+					errormsg.append(var)
+					record_list_pool.remove(ip_pool)
+					break
+				elif ip_range_check in ip_range:
+					is_overlapped = True
+					var = 'line %s, You cannot add this range, %s - %s. It has been overlapped by the existing range: %s - %s.\n' %(ip_pool['line_no'],ip_pool['ip_first'], ip_pool['ip_last'], ip_pool_check['ip_first'], ip_pool_check['ip_last'])
+					errormsg.append(var)
+					record_list_pool.remove(ip_pool)
+					break
+				else:
+					for ip in ip_range:
+						if ip in ip_range_check:
+							is_overlapped = True
+							var = 'line %s, You cannot add this range, %s - %s, because one or more of it\'s IP address is overlapping the existing range: %s - %s.\n' %(ip_pool['line_no'], ip_pool_check['ip_first'], ip_pool_check['ip_last'], ip_pool['ip_first'], ip_pool['ip_last'])
+							errormsg.append(var)
+							record_list_pool.remove(ip_pool)
+							break
+	#1.b machine ip address
+	if not is_overlapped and record_list_host:
+		for ip_pool_check in record_list_pool: 
+			is_overlapped = False
+			try:
+				ip_range_check = IPRange(ip_pool_check['ip_first'], ip_pool_check['ip_last'])
+			except AddrFormatError:
+				errormsg.append('line %s, IP pool in error, lower bound IP greater than upper bound!\n'% ip_pool_check['line_no'])
+				record_list_pool.remove(ip_pool_check)
+				break
+			for record_host in record_list_host:
+				print record_host['ip_address'], ip_range_check
+				if record_host['ip_address'] < ip_range_check[-1] and record_host['ip_address'] > ip_range_check[0]:
+					is_overlapped = True
+					var = 'line %s, You cannot add this range, %s - %s, because it is overlapping fixed-address host registration (line no:%s).' %(ip_pool_check['line_no'], ip_pool_check['ip_first'], ip_pool_check['ip_last'], record['line_no'])
+					errormsg.append(var)
+					record_list_pool.remove(ip_pool_check)
+					break
+				
+	#2.Now check if host names are overlapping with ip pools
+	if record_list_host:
+		for host_check in record_list_host:
+			is_overlapped = False
+			for ip_pool_check in record_list_pool:
+				if host_check['ip_address'] > ip_pool_check['ip_first'] and host_check['ip_address'] < ip_pool_check['ip_last']:
+					is_overlapped = True
+					var = 'line %s, You cannot add this IP address, %s, because an exisiting IP range, %s - %s, is overlapping this address.' %(host_check['line_no'], host_check['ip_address'],ip_pool_check['ip_first'],ip_pool_check['ip_last'] )
+					record_list_host.remove(host_check)
+					break
+			
 	if errormsg:
-		Error['Type'] = 'Uniqueness error, one or more records are duplicated within this uploaded file.'
+		Error['Type'] = 'Overlapping error, one or more records are duplicated within this uploaded file.'
 		Error['Msg'] = errormsg
 		Error['is_error'] = True
+		
 	return record_list_pool, record_list_host, Error
+	
 def compare_import_and_live_records():
 	'''
 	To Do:
@@ -223,7 +323,8 @@ def handle_uploaded_file(request_obj, uploaded_file, subnet_list):
 				#get_live_data for each_subnet
 				#permission check
 				#uploaded file internal unique check
-				#other checks?
+				#host name uniqueness check
+				#overlapping check
 				#compare each_subnet with live_data_subset
 				#retrieve and add to overall list to_add, to_edit, to_delete
 			#except:
@@ -246,11 +347,17 @@ def handle_uploaded_file(request_obj, uploaded_file, subnet_list):
 		[records_pool,records_host, error_msg] = internal_unique_check(records)
 		if error_msg['is_error']:
 			return records, error_msg
+		if records_host:
+			[records_host, error_msg] = host_name_check(each_subnet, records_host)
+			if error_msg['is_error']:
+				return records, error_msg
 		[records_pool,records_host, error_msg] = overlapping_check(records_pool,records_host)
 		if error_msg['is_error']:
 			return records, error_msg
 		[to_add, to_delete, to_edit, error_msg ] = compare_import_and_live_records()	
-
+		if error_msg['is_error']:
+			return records, error_msg
+			
 	return records, error_msg
 
 @login_required
